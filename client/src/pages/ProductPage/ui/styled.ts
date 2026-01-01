@@ -90,5 +90,6 @@ export const MainContent = styled.main(() => ({
 }));
 
 // Default export to satisfy Next.js PagesPageConfig type checking
-const defaultExport = {};
-export default defaultExport;
+// This is a styled-components file, not a page component
+const StyledComponentsDefault = () => null;
+export default StyledComponentsDefault;
