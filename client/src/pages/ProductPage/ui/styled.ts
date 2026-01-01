@@ -29,38 +29,54 @@ export const MainContent = styled.main(() => ({
   overflowY: "auto",
   overflowX: "hidden",
   backgroundColor: "var(--bg-primary)",
-  // Mobile: full width, padding for navbar
+  // Mobile: full width
   marginLeft: 0,
+  // Smooth scrolling
+  scrollBehavior: "smooth",
+  WebkitOverflowScrolling: "touch",
+  // Small tablets (640px+) - sidebar appears
+  "@media (min-width: 640px)": {
+    marginLeft: "64px",
+  },
+  // Tablets (768px+)
+  "@media (min-width: 768px)": {
+    marginLeft: "80px",
+  },
+  // Landscape mobile optimization
+  "@media (max-height: 500px) and (orientation: landscape)": {
+    height: "100vh",
+  },
+}));
+
+export const ContentWrapper = styled.div(() => ({
+  maxWidth: "100%",
+  width: "100%",
+  margin: "0 auto",
+  // Mobile-first padding
   paddingTop: "88px", // Account for fixed navbar
   paddingRight: "12px",
   paddingBottom: "24px",
   paddingLeft: "12px",
-  // Smooth scrolling
-  scrollBehavior: "smooth",
-  WebkitOverflowScrolling: "touch",
   // Small mobile (320px+)
   "@media (min-width: 375px)": {
     paddingRight: "16px",
     paddingLeft: "16px",
   },
-  // Small tablets (640px+) - sidebar appears
+  // Small tablets (640px+)
   "@media (min-width: 640px)": {
-    marginLeft: "64px",
-    paddingTop: "88px",
+    paddingTop: "96px",
     paddingRight: "20px",
     paddingLeft: "20px",
+    paddingBottom: "32px",
   },
   // Tablets (768px+)
   "@media (min-width: 768px)": {
-    marginLeft: "80px",
-    paddingTop: "96px", // Navbar spacing adjustment
     paddingRight: "24px",
     paddingLeft: "24px",
     paddingBottom: "32px",
   },
   // Desktop (1024px+)
   "@media (min-width: 1024px)": {
-    paddingTop: "96px",
     paddingRight: "32px",
     paddingLeft: "32px",
     paddingBottom: "40px",
@@ -68,8 +84,6 @@ export const MainContent = styled.main(() => ({
   // Large desktop (1280px+)
   "@media (min-width: 1280px)": {
     maxWidth: "1400px",
-    marginLeft: "auto",
-    marginRight: "auto",
     paddingRight: "48px",
     paddingLeft: "48px",
     paddingBottom: "48px",

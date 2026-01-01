@@ -25,11 +25,13 @@ export const ProductPage = () => {
       <Sidebar />
       <Styled.MainContent>
         <Navbar />
-        <ProductHero cheat={selectedCheat} />
-        <ProductScreenshots />
-        <ProductFeatures />
-        <ProductVideo />
-        <ProductSecurity />
+        <Styled.ContentWrapper>
+          <ProductHero cheat={selectedCheat} />
+          <ProductScreenshots />
+          <ProductFeatures />
+          <ProductVideo />
+          <ProductSecurity />
+        </Styled.ContentWrapper>
       </Styled.MainContent>
     </Styled.PageContainer>
   );
