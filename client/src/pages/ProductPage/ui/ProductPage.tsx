@@ -18,14 +18,7 @@ export const ProductPage = () => {
   
   // Get cheat data by ID, fallback to first cheat if not found
   const selectedCheat: CheatCard = 
-    cheatCards.find((cheat) => cheat.id === cheatId) || cheatCards[0] || {
-      id: "1",
-      nameKey: "default",
-      descriptionKey: "default",
-      price: 0,
-      image: "",
-      game: "default",
-    } as CheatCard;
+    cheatCards.find((cheat) => cheat.id === cheatId) || cheatCards[0]!;
 
   return (
     <Styled.PageContainer>
