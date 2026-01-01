@@ -32,7 +32,8 @@
     "cheatsLibrary": "Cheats Library",
     "account": "Account",
     "settings": "Settings",
-    "help": "Help"
+    "help": "Help",
+    "searchResults": "Search Results"
   },
   "noGamesFound": "No games found",
   "product": {
@@ -101,7 +102,40 @@
       "new": "New"
     },
     "unsafe": "Unsafe",
-    "updated": "ago"
+    "updated": "ago",
+    "timeUnits": {
+      "minutes": "m",
+      "hours": "h",
+      "days": "d",
+      "weeks": "week",
+      "weeksPlural": "weeks"
+    },
+    "cheats": {
+      "valorantPrime": {
+        "name": "Valorant Prime",
+        "description": "Premium aimbot with customizable smoothing, ESP, and inventory manager. Safe for competitive play."
+      },
+      "apexLegendsMaster": {
+        "name": "Apex Legends Master",
+        "description": "Includes glow ESP, trigger bot, and recoil control system. Designed for high ranks."
+      },
+      "cs2GlobalElite": {
+        "name": "CS2 Global Elite",
+        "description": "Classic legit cheat with sound ESP and skin changer. Currently under maintenance for latest patch."
+      },
+      "overwatch2Flex": {
+        "name": "Overwatch 2 Flex",
+        "description": "Advanced projectile prediction and auto-ult logic. Perfect for DPS mains."
+      },
+      "eldenRingEasyMode": {
+        "name": "Elden Ring EasyMode",
+        "description": "Infinite health, stamina, and item spawner. Explore the Lands Between without fear."
+      },
+      "rustDominator": {
+        "name": "Rust Dominator",
+        "description": "Full map ESP, auto-farm bot, and recoil scripts. Use at your own risk."
+      }
+    }
   }
 }
 

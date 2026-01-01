@@ -4,6 +4,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { cheatCards } from "@/widgets/CheatCards/mocks/mock";
 import * as Styled from "./styled";
 import { games, filters, featuredGameImage } from "../mocks/mock";
 
@@ -11,8 +12,42 @@ export const GameCards = () => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const handleGameClick = () => {
-    router.push("/product");
+  const handleGameClick = (gameName?: string) => () => {
+    // Find matching cheat card by game name
+    let cheatId = cheatCards[0]?.id || "1";
+    
+    if (gameName) {
+      // Try to find cheat card that matches the game name
+      const cheatCard = cheatCards.find((card) => {
+        const cardName = card.nameKey.toLowerCase();
+        const cardDesc = card.descriptionKey.toLowerCase();
+        const searchName = gameName.toLowerCase();
+        // Check if game name appears in cheat card name or description
+        return cardName.includes(searchName) || cardDesc.includes(searchName);
+      });
+      
+      if (cheatCard) {
+        cheatId = cheatCard.id;
+      } else {
+        // Fallback: try to match by common game name variations
+        const gameNameLower = gameName.toLowerCase();
+        if (gameNameLower.includes("apex")) {
+          cheatId = cheatCards.find((c) => c.nameKey.includes("apex"))?.id || cheatId;
+        } else if (gameNameLower.includes("rust")) {
+          cheatId = cheatCards.find((c) => c.nameKey.includes("rust"))?.id || cheatId;
+        } else if (gameNameLower.includes("valorant")) {
+          cheatId = cheatCards.find((c) => c.nameKey.includes("valorant"))?.id || cheatId;
+        } else if (gameNameLower.includes("cs") || gameNameLower.includes("counter")) {
+          cheatId = cheatCards.find((c) => c.nameKey.includes("cs2") || c.nameKey.includes("counter"))?.id || cheatId;
+        } else if (gameNameLower.includes("overwatch")) {
+          cheatId = cheatCards.find((c) => c.nameKey.includes("overwatch"))?.id || cheatId;
+        } else if (gameNameLower.includes("elden") || gameNameLower.includes("ring")) {
+          cheatId = cheatCards.find((c) => c.nameKey.includes("elden"))?.id || cheatId;
+        }
+      }
+    }
+    
+    router.push(`/product?id=${cheatId}`);
   };
 
   return (
@@ -33,7 +68,7 @@ export const GameCards = () => {
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          onClick={handleGameClick}
+          onClick={handleGameClick("Path of Exile 2")}
         >
           <Styled.FeaturedImage
             src={featuredGameImage}
@@ -54,7 +89,7 @@ export const GameCards = () => {
               <Styled.GameCard
                 whileHover={{ scale: 1.02, y: -4 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={handleGameClick}
+                onClick={handleGameClick(game.name)}
               >
                 <Styled.GameImage src={game.image} alt={game.name} />
                 <Styled.GameOverlay />

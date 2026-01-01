@@ -1,12 +1,26 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
+import { useDebounce } from "@/shared/lib/hooks/useDebounce";
 import * as Styled from "./styled";
-import { games, languages, type MenuItem } from "../mocks/mock";
+import { games, languages, type MenuItem, type Game } from "../mocks/mock";
+import { cheatCards } from "@/widgets/CheatCards/mocks/mock";
+import logoImage from "@/shared/assets/logo.png";
+
+interface CheatResult {
+  name: string;
+  description?: string;
+}
+
+interface GameSearchResult {
+  game: Game;
+  cheats: CheatResult[];
+}
 
 export const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,20 +30,37 @@ export const Sidebar = () => {
   const [openCheatsForGame, setOpenCheatsForGame] = useState<string | null>(
     null
   );
+  const [globalSearchQuery, setGlobalSearchQuery] = useState("");
   const languageRef = useRef<HTMLDivElement>(null);
   const gamesRef = useRef<HTMLLIElement>(null);
+  const globalSearchRef = useRef<HTMLDivElement>(null);
+  const debouncedGlobalSearch = useDebounce(globalSearchQuery, 300);
   const { t, i18n: i18nInstance } = useTranslation();
   const router = useRouter();
 
   const currentLanguage = i18nInstance.language || "ru";
 
-  const handleCheatClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsOpen(false);
-    setIsGamesOpen(false);
-    setOpenCheatsForGame(null);
-    router.push("/product");
-  };
+  const handleCheatClick =
+    (gameName: string, cheatName: string) => (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setIsOpen(false);
+      setIsGamesOpen(false);
+      setOpenCheatsForGame(null);
+
+      // Find matching cheat card by game name and cheat name
+      // For now, use a simple mapping - you can improve this with a proper mapping object
+      const cheatCard = cheatCards.find((card) => {
+        // Try to match by checking if cheat name appears in card name or description
+        const cardName = card.nameKey.toLowerCase();
+        const cardDesc = card.descriptionKey.toLowerCase();
+        const searchName = cheatName.toLowerCase();
+        return cardName.includes(searchName) || cardDesc.includes(searchName);
+      });
+
+      // Use first cheat card as fallback if no match found
+      const cheatId = cheatCard?.id || cheatCards[0]?.id || "1";
+      router.push(`/product?id=${cheatId}`);
+    };
 
   const handleLanguageChange = (langCode: string) => {
     i18nInstance.changeLanguage(langCode);
@@ -51,6 +82,106 @@ export const Sidebar = () => {
     }
   };
 
+  const handleScrollToTop = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Find the scrollable main content element (the main tag with overflow-y: auto)
+    const mainContent = document.querySelector("main");
+    
+    if (mainContent) {
+      mainContent.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    } else {
+      // Fallback to window scroll
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const handleGlobalSearchChange = (value: string) => {
+    setGlobalSearchQuery(value);
+  };
+
+  const handleGlobalSearchResultClick =
+    (gameName?: string, cheatName?: string) => () => {
+      // Find matching cheat card
+      let cheatId = cheatCards[0]?.id || "1";
+
+      if (gameName && cheatName) {
+        const cheatCard = cheatCards.find((card) => {
+          const cardName = card.nameKey.toLowerCase();
+          const cardDesc = card.descriptionKey.toLowerCase();
+          const searchName = cheatName.toLowerCase();
+          return cardName.includes(searchName) || cardDesc.includes(searchName);
+        });
+        if (cheatCard) {
+          cheatId = cheatCard.id;
+        }
+      }
+
+      router.push(`/product?id=${cheatId}`);
+      setGlobalSearchQuery("");
+    };
+
+  // Global search logic - use useMemo for results calculation
+  const globalSearchResultsMemo = useMemo(() => {
+    if (!debouncedGlobalSearch.trim()) {
+      return [];
+    }
+
+    const searchLower = debouncedGlobalSearch.toLowerCase().trim();
+    const foundGames: GameSearchResult[] = [];
+
+    games.forEach((game) => {
+      const gameNameLower = game.name.toLowerCase();
+      const matchingCheats: CheatResult[] = [];
+
+      // Check if game name matches
+      const gameMatches = gameNameLower.includes(searchLower);
+
+      // Check cheats within this game
+      game.cheats.forEach((cheat) => {
+        const cheatNameLower = cheat.name.toLowerCase();
+        const cheatDescLower = cheat.description?.toLowerCase() || "";
+        if (
+          cheatNameLower.includes(searchLower) ||
+          cheatDescLower.includes(searchLower)
+        ) {
+          matchingCheats.push({
+            name: cheat.name,
+            description: cheat.description,
+          });
+        }
+      });
+
+      // If game name matches or has matching cheats, add it to results
+      if (gameMatches || matchingCheats.length > 0) {
+        const cheatsToShow = gameMatches
+          ? game.cheats.map((c) => ({
+              name: c.name,
+              description: c.description,
+            }))
+          : matchingCheats;
+
+        foundGames.push({
+          game,
+          cheats: cheatsToShow,
+        });
+      }
+    });
+
+    return foundGames;
+  }, [debouncedGlobalSearch]);
+
+  // Derive open state from results
+  const isGlobalSearchOpen =
+    globalSearchResultsMemo.length > 0 && debouncedGlobalSearch.length > 0;
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -66,16 +197,29 @@ export const Sidebar = () => {
         setIsGamesOpen(false);
         setOpenCheatsForGame(null);
       }
+      // Global search panel closes when clicking outside
+      if (
+        globalSearchRef.current &&
+        !globalSearchRef.current.contains(event.target as Node) &&
+        isGlobalSearchOpen
+      ) {
+        setGlobalSearchQuery("");
+      }
     };
 
-    if (isLanguageOpen || isGamesOpen || openCheatsForGame) {
+    if (
+      isLanguageOpen ||
+      isGamesOpen ||
+      openCheatsForGame ||
+      isGlobalSearchOpen
+    ) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isLanguageOpen, isGamesOpen, openCheatsForGame]);
+  }, [isLanguageOpen, isGamesOpen, openCheatsForGame, isGlobalSearchOpen]);
 
   const menuItems: MenuItem[] = [
     { icon: "home", text: t("sidebar.home"), href: "/", hasDropdown: false },
@@ -137,8 +281,14 @@ export const Sidebar = () => {
           </Styled.LanguageSelectorContainer>
         </Styled.LanguageSelectorWrapper>
 
-        <Styled.PlayButton>
-          <Styled.PlayIcon>play_arrow</Styled.PlayIcon>
+        <Styled.PlayButton
+          as={motion.button}
+          onClick={handleScrollToTop}
+          whileHover={{ scale: 1.1, y: -2 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Styled.PlayIcon>arrow_upward</Styled.PlayIcon>
         </Styled.PlayButton>
         <Styled.AccentBar />
       </Styled.SidebarContainer>
@@ -160,7 +310,47 @@ export const Sidebar = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <Styled.MenuContent>
-                <Styled.MenuTitle>{t("sidebar.menu")}</Styled.MenuTitle>
+                <Styled.MenuLogoWrapper
+                  as={motion.div}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <Image
+                    src={logoImage}
+                    alt="CHEATARENA"
+                    height={40}
+                    width={180}
+                    priority
+                    style={{
+                      height: "auto",
+                      width: "100%",
+                      maxWidth: "180px",
+                    }}
+                  />
+                </Styled.MenuLogoWrapper>
+                <Styled.GlobalSearchWrapper
+                  ref={globalSearchRef}
+                  as={motion.div}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.3,
+                    delay: 0.1,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                >
+                  <Styled.GlobalSearchIcon>search</Styled.GlobalSearchIcon>
+                  <Styled.GlobalSearchInput
+                    type="text"
+                    placeholder={t("search")}
+                    value={globalSearchQuery}
+                    onChange={(e) => handleGlobalSearchChange(e.target.value)}
+                    onFocus={() => {
+                      // Focus handled by derived state
+                    }}
+                  />
+                </Styled.GlobalSearchWrapper>
                 <Styled.MenuList>
                   {menuItems.map((item, index) => {
                     const isGamesItem =
@@ -323,9 +513,10 @@ export const Sidebar = () => {
                                                           whileTap={{
                                                             scale: 0.99,
                                                           }}
-                                                          onClick={
-                                                            handleCheatClick
-                                                          }
+                                                          onClick={handleCheatClick(
+                                                            game.name,
+                                                            cheat.name
+                                                          )}
                                                         >
                                                           <Styled.CheatName>
                                                             {cheat.name}
@@ -393,6 +584,94 @@ export const Sidebar = () => {
               </Styled.MenuContent>
             </Styled.MenuPanel>
           </Styled.MenuOverlay>
+        )}
+      </AnimatePresence>
+
+      {/* Global Search Results Panel */}
+      <AnimatePresence>
+        {isGlobalSearchOpen && globalSearchResultsMemo.length > 0 && (
+          <Styled.GlobalSearchPanel
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <Styled.GlobalSearchHeader>
+              <Styled.GlobalSearchTitle>
+                {t("sidebar.searchResults")}
+              </Styled.GlobalSearchTitle>
+              <Styled.CloseButton
+                onClick={() => {
+                  setGlobalSearchQuery("");
+                }}
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                close
+              </Styled.CloseButton>
+            </Styled.GlobalSearchHeader>
+            <Styled.GlobalSearchContent>
+              {globalSearchResultsMemo.map((result, gameIndex) => (
+                <Styled.GlobalSearchGameGroup
+                  key={result.game.name}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: gameIndex * 0.05,
+                    duration: 0.3,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                >
+                  <Styled.GlobalSearchGameHeader
+                    onClick={handleGlobalSearchResultClick(result.game.name)}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                  >
+                    <Styled.GlobalSearchGameIcon>
+                      {result.game.icon}
+                    </Styled.GlobalSearchGameIcon>
+                    <Styled.GlobalSearchGameName>
+                      {result.game.name}
+                    </Styled.GlobalSearchGameName>
+                  </Styled.GlobalSearchGameHeader>
+                  <Styled.GlobalSearchCheatsList>
+                    {result.cheats.map((cheat, cheatIndex) => (
+                      <Styled.GlobalSearchCheatItem
+                        key={`${result.game.name}-${cheat.name}-${cheatIndex}`}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                          delay: gameIndex * 0.05 + cheatIndex * 0.03,
+                          duration: 0.2,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
+                        whileHover={{ scale: 1.02, x: 4 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={handleGlobalSearchResultClick(
+                          result.game.name,
+                          cheat.name
+                        )}
+                      >
+                        <Styled.GlobalSearchCheatIcon>
+                          extension
+                        </Styled.GlobalSearchCheatIcon>
+                        <Styled.GlobalSearchCheatContent>
+                          <Styled.GlobalSearchCheatName>
+                            {cheat.name}
+                          </Styled.GlobalSearchCheatName>
+                          {cheat.description && (
+                            <Styled.GlobalSearchCheatDescription>
+                              {cheat.description}
+                            </Styled.GlobalSearchCheatDescription>
+                          )}
+                        </Styled.GlobalSearchCheatContent>
+                      </Styled.GlobalSearchCheatItem>
+                    ))}
+                  </Styled.GlobalSearchCheatsList>
+                </Styled.GlobalSearchGameGroup>
+              ))}
+            </Styled.GlobalSearchContent>
+          </Styled.GlobalSearchPanel>
         )}
       </AnimatePresence>
     </>

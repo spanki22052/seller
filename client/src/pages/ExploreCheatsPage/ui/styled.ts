@@ -16,22 +16,26 @@ export const MainContent = styled.main(() => ({
   marginLeft: "64px",
   height: "100vh",
   overflowY: "auto",
-  paddingTop: "80px",
   "@media (min-width: 768px)": {
     marginLeft: "80px",
-    paddingTop: "0",
   },
 }));
 
 export const ContentWrapper = styled.div(() => ({
   maxWidth: "1280px",
   margin: "0 auto",
-  padding: "32px 16px",
+  paddingTop: "96px", // Account for fixed navbar (16px top + 56px height + 24px spacing)
+  paddingRight: "16px",
+  paddingBottom: "32px",
+  paddingLeft: "16px",
   "@media (min-width: 640px)": {
-    padding: "32px 24px",
+    paddingRight: "24px",
+    paddingLeft: "24px",
   },
   "@media (min-width: 1024px)": {
-    padding: "32px",
+    paddingRight: "32px",
+    paddingBottom: "32px",
+    paddingLeft: "32px",
   },
 }));
 

@@ -32,7 +32,8 @@
     "cheatsLibrary": "Каталог читов",
     "account": "Аккаунт",
     "settings": "Настройки",
-    "help": "Помощь"
+    "help": "Помощь",
+    "searchResults": "Результаты поиска"
   },
   "noGamesFound": "Игры не найдены",
   "product": {
@@ -101,7 +102,40 @@
       "new": "Новинка"
     },
     "unsafe": "Небезопасно",
-    "updated": "назад"
+    "updated": "назад",
+    "timeUnits": {
+      "minutes": "м",
+      "hours": "ч",
+      "days": "д",
+      "weeks": "нед",
+      "weeksPlural": "нед"
+    },
+    "cheats": {
+      "valorantPrime": {
+        "name": "Valorant Prime",
+        "description": "Премиум аимбот с настраиваемым сглаживанием, ESP и менеджером инвентаря. Безопасен для соревновательной игры."
+      },
+      "apexLegendsMaster": {
+        "name": "Apex Legends Master",
+        "description": "Включает свечение ESP, триггер-бот и систему контроля отдачи. Разработан для высоких рангов."
+      },
+      "cs2GlobalElite": {
+        "name": "CS2 Global Elite",
+        "description": "Классический легитный чит с звуковым ESP и скином-чейнджером. В настоящее время на обслуживании для последнего патча."
+      },
+      "overwatch2Flex": {
+        "name": "Overwatch 2 Flex",
+        "description": "Продвинутое предсказание траектории и логика авто-ульты. Идеально для DPS мейнов."
+      },
+      "eldenRingEasyMode": {
+        "name": "Elden Ring EasyMode",
+        "description": "Бесконечное здоровье, выносливость и спавнер предметов. Исследуйте Земли Между без страха."
+      },
+      "rustDominator": {
+        "name": "Rust Dominator",
+        "description": "Полный ESP карты, авто-фарм бот и скрипты отдачи. Используйте на свой риск."
+      }
+    }
   }
 }
 

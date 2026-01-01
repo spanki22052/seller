@@ -3,9 +3,14 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
+import type { CheatCard } from "@/widgets/CheatCards/mocks/mock";
 import * as Styled from "./styled";
 
-export const ProductHero = () => {
+interface ProductHeroProps {
+  cheat: CheatCard;
+}
+
+export const ProductHero = ({ cheat }: ProductHeroProps) => {
   const { t } = useTranslation();
 
   return (
@@ -21,7 +26,7 @@ export const ProductHero = () => {
           >
             <Styled.BrandLabel>{t("product.brand")}</Styled.BrandLabel>
             <Styled.Title>
-              {t("product.title")}
+              {t(cheat.nameKey)}
               <br />
               <Styled.Subtitle>{t("product.subtitle")}</Styled.Subtitle>
             </Styled.Title>

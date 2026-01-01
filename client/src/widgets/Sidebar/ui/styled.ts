@@ -122,6 +122,24 @@ export const MenuTitle = styled.h2(() => ({
   letterSpacing: "0.05em",
 }));
 
+export const MenuLogoWrapper = styled(motion.div)(() => ({
+  marginBottom: "24px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-start",
+  "& img": {
+    height: "auto",
+    width: "100%",
+    maxWidth: "180px",
+    objectFit: "contain",
+    filter: "drop-shadow(0 2px 8px rgba(217, 70, 239, 0.3))",
+    transition: "filter 0.3s ease",
+  },
+  "&:hover img": {
+    filter: "drop-shadow(0 2px 12px rgba(217, 70, 239, 0.5))",
+  },
+}));
+
 export const MenuList = styled.ul(() => ({
   listStyle: "none",
   padding: 0,
@@ -439,5 +457,224 @@ export const DropdownArrow = styled(motion.span)(() => ({
   display: "flex",
   alignItems: "center",
   transition: "transform 0.3s ease",
+}));
+
+// Global Search Styles
+export const GlobalSearchWrapper = styled.div(() => ({
+  position: "relative",
+  width: "100%",
+  marginTop: "0",
+  marginBottom: "24px",
+  display: "flex",
+  alignItems: "center",
+}));
+
+export const GlobalSearchInput = styled.input(() => ({
+  width: "100%",
+  padding: "10px 36px 10px 14px",
+  backgroundColor: "rgba(255, 255, 255, 0.05)",
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+  borderRadius: "8px",
+  color: "var(--text-primary)",
+  fontSize: "14px",
+  outline: "none",
+  transition: "all 0.3s ease",
+  "&::placeholder": {
+    color: "var(--text-placeholder)",
+    fontSize: "13px",
+  },
+  "&:focus": {
+    borderColor: "var(--color-primary)",
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    boxShadow: "0 0 0 2px rgba(217, 70, 239, 0.2)",
+  },
+}));
+
+export const GlobalSearchIcon = styled.span(() => ({
+  position: "absolute",
+  right: "14px",
+  top: "50%",
+  transform: "translateY(-50%)",
+  fontFamily: "Material Icons",
+  fontSize: "20px",
+  color: "var(--text-secondary)",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  zIndex: 1,
+}));
+
+export const GlobalSearchPanel = styled(motion.div)(() => ({
+  position: "fixed",
+  left: "320px",
+  top: 0,
+  width: "400px",
+  maxWidth: "calc(100vw - 320px)",
+  height: "100vh",
+  backgroundColor: "var(--bg-sidebar)",
+  boxShadow: "4px 0 24px rgba(0, 0, 0, 0.4)",
+  zIndex: 102,
+  display: "flex",
+  flexDirection: "column",
+  borderRight: "1px solid rgba(255, 255, 255, 0.1)",
+  "@media (min-width: 768px)": {
+    left: "320px",
+    width: "480px",
+    maxWidth: "calc(100vw - 320px)",
+  },
+}));
+
+export const GlobalSearchHeader = styled.div(() => ({
+  padding: "24px",
+  borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  backgroundColor: "rgba(0, 0, 0, 0.2)",
+}));
+
+export const GlobalSearchTitle = styled.h3(() => ({
+  fontSize: "20px",
+  fontWeight: 700,
+  color: "var(--text-primary)",
+  fontFamily: "var(--font-display)",
+  letterSpacing: "0.05em",
+  margin: 0,
+}));
+
+export const CloseButton = styled(motion.button)(() => ({
+  width: "32px",
+  height: "32px",
+  borderRadius: "50%",
+  border: "none",
+  backgroundColor: "rgba(255, 255, 255, 0.05)",
+  color: "var(--text-primary)",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontFamily: "Material Icons",
+  fontSize: "20px",
+  transition: "all 0.3s ease",
+  "&:hover": {
+    backgroundColor: "rgba(239, 68, 68, 0.2)",
+    color: "#ef4444",
+  },
+}));
+
+export const GlobalSearchContent = styled.div(() => ({
+  flex: 1,
+  overflowY: "auto",
+  padding: "16px",
+  "&::-webkit-scrollbar": {
+    width: "8px",
+  },
+  "&::-webkit-scrollbar-track": {
+    background: "rgba(255, 255, 255, 0.05)",
+    borderRadius: "4px",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    background: "rgba(255, 255, 255, 0.2)",
+    borderRadius: "4px",
+    "&:hover": {
+      background: "var(--color-primary)",
+    },
+  },
+}));
+
+export const GlobalSearchGameGroup = styled(motion.div)(() => ({
+  marginBottom: "24px",
+  "&:last-child": {
+    marginBottom: 0,
+  },
+}));
+
+export const GlobalSearchGameHeader = styled(motion.button)(() => ({
+  width: "100%",
+  display: "flex",
+  alignItems: "center",
+  gap: "12px",
+  padding: "12px 16px",
+  backgroundColor: "rgba(255, 255, 255, 0.05)",
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+  borderRadius: "8px",
+  marginBottom: "8px",
+  cursor: "pointer",
+  transition: "all 0.3s ease",
+  "&:hover": {
+    backgroundColor: "rgba(217, 70, 239, 0.1)",
+    borderColor: "var(--color-primary)",
+  },
+}));
+
+export const GlobalSearchGameIcon = styled.span(() => ({
+  fontFamily: "Material Icons",
+  fontSize: "24px",
+  color: "var(--color-primary)",
+  display: "flex",
+  alignItems: "center",
+}));
+
+export const GlobalSearchGameName = styled.span(() => ({
+  fontSize: "16px",
+  fontWeight: 600,
+  color: "var(--text-primary)",
+  flex: 1,
+  textAlign: "left",
+}));
+
+export const GlobalSearchCheatsList = styled.div(() => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: "6px",
+  marginLeft: "12px",
+}));
+
+export const GlobalSearchCheatItem = styled(motion.button)(() => ({
+  width: "100%",
+  display: "flex",
+  alignItems: "flex-start",
+  gap: "12px",
+  padding: "10px 12px",
+  backgroundColor: "rgba(0, 0, 0, 0.2)",
+  border: "1px solid rgba(255, 255, 255, 0.05)",
+  borderRadius: "6px",
+  cursor: "pointer",
+  transition: "all 0.3s ease",
+  textAlign: "left",
+  "&:hover": {
+    backgroundColor: "rgba(217, 70, 239, 0.1)",
+    borderColor: "rgba(217, 70, 239, 0.3)",
+  },
+}));
+
+export const GlobalSearchCheatIcon = styled.span(() => ({
+  fontFamily: "Material Icons",
+  fontSize: "20px",
+  color: "var(--color-primary)",
+  display: "flex",
+  alignItems: "center",
+  marginTop: "2px",
+  flexShrink: 0,
+}));
+
+export const GlobalSearchCheatContent = styled.div(() => ({
+  flex: 1,
+  display: "flex",
+  flexDirection: "column",
+  gap: "4px",
+}));
+
+export const GlobalSearchCheatName = styled.span(() => ({
+  fontSize: "14px",
+  fontWeight: 500,
+  color: "var(--text-primary)",
+}));
+
+export const GlobalSearchCheatDescription = styled.span(() => ({
+  fontSize: "12px",
+  color: "var(--text-secondary)",
+  opacity: 0.8,
+  lineHeight: 1.4,
 }));
 

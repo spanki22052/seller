@@ -18,7 +18,7 @@ export const CheatCard = ({ cheat, index }: CheatCardProps) => {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push("/product");
+    router.push(`/product?id=${cheat.id}`);
   };
 
   const getStatusConfig = () => {
@@ -68,6 +68,21 @@ export const CheatCard = ({ cheat, index }: CheatCardProps) => {
 
   const statusConfig = getStatusConfig();
 
+  const getUpdatedText = () => {
+    let unitKey = `explore.timeUnits.${cheat.updatedUnit}`;
+    // Handle plural for weeks
+    if (cheat.updatedUnit === "weeks") {
+      unitKey =
+        cheat.updatedValue > 1
+          ? "explore.timeUnits.weeksPlural"
+          : "explore.timeUnits.weeks";
+    }
+    const unit = t(unitKey);
+    // Add space for "week" units, no space for short units (m, h, d)
+    const separator = cheat.updatedUnit === "weeks" ? " " : "";
+    return `${cheat.updatedValue}${separator}${unit}`;
+  };
+
   return (
     <Styled.Card
       initial={{ opacity: 0, y: 20 }}
@@ -98,7 +113,7 @@ export const CheatCard = ({ cheat, index }: CheatCardProps) => {
         <Styled.ImageWrapper>
           <Image
             src={cheat.image}
-            alt={cheat.name}
+            alt={t(cheat.nameKey)}
             fill
             style={{
               objectFit: "cover",
@@ -110,14 +125,14 @@ export const CheatCard = ({ cheat, index }: CheatCardProps) => {
       </Styled.ImageContainer>
       <Styled.Content>
         <Styled.Header>
-          <Styled.Title>{cheat.name}</Styled.Title>
+          <Styled.Title>{t(cheat.nameKey)}</Styled.Title>
           <Styled.Version>{cheat.version}</Styled.Version>
         </Styled.Header>
-        <Styled.Description>{cheat.description}</Styled.Description>
+        <Styled.Description>{t(cheat.descriptionKey)}</Styled.Description>
         <Styled.Footer>
           <Styled.UpdatedInfo>
             <Styled.UpdateIcon>update</Styled.UpdateIcon>
-            {cheat.updated} {t("explore.updated")}
+            {getUpdatedText()} {t("explore.updated")}
           </Styled.UpdatedInfo>
           {cheat.isUnsafe ? (
             <Styled.UnsafeButton disabled>

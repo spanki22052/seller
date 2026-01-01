@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDebounce } from "@/shared/lib/hooks/useDebounce";
 import { games } from "@/widgets/Sidebar/mocks/mock";
+import { cheatCards } from "@/widgets/CheatCards/mocks/mock";
 import * as Styled from "./styled";
 
 interface CheatResult {
@@ -95,8 +96,38 @@ export const Search = () => {
     };
   }, [isDropdownOpen]);
 
-  const handleResultClick = () => {
-    router.push("/product");
+  const handleResultClick = (gameName?: string, cheatName?: string) => () => {
+    // Find matching cheat card
+    let cheatId = cheatCards[0]?.id || "1";
+    
+    if (gameName && cheatName) {
+      const cheatCard = cheatCards.find((card) => {
+        const cardName = card.nameKey.toLowerCase();
+        const cardDesc = card.descriptionKey.toLowerCase();
+        const searchName = cheatName.toLowerCase();
+        return cardName.includes(searchName) || cardDesc.includes(searchName);
+      });
+      if (cheatCard) {
+        cheatId = cheatCard.id;
+      }
+    } else if (gameName) {
+      // If only game name, try to find first cheat for that game
+      const game = games.find((g) => g.name.toLowerCase() === gameName.toLowerCase());
+      if (game && game.cheats.length > 0) {
+        const firstCheat = game.cheats[0];
+        const cheatCard = cheatCards.find((card) => {
+          const cardName = card.nameKey.toLowerCase();
+          const cardDesc = card.descriptionKey.toLowerCase();
+          const searchName = firstCheat.name.toLowerCase();
+          return cardName.includes(searchName) || cardDesc.includes(searchName);
+        });
+        if (cheatCard) {
+          cheatId = cheatCard.id;
+        }
+      }
+    }
+    
+    router.push(`/product?id=${cheatId}`);
     setIsDropdownOpen(false);
     setSearchQuery("");
   };
@@ -145,7 +176,7 @@ export const Search = () => {
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
                   >
-                    <Styled.GameHeader onClick={handleResultClick}>
+                    <Styled.GameHeader onClick={handleResultClick(gameResult.gameName)}>
                       <Styled.ItemIcon>sports_esports</Styled.ItemIcon>
                       <Styled.ItemContent>
                         <Styled.ItemTitle>{gameResult.gameName}</Styled.ItemTitle>
@@ -165,7 +196,7 @@ export const Search = () => {
                         }}
                         whileHover={{ scale: 1.02, x: 4 }}
                         whileTap={{ scale: 0.98 }}
-                        onClick={handleResultClick}
+                        onClick={handleResultClick(gameResult.gameName, cheat.name)}
                       >
                         <Styled.CheatIcon>extension</Styled.CheatIcon>
                         <Styled.ItemContent>

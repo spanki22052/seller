@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Search } from "@/features/Search";
 import * as Styled from "./styled";
-import logoImage from "@/shared/assets/logo.png";
+import logoImage from "@/shared/assets/CHEATARENA.png";
 
 export const Navbar = () => {
   const router = useRouter();
@@ -39,4 +39,3 @@ export const Navbar = () => {
     </Styled.Header>
   );
 };
-
