@@ -23,3 +23,5 @@ export const MainPage = () => {
     </Styled.PageContainer>
   );
 };
+
+export default MainPage;

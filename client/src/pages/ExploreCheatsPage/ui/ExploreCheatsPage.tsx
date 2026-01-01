@@ -31,3 +31,5 @@ export const ExploreCheatsPage = () => {
   );
 };
 
+export default ExploreCheatsPage;
+
