@@ -14,11 +14,18 @@ import * as Styled from "./styled";
 
 export const ProductPage = () => {
   const searchParams = useSearchParams();
-  const cheatId = searchParams.get("id") || "1";
+  const cheatId = searchParams?.get("id") || "1";
   
   // Get cheat data by ID, fallback to first cheat if not found
   const selectedCheat: CheatCard = 
-    cheatCards.find((cheat) => cheat.id === cheatId) || cheatCards[0];
+    cheatCards.find((cheat) => cheat.id === cheatId) || cheatCards[0] || {
+      id: "1",
+      nameKey: "default",
+      descriptionKey: "default",
+      price: 0,
+      image: "",
+      game: "default",
+    } as CheatCard;
 
   return (
     <Styled.PageContainer>
