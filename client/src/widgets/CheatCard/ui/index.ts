@@ -1,2 +1,0 @@
-export { CheatCard } from "./CheatCard";
-

@@ -1,2 +1,0 @@
-export { ProductVideo } from "./ProductVideo";
-

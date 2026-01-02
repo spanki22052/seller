@@ -1,2 +1,0 @@
-export { ProductSecurity } from "./ProductSecurity";
-

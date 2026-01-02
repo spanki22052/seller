@@ -1,0 +1,26 @@
+{
+  "cheats": {
+    "new": "NEW",
+    "comingSoon": "SOON",
+    "from": "From",
+    "unknownPrice": "???"
+  },
+  "accountShop": {
+    "title": "Account Store",
+    "description": "Huge selection of Steam, Epic Games, Origin, Uplay accounts. Check out our store more often! We are constantly adding new games!",
+    "goButton": "GO",
+    "clubhouse": {
+      "title": "ClubHouse",
+      "description": "Invitation to one of the most discussed social networks"
+    },
+    "warface": {
+      "title": "Account Store",
+      "description": "Warface accounts at low prices!"
+    }
+  },
+  "beforeBuyInfo": {
+    "title": "What you need to know before acquiring a cheat?",
+    "description": "Let me explain right away! Why do the majority of players buy cheats?!\n\nEarn money by helping others achieve goals or complete missions, use specific cheats (Aim, Wallhack, Avto shot) to \"understand the zen\" (try what a cheat is), avoid constant losses or just have fun.\n\nBut remember, by acquiring a cheat, you yourself have chosen to side with pleasure ;)"
+  }
+}
+

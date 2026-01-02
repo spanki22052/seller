@@ -1,2 +1,0 @@
-export { ProductScreenshots } from "./ProductScreenshots";
-

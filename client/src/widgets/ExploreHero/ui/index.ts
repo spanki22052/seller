@@ -1,2 +1,0 @@
-export { ExploreHero } from "./ExploreHero";
-

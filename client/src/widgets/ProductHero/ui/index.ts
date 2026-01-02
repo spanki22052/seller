@@ -1,2 +1,0 @@
-export { ProductHero } from "./ProductHero";
-
