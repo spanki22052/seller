@@ -1,6 +1,7 @@
 import { MenuItem } from "../model/types";
 
 export const MENU_ITEMS: MenuItem[] = [
+  { id: "home", label: "Главная", isCategory: true, href: "/" },
   { id: "personal-cabinet", label: "ЛИЧНЫЙ КАБИНЕТ", isCategory: true, href: "/personal-cabinet" },
   { id: "new-releases", label: "НОВИНКИ", isCategory: true, href: "/new-releases" },
   {

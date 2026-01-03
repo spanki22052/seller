@@ -42,7 +42,7 @@ export const HamburgerButton = styled.button(({ theme }) => ({
   borderRadius: theme.borderRadius.md,
   cursor: "pointer",
   padding: 0,
-  zIndex: 1001,
+  zIndex: 99,
   transition: theme.transitions.normal,
   "&:hover": {
     borderColor: theme.colors.accent.purple,
@@ -139,61 +139,65 @@ export const MenuItem = styled(motion.li)(({ theme }) => ({
   marginBottom: theme.spacing.xs,
 }));
 
-export const MenuItemButton = styled.button<{ $isCategory?: boolean; $isOpen?: boolean }>(
-  ({ theme, $isCategory, $isOpen }) => ({
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: `${theme.spacing.sm} ${theme.spacing.md}`,
-    color: $isCategory ? theme.colors.text.primary : theme.colors.text.secondary,
-    backgroundColor: "transparent",
-    border: "none",
-    textAlign: "left",
-    fontSize: $isCategory ? "16px" : "14px",
-    fontWeight: $isCategory ? 700 : 500,
-    borderRadius: theme.borderRadius.sm,
-    transition: theme.transitions.fast,
-    cursor: "pointer",
-    "&:hover": {
-      backgroundColor: theme.colors.bg.hover,
-      color: theme.colors.text.primary,
-    },
-  })
-);
-
-export const MenuItemLink = styled.a<{ $isCategory?: boolean; $isClickable?: boolean }>(
-  ({ theme, $isCategory, $isClickable = false }) => ({
-    display: "block",
-    padding: `${theme.spacing.sm} ${theme.spacing.md}`,
-    color: $isCategory ? theme.colors.text.primary : theme.colors.text.secondary,
-    textDecoration: "none",
-    fontSize: $isCategory ? "16px" : "14px",
-    fontWeight: $isCategory ? 700 : 500,
-    borderRadius: theme.borderRadius.sm,
-    transition: theme.transitions.fast,
-    cursor: $isClickable ? "pointer" : "default",
-    "&:hover": {
-      backgroundColor: $isClickable ? theme.colors.bg.hover : "transparent",
-      color: $isClickable ? theme.colors.text.primary : undefined,
-    },
-  })
-);
-
-export const DropdownIcon = styled.span<{ $isOpen: boolean }>(({ theme, $isOpen }) => ({
-  display: "inline-flex",
+export const MenuItemButton = styled.button<{
+  $isCategory?: boolean;
+  $isOpen?: boolean;
+}>(({ theme, $isCategory, $isOpen }) => ({
+  width: "100%",
+  display: "flex",
   alignItems: "center",
-  justifyContent: "center",
-  width: 16,
-  height: 16,
+  justifyContent: "space-between",
+  padding: `${theme.spacing.sm} ${theme.spacing.md}`,
+  color: $isCategory ? theme.colors.text.primary : theme.colors.text.secondary,
+  backgroundColor: "transparent",
+  border: "none",
+  textAlign: "left",
+  fontSize: $isCategory ? "16px" : "14px",
+  fontWeight: $isCategory ? 700 : 500,
+  borderRadius: theme.borderRadius.sm,
   transition: theme.transitions.fast,
-  transform: $isOpen ? "rotate(180deg)" : "rotate(0deg)",
-  color: theme.colors.text.secondary,
-  "&::before": {
-    content: '"▼"',
-    fontSize: "10px",
+  cursor: "pointer",
+  "&:hover": {
+    backgroundColor: theme.colors.bg.hover,
+    color: theme.colors.text.primary,
   },
 }));
+
+export const MenuItemLink = styled.a<{
+  $isCategory?: boolean;
+  $isClickable?: boolean;
+}>(({ theme, $isCategory, $isClickable = false }) => ({
+  display: "block",
+  padding: `${theme.spacing.sm} ${theme.spacing.md}`,
+  color: $isCategory ? theme.colors.text.primary : theme.colors.text.secondary,
+  textDecoration: "none",
+  fontSize: $isCategory ? "16px" : "14px",
+  fontWeight: $isCategory ? 700 : 500,
+  borderRadius: theme.borderRadius.sm,
+  transition: theme.transitions.fast,
+  cursor: $isClickable ? "pointer" : "default",
+  "&:hover": {
+    backgroundColor: $isClickable ? theme.colors.bg.hover : "transparent",
+    color: $isClickable ? theme.colors.text.primary : undefined,
+  },
+}));
+
+export const DropdownIcon = styled.span<{ $isOpen: boolean }>(
+  ({ theme, $isOpen }) => ({
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 16,
+    height: 16,
+    transition: theme.transitions.fast,
+    transform: $isOpen ? "rotate(180deg)" : "rotate(0deg)",
+    color: theme.colors.text.secondary,
+    "&::before": {
+      content: '"▼"',
+      fontSize: "10px",
+    },
+  })
+);
 
 export const DropdownList = styled(motion.ul)({
   listStyle: "none",
@@ -221,4 +225,3 @@ export const DropdownItem = styled(motion.li)(({ theme }) => ({
     },
   },
 }));
-

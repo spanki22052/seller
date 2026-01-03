@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { motion, useMotionValue, useSpring } from "framer-motion";
@@ -24,14 +24,35 @@ export function GameHero({ gameId }: GameHeroProps) {
   const mouseY = useMotionValue(0);
   const springX = useSpring(mouseX, { stiffness: 150, damping: 15 });
   const springY = useSpring(mouseY, { stiffness: 150, damping: 15 });
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  // Detect touch device to disable mouse tracking
+  useEffect(() => {
+    const checkTouchDevice = () => {
+      setIsTouchDevice(
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        // @ts-ignore - for older browsers
+        navigator.msMaxTouchPoints > 0
+      );
+    };
+    checkTouchDevice();
+  }, []);
 
   useEffect(() => {
+    // Disable mouse tracking on touch devices and when reduced motion is preferred
+    if (isTouchDevice || prefersReducedMotion) {
+      mouseX.set(0);
+      mouseY.set(0);
+      return;
+    }
+
     let rafId: number | null = null;
     let lastX = 0;
     let lastY = 0;
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current || prefersReducedMotion) return;
+      if (!containerRef.current) return;
 
       // Throttle updates using requestAnimationFrame
       if (rafId === null) {
@@ -63,7 +84,7 @@ export function GameHero({ gameId }: GameHeroProps) {
         }
       };
     }
-  }, [mouseX, mouseY, prefersReducedMotion]);
+  }, [mouseX, mouseY, prefersReducedMotion, isTouchDevice]);
 
   const textVariants = {
     hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 },
@@ -99,7 +120,18 @@ export function GameHero({ gameId }: GameHeroProps) {
         animate="visible"
       >
         <Styled.BrandName>
-          <Image src={cheatarenaLogo} alt="CHEATARENA" width={180} priority />
+          <Image 
+            src={cheatarenaLogo} 
+            alt="CHEATARENA" 
+            width={180} 
+            priority
+            sizes="(max-width: 480px) 140px, (max-width: 768px) 160px, 180px"
+            style={{
+              width: "100%",
+              height: "auto",
+              maxWidth: 180,
+            }}
+          />
         </Styled.BrandName>
         <Styled.Title>CHEAT FOR APEX LEGENDS</Styled.Title>
         <Styled.Description>
@@ -130,6 +162,7 @@ export function GameHero({ gameId }: GameHeroProps) {
             width={600}
             height={800}
             priority
+            sizes="(max-width: 480px) 85vw, (max-width: 768px) 90vw, (max-width: 1024px) 50vw, 600px"
             style={{
               width: "100%",
               height: "auto",

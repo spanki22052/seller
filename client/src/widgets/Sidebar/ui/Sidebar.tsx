@@ -7,6 +7,7 @@ import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
+import { useImageModalState } from "@/shared/contexts/ImageModalContext";
 import chitarenaLogo from "@/shared/assets/images/chitarena-full-logo.png";
 import { MENU_ITEMS, SIDEBAR_WIDTH_OPEN } from "../lib/constants";
 import { MenuItem } from "../model/types";
@@ -19,6 +20,7 @@ export function Sidebar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [openDropdowns, setOpenDropdowns] = useState<Set<string>>(new Set());
   const prefersReducedMotion = useReducedMotion();
+  const { isImageModalOpen } = useImageModalState();
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -52,20 +54,29 @@ export function Sidebar() {
     const query = searchQuery.toLowerCase().trim();
     const results: MenuItem[] = [];
     const matchedGameIds = new Set<string>();
-    
-    // Всегда добавляем категории "ЛИЧНЫЙ КАБИНЕТ" и "НОВИНКИ"
+
+    // Всегда добавляем категории "Главная", "ЛИЧНЫЙ КАБИНЕТ" и "НОВИНКИ"
     const alwaysShowCategories = MENU_ITEMS.filter(
-      (item) => item.isCategory && (item.id === "personal-cabinet" || item.id === "new-releases")
+      (item) =>
+        item.isCategory &&
+        (item.id === "home" ||
+          item.id === "personal-cabinet" ||
+          item.id === "new-releases")
     );
     results.push(...alwaysShowCategories);
 
     // Поиск по названию игры (пропускаем категории, которые всегда показываются)
     MENU_ITEMS.forEach((item) => {
       // Пропускаем категории, которые уже добавлены
-      if (item.isCategory && (item.id === "personal-cabinet" || item.id === "new-releases")) {
+      if (
+        item.isCategory &&
+        (item.id === "home" ||
+          item.id === "personal-cabinet" ||
+          item.id === "new-releases")
+      ) {
         return;
       }
-      
+
       const itemLabelLower = item.label.toLowerCase();
       if (itemLabelLower.includes(query)) {
         results.push(item);
@@ -78,10 +89,15 @@ export function Sidebar() {
     // Поиск по названию читов
     MENU_ITEMS.forEach((item) => {
       // Пропускаем категории, которые всегда показываются
-      if (item.isCategory && (item.id === "personal-cabinet" || item.id === "new-releases")) {
+      if (
+        item.isCategory &&
+        (item.id === "home" ||
+          item.id === "personal-cabinet" ||
+          item.id === "new-releases")
+      ) {
         return;
       }
-      
+
       if (item.cheats) {
         const hasMatchingCheat = item.cheats.some((cheat) =>
           cheat.name.toLowerCase().includes(query)
@@ -94,19 +110,27 @@ export function Sidebar() {
       }
     });
 
-    // Сортировка: сначала категории (personal-cabinet, new-releases), потом остальные категории, потом игры
+    // Сортировка: сначала категории (home, personal-cabinet, new-releases), потом остальные категории, потом игры
     return results.sort((a, b) => {
       // Специальные категории всегда первые
-      const aIsSpecial = a.isCategory && (a.id === "personal-cabinet" || a.id === "new-releases");
-      const bIsSpecial = b.isCategory && (b.id === "personal-cabinet" || b.id === "new-releases");
-      
+      const aIsSpecial =
+        a.isCategory &&
+        (a.id === "home" ||
+          a.id === "personal-cabinet" ||
+          a.id === "new-releases");
+      const bIsSpecial =
+        b.isCategory &&
+        (b.id === "home" ||
+          b.id === "personal-cabinet" ||
+          b.id === "new-releases");
+
       if (aIsSpecial && !bIsSpecial) return -1;
       if (!aIsSpecial && bIsSpecial) return 1;
-      
+
       // Затем остальные категории
       if (a.isCategory && !b.isCategory) return -1;
       if (!a.isCategory && b.isCategory) return 1;
-      
+
       return a.label.localeCompare(b.label);
     });
   }, [searchQuery]);
@@ -187,7 +211,11 @@ export function Sidebar() {
   };
 
   // Функция для навигации к странице чита
-  const handleCheatClick = (gameId: string, cheatId: string, e?: React.MouseEvent) => {
+  const handleCheatClick = (
+    gameId: string,
+    cheatId: string,
+    e?: React.MouseEvent
+  ) => {
     e?.preventDefault();
     e?.stopPropagation();
     setIsOpen(false);
@@ -211,7 +239,10 @@ export function Sidebar() {
   };
 
   // Обработчик клика по элементу меню с читами (только переключает dropdown)
-  const handleMenuItemWithCheatsClick = (item: MenuItem, e: React.MouseEvent) => {
+  const handleMenuItemWithCheatsClick = (
+    item: MenuItem,
+    e: React.MouseEvent
+  ) => {
     e.preventDefault();
     e.stopPropagation();
     // Только переключаем dropdown, не навигируем
@@ -327,7 +358,7 @@ export function Sidebar() {
 
   return (
     <>
-      {!isOpen && (
+      {!isOpen && !isImageModalOpen && (
         <Styled.HamburgerButton
           onClick={() => setIsOpen(true)}
           aria-label="Open sidebar"
@@ -434,7 +465,9 @@ export function Sidebar() {
                             <Styled.MenuItemButton
                               $isCategory={item.isCategory}
                               $isOpen={isDropdownOpen}
-                              onClick={(e) => handleMenuItemWithCheatsClick(item, e)}
+                              onClick={(e) =>
+                                handleMenuItemWithCheatsClick(item, e)
+                              }
                             >
                               <span>{item.label}</span>
                               <Styled.DropdownIcon $isOpen={isDropdownOpen} />
@@ -482,9 +515,16 @@ export function Sidebar() {
                                             animate="open"
                                           >
                                             <a
-                                              href={cheat.href || `/game/${item.id}/cheat/${cheat.id}`}
+                                              href={
+                                                cheat.href ||
+                                                `/game/${item.id}/cheat/${cheat.id}`
+                                              }
                                               onClick={(e) => {
-                                                handleCheatClick(item.id, cheat.id, e);
+                                                handleCheatClick(
+                                                  item.id,
+                                                  cheat.id,
+                                                  e
+                                                );
                                               }}
                                             >
                                               {cheat.name}

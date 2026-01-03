@@ -41,6 +41,10 @@ export const ScreenshotWrapper = styled.div({
   cursor: "pointer",
   overflow: "hidden",
   borderRadius: "40px", // 3x theme.borderRadius.md (8px * 3 = 24px)
+
+  "@media (max-width: 768px)": {
+    borderRadius: "20px", // 2 times less (40px / 2 = 20px)
+  },
 });
 
 export const ImageContainer = styled.div(({ theme }) => {
@@ -52,6 +56,10 @@ export const ImageContainer = styled.div(({ theme }) => {
     overflow: "hidden",
     backgroundColor: "#1a1a1a",
     borderRadius: `${baseRadius * 3}px`, // 3x theme.borderRadius.md (8px * 3 = 24px)
+
+    "@media (max-width: 768px)": {
+      borderRadius: `${baseRadius * 1.5}px`, // 2 times less (baseRadius * 3 / 2)
+    },
   };
 });
 

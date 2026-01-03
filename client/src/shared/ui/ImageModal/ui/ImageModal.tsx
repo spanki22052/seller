@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
+import { useImageModalActions } from "@/shared/contexts/ImageModalContext";
 import { imageModalAnimations } from "../lib/animConstants";
 import * as Styled from "./styled";
 
@@ -21,6 +22,11 @@ export function ImageModal({
   onClose,
 }: ImageModalProps) {
   const prefersReducedMotion = useReducedMotion();
+  const { setIsImageModalOpen } = useImageModalActions();
+
+  useEffect(() => {
+    setIsImageModalOpen(isOpen);
+  }, [isOpen, setIsImageModalOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -32,11 +38,26 @@ export function ImageModal({
     };
 
     document.addEventListener("keydown", handleEscape);
+
+    // Prevent body scroll and compensate for scrollbar width to prevent layout shift
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+    const bodyPaddingRight = window.getComputedStyle(
+      document.body
+    ).paddingRight;
+    const bodyPaddingRightNum = parseInt(bodyPaddingRight, 10) || 0;
+
     document.body.style.overflow = "hidden";
+    document.body.style.paddingRight = `${
+      bodyPaddingRightNum + scrollbarWidth
+    }px`;
+    document.documentElement.style.overflow = "hidden";
 
     return () => {
       document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+      document.documentElement.style.overflow = "";
     };
   }, [isOpen, onClose]);
 
@@ -110,4 +131,3 @@ export function ImageModal({
     </AnimatePresence>
   );
 }
-

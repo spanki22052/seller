@@ -6,7 +6,6 @@ import { Sidebar } from "@/widgets/Sidebar";
 import { OfficialEmailInfo } from "@/widgets/OfficialEmailInfo";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import * as Styled from "./styled";
-import { Navbar } from "@/shared/ui/Navbar";
 
 const CheatHero = dynamic(
   () =>
@@ -167,14 +166,15 @@ export function CheatPage({ gameId, cheatId }: CheatPageProps) {
   return (
     <>
       <Sidebar />
-      <Navbar />
       <Styled.Container>
         <Styled.MainContent>
-          <CheatHero
-            gameId={gameId}
-            cheatId={cheatId}
-            onBuyNowClick={scrollToPricing}
-          />
+          <Styled.CheatHeroWrapper>
+            <CheatHero
+              gameId={gameId}
+              cheatId={cheatId}
+              onBuyNowClick={scrollToPricing}
+            />
+          </Styled.CheatHeroWrapper>
           <CheatDetails cheatId={cheatId} onBreadcrumbClick={scrollHandlers} />
           <div ref={screenshotsRef}>
             <CheatScreenshots cheatId={cheatId} />

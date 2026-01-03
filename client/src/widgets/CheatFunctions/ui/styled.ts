@@ -54,6 +54,18 @@ export const Icon = styled.div(({ theme }) => ({
   backgroundColor: "transparent",
   transition: "background-color 0.3s ease, color 0.3s ease",
 
+  "@media (max-width: 768px)": {
+    width: 36,
+    height: 36,
+    fontSize: 20,
+  },
+
+  "@media (max-width: 480px)": {
+    width: 32,
+    height: 32,
+    fontSize: 18,
+  },
+
   "&::before": {
     content: '"+"',
     position: "absolute",
@@ -84,6 +96,14 @@ export const Header = styled.div<HeaderProps>(({ theme, $isExpanded }) => ({
   cursor: "pointer",
   backgroundColor: $isExpanded ? theme.colors.bg.secondary : "transparent",
   transition: "background-color 0.3s ease",
+
+  "@media (max-width: 768px)": {
+    padding: `${theme.spacing.md} ${theme.spacing.lg}`,
+  },
+
+  "@media (max-width: 480px)": {
+    padding: `${theme.spacing.md} ${theme.spacing.md}`,
+  },
 }));
 
 export const CategoryName = styled.div(({ theme }) => ({
@@ -92,6 +112,14 @@ export const CategoryName = styled.div(({ theme }) => ({
   color: theme.colors.accent.purple,
   textTransform: "uppercase",
   letterSpacing: 1,
+
+  "@media (max-width: 768px)": {
+    fontSize: 20,
+  },
+
+  "@media (max-width: 480px)": {
+    fontSize: 18,
+  },
 }));
 
 export const Content = styled.div({
@@ -105,6 +133,14 @@ export const FeaturesList = styled.ul(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing.sm,
+
+  "@media (max-width: 768px)": {
+    padding: `${theme.spacing.md} ${theme.spacing.lg}`,
+  },
+
+  "@media (max-width: 480px)": {
+    padding: `${theme.spacing.md} ${theme.spacing.md}`,
+  },
 }));
 
 export const Feature = styled.li(({ theme }) => ({
@@ -113,6 +149,14 @@ export const Feature = styled.li(({ theme }) => ({
   color: theme.colors.text.secondary,
   paddingLeft: theme.spacing.md,
   position: "relative",
+
+  "@media (max-width: 768px)": {
+    fontSize: 14,
+  },
+
+  "@media (max-width: 480px)": {
+    fontSize: 13,
+  },
 
   "&::before": {
     content: '"-"',

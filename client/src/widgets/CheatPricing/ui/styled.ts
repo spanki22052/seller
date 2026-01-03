@@ -20,13 +20,21 @@ export const Title = styled.h2(({ theme }) => ({
   },
 }));
 
-export const CarouselWrapper = styled.div({
+export const CarouselWrapper = styled.div(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   gap: 24,
   width: "100%",
   position: "relative",
-});
+
+  "@media (max-width: 768px)": {
+    gap: theme.spacing.md,
+  },
+
+  "@media (max-width: 480px)": {
+    gap: theme.spacing.sm,
+  },
+}));
 
 export const NavButton = styled.button(({ theme }) => ({
   width: 48,
@@ -82,7 +90,7 @@ export const ArrowIcon = styled.span({
   transform: "translate(0, -2px)",
 });
 
-export const CardsContainer = styled.div({
+export const CardsContainer = styled.div(({ theme }) => ({
   flex: 1,
   display: "flex",
   gap: 24,
@@ -96,7 +104,19 @@ export const CardsContainer = styled.div({
   },
   minHeight: 500,
   padding: "0 12px",
-});
+
+  "@media (max-width: 768px)": {
+    gap: theme.spacing.md,
+    minHeight: 400,
+    padding: "0 8px",
+  },
+
+  "@media (max-width: 480px)": {
+    gap: theme.spacing.sm,
+    minHeight: 350,
+    padding: "0 4px",
+  },
+}));
 
 export const Card = styled.div(({ theme }) => ({
   minWidth: 350,
@@ -110,6 +130,16 @@ export const Card = styled.div(({ theme }) => ({
   flexDirection: "column",
   boxShadow: `0 4px 20px rgba(0, 0, 0, 0.3)`,
   flexShrink: 0,
+
+  "@media (max-width: 768px)": {
+    minWidth: 280,
+    maxWidth: 320,
+  },
+
+  "@media (max-width: 480px)": {
+    minWidth: 240,
+    maxWidth: 280,
+  },
 }));
 
 export const ImageWrapper = styled.div({
@@ -125,6 +155,16 @@ export const CardContent = styled.div(({ theme }) => ({
   flexDirection: "column",
   gap: theme.spacing.md,
   flex: 1,
+
+  "@media (max-width: 768px)": {
+    padding: theme.spacing.lg,
+    gap: theme.spacing.sm,
+  },
+
+  "@media (max-width: 480px)": {
+    padding: theme.spacing.md,
+    gap: theme.spacing.xs,
+  },
 }));
 
 export const PriceText = styled.div(({ theme }) => ({
@@ -134,6 +174,15 @@ export const PriceText = styled.div(({ theme }) => ({
   textTransform: "uppercase",
   letterSpacing: 1,
   textAlign: "center",
+
+  "@media (max-width: 768px)": {
+    fontSize: 20,
+  },
+
+  "@media (max-width: 480px)": {
+    fontSize: 16,
+    letterSpacing: 0.5,
+  },
 }));
 
 export const Description = styled.p(({ theme }) => ({
@@ -143,15 +192,33 @@ export const Description = styled.p(({ theme }) => ({
   lineHeight: 1.6,
   margin: 0,
   textAlign: "center",
+
+  "@media (max-width: 768px)": {
+    fontSize: 12,
+    lineHeight: 1.5,
+  },
+
+  "@media (max-width: 480px)": {
+    fontSize: 11,
+    lineHeight: 1.4,
+  },
 }));
 
-export const ButtonGroup = styled.div({
+export const ButtonGroup = styled.div(({ theme }) => ({
   display: "flex",
   gap: 12,
   justifyContent: "center",
   marginTop: "auto",
   flexWrap: "wrap",
-});
+
+  "@media (max-width: 768px)": {
+    gap: theme.spacing.sm,
+  },
+
+  "@media (max-width: 480px)": {
+    gap: theme.spacing.xs,
+  },
+}));
 
 export const BuyButton = styled.button(({ theme }) => ({
   padding: "11px 21px",
@@ -175,6 +242,17 @@ export const BuyButton = styled.button(({ theme }) => ({
   textShadow: "0 0 10px rgba(255, 0, 255, 0.5)",
   transform: "translateZ(0)", // GPU acceleration
   willChange: "transform",
+
+  "@media (max-width: 768px)": {
+    padding: "9px 18px",
+    fontSize: 10,
+  },
+
+  "@media (max-width: 480px)": {
+    padding: "8px 16px",
+    fontSize: 9,
+    letterSpacing: 0.5,
+  },
 
   "&::before": {
     content: '""',
@@ -270,6 +348,17 @@ export const TelegramButton = styled.button(({ theme }) => ({
   transform: "translateZ(0)", // GPU acceleration
   willChange: "transform",
   boxShadow: "0 0 0 rgba(255, 255, 255, 0)",
+
+  "@media (max-width: 768px)": {
+    padding: "9px 18px",
+    fontSize: 10,
+  },
+
+  "@media (max-width: 480px)": {
+    padding: "8px 16px",
+    fontSize: 9,
+    letterSpacing: 0.5,
+  },
 
   "&::before": {
     content: '""',
