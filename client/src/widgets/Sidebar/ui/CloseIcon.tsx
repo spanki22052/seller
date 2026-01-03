@@ -47,7 +47,7 @@ export function CloseIcon({ onClick }: { onClick: () => void }) {
         <defs>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#60a5fa" />
-            <stop offset="100%" stopColor="#8b5cf6" />
+            <stop offset="100%" stopColor="#ff00ff" />
           </linearGradient>
         </defs>
         <path style={pathStyle} d="M18 6L6 18" />

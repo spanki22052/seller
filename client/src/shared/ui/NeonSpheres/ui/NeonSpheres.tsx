@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import { motion, MotionValue, useTransform } from "framer-motion";
 import * as Styled from "./styled";
 
@@ -27,7 +27,7 @@ const spheres: Sphere[] = [
   { id: 5, x: 80, y: 70, size: 70, color: "#60a5fa", delay: 0.3 },
 ];
 
-export function NeonSpheres({
+export const NeonSpheres = memo(function NeonSpheres({
   mouseX,
   mouseY,
   prefersReducedMotion,
@@ -69,6 +69,9 @@ export function NeonSpheres({
                 border: `1px solid ${sphere.color}44`,
                 x,
                 y,
+                willChange: "transform, opacity",
+                transform: "translateZ(0)",
+                backfaceVisibility: "hidden",
               }}
               animate={
                 prefersReducedMotion
@@ -90,5 +93,5 @@ export function NeonSpheres({
       })}
     </Styled.Container>
   );
-}
+});
 

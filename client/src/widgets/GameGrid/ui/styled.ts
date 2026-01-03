@@ -15,13 +15,30 @@ export const Container = styled.div(({ theme }) => ({
 }));
 
 export const GameTile = styled.div(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
   position: "relative",
   cursor: "pointer",
   borderRadius: theme.borderRadius.md,
-  overflow: "hidden",
+  overflow: "visible",
   transition: theme.transitions.normal,
-  "&:hover": {
-    boxShadow: `0 8px 24px rgba(139, 92, 246, 0.3)`,
+  aspectRatio: "1 / 1.33", // Height is 1.33x width, so square image takes 75% and title takes 25%
+  backgroundColor: theme.colors.bg.card,
+  "&:hover [data-neon-line]": {
+    opacity: 1,
+    transform: "translateX(-50%) scaleX(1)",
+  },
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: "50%",
+    borderRadius: `0 0 ${theme.borderRadius.md} ${theme.borderRadius.md}`,
+    background: `linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(64, 64, 64, 0.15) 40%, rgba(192, 192, 192, 0.05) 70%, transparent 100%)`,
+    pointerEvents: "none",
+    zIndex: 1,
   },
 }));
 
@@ -29,20 +46,31 @@ export const GameImageWrapper = styled.div<{ $backgroundColor: string }>(
   ({ $backgroundColor, theme }) => ({
     position: "relative",
     width: "100%",
-    paddingBottom: "133.33%", // 3:4 aspect ratio
+    aspectRatio: "1", // Square aspect ratio
     overflow: "hidden",
     borderRadius: theme.borderRadius.md,
     backgroundColor: $backgroundColor,
+    flexShrink: 0,
   })
 );
 
-export const GameName = styled.div(({ theme }) => ({
+export const GameImage = styled.img({
   position: "absolute",
-  bottom: theme.spacing.sm,
-  left: theme.spacing.sm,
-  fontSize: "14px",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  display: "block",
+});
+
+export const GameName = styled.div(({ theme }) => ({
+  flex: 1,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: "20px",
   fontWeight: 600,
   color: theme.colors.text.primary,
-  textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
-  zIndex: 2,
+  textAlign: "center",
 }));

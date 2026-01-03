@@ -9,11 +9,15 @@ export const Container = styled.div({
   pointerEvents: "none",
   zIndex: 3,
   overflow: "visible",
+  contain: "layout style paint",
 });
 
 export const SphereWrapper = styled.div({
   position: "absolute",
-  transform: "translate(-50%, -50%)",
+  transform: "translate3d(-50%, -50%, 0)",
   pointerEvents: "none",
+  willChange: "transform",
+  backfaceVisibility: "hidden",
+  perspective: 1000,
 });
 

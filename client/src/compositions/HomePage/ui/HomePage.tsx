@@ -1,15 +1,24 @@
 "use client";
 
 import React from "react";
+import dynamic from "next/dynamic";
 import { Sidebar } from "@/widgets/Sidebar";
 import { MainCard } from "@/widgets/MainCard";
 import { GameTabs } from "@/widgets/GameTabs";
 import { GameGrid } from "@/widgets/GameGrid";
 import { GameIcons } from "@/widgets/GameIcons";
-import { AccountBanner } from "@/widgets/AccountBanner";
-import { InfoBanner } from "@/widgets/InfoBanner";
 import { OfficialEmailInfo } from "@/widgets/OfficialEmailInfo";
 import * as Styled from "./styled";
+
+const AccountBanner = dynamic(() => import("@/widgets/AccountBanner").then((mod) => ({ default: mod.AccountBanner })), {
+  ssr: false,
+  loading: () => <div style={{ minHeight: 400 }} />,
+});
+
+const InfoBanner = dynamic(() => import("@/widgets/InfoBanner").then((mod) => ({ default: mod.InfoBanner })), {
+  ssr: false,
+  loading: () => <div style={{ minHeight: 400 }} />,
+});
 
 export function HomePage() {
   return (

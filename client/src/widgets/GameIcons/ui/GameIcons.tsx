@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import * as Styled from "./styled";
 
@@ -30,13 +31,13 @@ const games: Game[] = [
   { id: "eft", name: "EFT", image: getRandomImage("eft") },
 ];
 
-const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-  const target = e.currentTarget;
-  target.style.display = "none";
-};
-
 export function GameIcons() {
+  const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
+
+  const handleGameClick = (gameId: string) => {
+    router.push(`/game/${gameId}`);
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -74,6 +75,7 @@ export function GameIcons() {
           variants={itemVariants}
           whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
           whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
+          onClick={() => handleGameClick(game.id)}
         >
           <Styled.GameIcon>
             <Styled.GameImage

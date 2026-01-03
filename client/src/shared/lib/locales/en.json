@@ -21,6 +21,49 @@
   "beforeBuyInfo": {
     "title": "What you need to know before acquiring a cheat?",
     "description": "Let me explain right away! Why do the majority of players buy cheats?!\n\nEarn money by helping others achieve goals or complete missions, use specific cheats (Aim, Wallhack, Avto shot) to \"understand the zen\" (try what a cheat is), avoid constant losses or just have fun.\n\nBut remember, by acquiring a cheat, you yourself have chosen to side with pleasure ;)"
+  },
+  "cheatPage": {
+    "hero": {
+      "brandName": "CROOKED",
+      "title": "Cheat for BATTLEFIELD 2042",
+      "description": "Learn more and proceed to payment",
+      "buyNow": "Buy now",
+      "cheatStatuses": "Cheat statuses",
+      "telegramText": "Subscribe to Telegram, it's important because all statuses and news about cheats are there",
+      "circularText": "PRIVATE CHEATS ON THE WEBSITE CHITARENA.COM"
+    },
+    "screenshots": {
+      "title": "Screenshots"
+    },
+    "functions": {
+      "title": "List of functions",
+      "categories": {
+        "aim": "AIM",
+        "esp": "ESP",
+        "radar": "RADAR",
+        "misc": "MISC"
+      }
+    },
+    "video": {
+      "title": "Video on how to buy and download",
+      "question": "How to buy?",
+      "description": "Highly recommended for beginners, before purchasing, watch the video instruction on acquiring any software. Many ask us how to buy, where to click. That is why watching the video will reduce the load on technical support and allow us to focus on more important aspects and tasks.",
+      "howToBuy": "HOW TO BUY"
+    },
+    "pricing": {
+      "title": "Safe purchase",
+      "buy": "Buy",
+      "telegram": "Telegram",
+      "recommendation": "We recommend subscribing to Telegram for all statuses and news published there! Tech support in Discord",
+      "outOfStock": "This block will have a different purchase term, but only when it becomes available for sale! Currently, the item is out of stock.",
+      "otherTerm": "OTHER TERM",
+      "for": "FOR"
+    },
+    "notFound": {
+      "title": "404",
+      "error": "ERROR",
+      "garbledText": "7B9Sy'U@Ar94LÏ±g5i~fœoäï",
+      "goHome": "TO HOMEPAGE"
+    }
   }
 }
-

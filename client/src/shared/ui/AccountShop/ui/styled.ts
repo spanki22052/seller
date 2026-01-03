@@ -215,7 +215,7 @@ export const MotionButtonWrapper = styled.div({
 });
 
 const BaseGoButton = styled(Button)(({ theme }) => ({
-  background: `linear-gradient(135deg, ${theme.colors.accent.purple} 0%, ${theme.colors.accent.pink} 50%, ${theme.colors.accent.blue} 100%) !important`,
+  backgroundColor: theme.colors.accent.purple,
   border: "none",
   color: theme.colors.text.primary,
   fontWeight: 700,
@@ -226,11 +226,11 @@ const BaseGoButton = styled(Button)(({ theme }) => ({
   height: "auto",
   borderRadius: theme.borderRadius.md,
   boxShadow: `
-    0 0 20px ${theme.colors.accent.purple}66,
-    0 0 40px ${theme.colors.accent.pink}44,
-    0 4px 12px rgba(139, 92, 246, 0.4),
-    inset 0 0 20px rgba(255, 255, 255, 0.1)
+    0 4px 12px rgba(255, 0, 255, 0.4),
+    0 0 20px rgba(255, 0, 255, 0.2),
+    inset 0 0 20px rgba(255, 0, 255, 0.1)
   `,
+  textShadow: "0 0 10px rgba(255, 0, 255, 0.5)",
   position: "relative",
   overflow: "hidden",
   transition: theme.transitions.normal,
@@ -257,7 +257,7 @@ const BaseGoButton = styled(Button)(({ theme }) => ({
     left: "-100%",
     width: "100%",
     height: "100%",
-    background: `linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)`,
+    background: `linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)`,
     transition: "left 0.5s ease",
   },
   "&::after": {
@@ -268,52 +268,48 @@ const BaseGoButton = styled(Button)(({ theme }) => ({
     width: "200%",
     height: "200%",
     background: `radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%)`,
-    animation: "pulse 2s ease-in-out infinite",
+    opacity: 0,
+    transition: "opacity 0.3s ease",
     pointerEvents: "none",
     "@media (prefers-reduced-motion: reduce)": {
-      animation: "none",
-    },
-  },
-  "@keyframes pulse": {
-    "0%, 100%": {
-      opacity: 0.5,
-      transform: "scale(1)",
-    },
-    "50%": {
-      opacity: 0.8,
-      transform: "scale(1.1)",
+      transition: "none",
     },
   },
   "&:not(:disabled):hover": {
-    background: `linear-gradient(135deg, ${theme.colors.accent.purpleLight} 0%, ${theme.colors.accent.pinkLight} 50%, ${theme.colors.accent.blueLight} 100%) !important`,
+    backgroundColor: theme.colors.accent.purpleLight,
     transform: "translateY(-2px)",
     boxShadow: `
-      0 0 30px ${theme.colors.accent.purple}99,
-      0 0 60px ${theme.colors.accent.pink}66,
-      0 0 40px ${theme.colors.accent.blue}55,
-      0 4px 20px rgba(139, 92, 246, 0.5),
-      inset 0 0 20px rgba(255, 255, 255, 0.15)
+      0 6px 20px rgba(255, 0, 255, 0.6),
+      0 0 30px rgba(255, 0, 255, 0.4),
+      0 0 50px rgba(255, 0, 255, 0.2),
+      inset 0 0 30px rgba(255, 0, 255, 0.2)
     `,
+    textShadow: "0 0 15px rgba(255, 0, 255, 0.8), 0 0 25px rgba(255, 0, 255, 0.6)",
     "&::before": {
       left: "100%",
     },
+    "&::after": {
+      opacity: 1,
+    },
   },
   "&:not(:disabled):focus": {
-    background: `linear-gradient(135deg, ${theme.colors.accent.purple} 0%, ${theme.colors.accent.pink} 50%, ${theme.colors.accent.blue} 100%) !important`,
+    backgroundColor: theme.colors.accent.purple,
     boxShadow: `
-      0 0 25px ${theme.colors.accent.purple}88,
-      0 0 50px ${theme.colors.accent.pink}55,
-      0 0 35px ${theme.colors.accent.blue}44,
-      inset 0 0 20px rgba(255, 255, 255, 0.1)
+      0 6px 20px rgba(255, 0, 255, 0.6),
+      0 0 30px rgba(255, 0, 255, 0.4),
+      0 0 50px rgba(255, 0, 255, 0.2),
+      inset 0 0 30px rgba(255, 0, 255, 0.2),
+      0 0 0 3px rgba(255, 0, 255, 0.3)
     `,
+    textShadow: "0 0 15px rgba(255, 0, 255, 0.8), 0 0 25px rgba(255, 0, 255, 0.6)",
   },
   "&:not(:disabled):active": {
-    background: `linear-gradient(135deg, ${theme.colors.accent.purple} 0%, ${theme.colors.accent.pink} 50%, ${theme.colors.accent.blue} 100%) !important`,
+    backgroundColor: theme.colors.accent.purple,
     transform: "translateY(0)",
     boxShadow: `
-      0 0 20px ${theme.colors.accent.purple}66,
-      0 0 40px ${theme.colors.accent.pink}44,
-      0 4px 12px rgba(139, 92, 246, 0.4)
+      0 4px 12px rgba(255, 0, 255, 0.4),
+      0 0 20px rgba(255, 0, 255, 0.2),
+      inset 0 0 20px rgba(255, 0, 255, 0.1)
     `,
   },
 }));

@@ -1,8 +1,8 @@
 import { MenuItem } from "../model/types";
 
 export const MENU_ITEMS: MenuItem[] = [
-  { id: "personal-cabinet", label: "ЛИЧНЫЙ КАБИНЕТ", isCategory: true },
-  { id: "new-releases", label: "НОВИНКИ", isCategory: true },
+  { id: "personal-cabinet", label: "ЛИЧНЫЙ КАБИНЕТ", isCategory: true, href: "/personal-cabinet" },
+  { id: "new-releases", label: "НОВИНКИ", isCategory: true, href: "/new-releases" },
   {
     id: "arc-raiders",
     label: "ARC RAIDERS",

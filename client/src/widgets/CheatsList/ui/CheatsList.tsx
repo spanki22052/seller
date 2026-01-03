@@ -2,8 +2,10 @@
 
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
+import { NeonLine } from "@/shared/ui/NeonLine";
 import { cheats } from "../lib/constants";
 import { Cheat } from "../model/types";
 import * as Styled from "./styled";
@@ -13,6 +15,7 @@ interface CheatsListProps {
 }
 
 export function CheatsList({ gameId }: CheatsListProps) {
+  const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
 
   const containerVariants = {
@@ -45,6 +48,13 @@ export function CheatsList({ gameId }: CheatsListProps) {
     return `От ${price.amount}`;
   };
 
+  const handleCheatClick = (cheatId: string) => {
+    console.log(gameId);
+    if (gameId) {
+      router.push(`/game/${gameId}/cheat/${cheatId}`);
+    }
+  };
+
   return (
     <Styled.Container
       as={motion.div}
@@ -59,6 +69,7 @@ export function CheatsList({ gameId }: CheatsListProps) {
           variants={itemVariants}
           whileHover={prefersReducedMotion ? {} : { scale: 1.02 }}
           whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
+          onClick={() => handleCheatClick(cheat.id)}
         >
           <Styled.ImageWrapper>
             <Image
@@ -80,12 +91,14 @@ export function CheatsList({ gameId }: CheatsListProps) {
               <Styled.PriceAmount>
                 {formatPrice(cheat.price)}
               </Styled.PriceAmount>
-              <Styled.PriceCurrency>{cheat.price.currency}</Styled.PriceCurrency>
+              <Styled.PriceCurrency>
+                {cheat.price.currency}
+              </Styled.PriceCurrency>
             </Styled.Price>
           </Styled.CardContent>
+          <NeonLine data-neon-line />
         </Styled.CheatCard>
       ))}
     </Styled.Container>
   );
 }
-

@@ -97,7 +97,7 @@ export const SocialButton = styled.button(({ theme }) => ({
   width: 96,
   height: 96,
   borderRadius: "50%",
-  border: `2px solid #a78bfa`,
+  border: `2px solid ${theme.colors.accent.purple}`,
   backgroundColor: "transparent",
   color: theme.colors.text.primary,
   fontSize: 16,
@@ -107,14 +107,18 @@ export const SocialButton = styled.button(({ theme }) => ({
   alignItems: "center",
   justifyContent: "center",
   transition: theme.transitions.normal,
-  boxShadow: `0 0 20px rgba(167, 139, 250, 0.3)`,
+  boxShadow: `0 0 20px rgba(255, 0, 255, 0.3)`,
+  textShadow: "0 0 10px rgba(255, 0, 255, 0.5)",
   "&:hover": {
-    backgroundColor: "rgba(167, 139, 250, 0.1)",
-    boxShadow: `0 0 30px rgba(167, 139, 250, 0.5)`,
+    backgroundColor: "rgba(255, 0, 255, 0.1)",
+    borderColor: theme.colors.accent.purpleLight,
+    boxShadow: `0 0 30px rgba(255, 0, 255, 0.5), 0 0 50px rgba(255, 0, 255, 0.3)`,
+    textShadow: "0 0 15px rgba(255, 0, 255, 0.8), 0 0 25px rgba(255, 0, 255, 0.6)",
     transform: "scale(1.05)",
   },
   "&:active": {
     transform: "scale(0.95)",
+    borderColor: theme.colors.accent.purple,
   },
 }));
 

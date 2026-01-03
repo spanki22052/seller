@@ -89,7 +89,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     () => ({
       algorithm: mode === "dark" ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
       token: {
-        colorPrimary: theme.colors.accent.purple,
+        colorPrimary: "#ff00ff",
         colorSuccess: theme.colors.status.success,
         colorWarning: theme.colors.status.warning,
         colorError: theme.colors.status.error,
@@ -111,14 +111,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           colorBgContainer: theme.colors.bg.input,
           colorText: theme.colors.text.primary,
           colorBorder: theme.colors.border.primary,
-          hoverBorderColor: theme.colors.accent.purple,
-          activeBorderColor: theme.colors.accent.purple,
+          hoverBorderColor: "#ff00ff",
+          activeBorderColor: "#ff00ff",
         },
         Button: {
           primaryColor: theme.colors.text.primary,
-          colorPrimary: theme.colors.accent.purple,
+          colorPrimary: "#ff00ff",
           borderRadius: 8,
           colorBorder: theme.colors.border.secondary,
+          controlHeight: 40,
+          fontWeight: 600,
         },
         Card: {
           colorBgContainer: theme.colors.bg.card,

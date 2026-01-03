@@ -30,12 +30,15 @@ export const CheatCard = styled.div(({ theme }) => ({
   position: "relative",
   cursor: "pointer",
   borderRadius: theme.borderRadius.md,
-  overflow: "hidden",
+  overflow: "visible",
   backgroundColor: theme.colors.bg.card,
   transition: theme.transitions.normal,
   "&:hover": {
     transform: "translateY(-4px)",
-    boxShadow: `0 8px 24px rgba(139, 92, 246, 0.4)`,
+  },
+  "&:hover [data-neon-line]": {
+    opacity: 1,
+    transform: "translateX(-50%) scaleX(1)",
   },
 }));
 
@@ -44,6 +47,7 @@ export const ImageWrapper = styled.div({
   width: "100%",
   paddingBottom: "133.33%", // 3:4 aspect ratio
   overflow: "hidden",
+  borderRadius: "inherit",
 });
 
 export const CheatImage = styled.img({
@@ -98,6 +102,8 @@ export const NewBadge = styled.div(({ theme }) => ({
 export const CardContent = styled.div(({ theme }) => ({
   padding: theme.spacing.md,
   backgroundColor: theme.colors.bg.card,
+  borderRadius: "inherit",
+  overflow: "hidden",
 }));
 
 export const CheatName = styled.div(({ theme }) => ({

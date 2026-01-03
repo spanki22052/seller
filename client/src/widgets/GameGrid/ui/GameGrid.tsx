@@ -4,6 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
+import { NeonLine } from "@/shared/ui/NeonLine";
 import { games } from "../lib/constants";
 import * as Styled from "./styled";
 
@@ -54,8 +55,20 @@ export function GameGrid() {
           whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
           onClick={() => handleGameClick(game.id)}
         >
-          <Styled.GameImageWrapper $backgroundColor={game.color} />
+          <Styled.GameImageWrapper $backgroundColor={game.color}>
+            {game.image && (
+              <Styled.GameImage
+                src={game.image}
+                alt={game.name}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.style.display = "none";
+                }}
+              />
+            )}
+          </Styled.GameImageWrapper>
           {game.name && <Styled.GameName>{game.name}</Styled.GameName>}
+          <NeonLine data-neon-line />
         </Styled.GameTile>
       ))}
     </Styled.Container>

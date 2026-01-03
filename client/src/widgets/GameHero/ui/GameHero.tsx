@@ -2,11 +2,15 @@
 
 import React, { useRef, useEffect } from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
-import { GradientSmoke } from "@/shared/ui/GradientSmoke";
 import cheatarenaLogo from "@/shared/assets/images/cheatarena.png";
 import * as Styled from "./styled";
+
+const GradientSmoke = dynamic(() => import("@/shared/ui/GradientSmoke").then((mod) => ({ default: mod.GradientSmoke })), {
+  ssr: false,
+});
 
 interface GameHeroProps {
   gameId: string;
@@ -22,21 +26,44 @@ export function GameHero({ gameId }: GameHeroProps) {
   const springY = useSpring(mouseY, { stiffness: 150, damping: 15 });
 
   useEffect(() => {
+    let rafId: number | null = null;
+    let lastX = 0;
+    let lastY = 0;
+
     const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-      mouseX.set(x - 0.5);
-      mouseY.set(y - 0.5);
+      if (!containerRef.current || prefersReducedMotion) return;
+
+      // Throttle updates using requestAnimationFrame
+      if (rafId === null) {
+        rafId = requestAnimationFrame(() => {
+          const rect = containerRef.current!.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+          
+          // Only update if change is significant (reduces unnecessary updates)
+          if (Math.abs(x - lastX) > 0.01 || Math.abs(y - lastY) > 0.01) {
+            mouseX.set(x - 0.5);
+            mouseY.set(y - 0.5);
+            lastX = x;
+            lastY = y;
+          }
+          
+          rafId = null;
+        });
+      }
     };
 
     const container = containerRef.current;
     if (container) {
-      container.addEventListener("mousemove", handleMouseMove);
-      return () => container.removeEventListener("mousemove", handleMouseMove);
+      container.addEventListener("mousemove", handleMouseMove, { passive: true });
+      return () => {
+        container.removeEventListener("mousemove", handleMouseMove);
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+        }
+      };
     }
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, prefersReducedMotion]);
 
   const textVariants = {
     hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 },

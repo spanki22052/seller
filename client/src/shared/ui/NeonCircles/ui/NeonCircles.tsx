@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import { motion, MotionValue, useTransform } from "framer-motion";
 import * as Styled from "./styled";
 
@@ -94,7 +94,7 @@ const circles: Circle[] = [
   },
 ];
 
-export function NeonCircles({
+export const NeonCircles = memo(function NeonCircles({
   mouseX,
   mouseY,
   prefersReducedMotion,
@@ -142,6 +142,9 @@ export function NeonCircles({
                 filter: `blur(${circle.blur * 0.3}px)`,
                 x,
                 y,
+                willChange: "transform, opacity",
+                transform: "translateZ(0)",
+                backfaceVisibility: "hidden",
               }}
               animate={
                 prefersReducedMotion
@@ -168,9 +171,11 @@ export function NeonCircles({
                 height: circle.size * 0.4,
                 borderRadius: "50%",
                 background: `radial-gradient(circle, ${circle.color}cc, transparent)`,
-                transform: "translate(-50%, -50%)",
+                transform: "translate3d(-50%, -50%, 0)",
                 boxShadow: `0 0 ${circle.blur * 0.5}px ${circle.color}aa`,
                 filter: `blur(${circle.blur * 0.2}px)`,
+                willChange: "transform, opacity",
+                backfaceVisibility: "hidden",
               }}
               animate={
                 prefersReducedMotion
@@ -192,5 +197,5 @@ export function NeonCircles({
       })}
     </Styled.Container>
   );
-}
+});
 

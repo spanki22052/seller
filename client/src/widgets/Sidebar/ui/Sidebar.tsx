@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,6 +14,7 @@ import { CloseIcon } from "./CloseIcon";
 import * as Styled from "./styled";
 
 export function Sidebar() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [openDropdowns, setOpenDropdowns] = useState<Set<string>>(new Set());
@@ -50,9 +52,20 @@ export function Sidebar() {
     const query = searchQuery.toLowerCase().trim();
     const results: MenuItem[] = [];
     const matchedGameIds = new Set<string>();
+    
+    // Всегда добавляем категории "ЛИЧНЫЙ КАБИНЕТ" и "НОВИНКИ"
+    const alwaysShowCategories = MENU_ITEMS.filter(
+      (item) => item.isCategory && (item.id === "personal-cabinet" || item.id === "new-releases")
+    );
+    results.push(...alwaysShowCategories);
 
-    // Поиск по названию игры
+    // Поиск по названию игры (пропускаем категории, которые всегда показываются)
     MENU_ITEMS.forEach((item) => {
+      // Пропускаем категории, которые уже добавлены
+      if (item.isCategory && (item.id === "personal-cabinet" || item.id === "new-releases")) {
+        return;
+      }
+      
       const itemLabelLower = item.label.toLowerCase();
       if (itemLabelLower.includes(query)) {
         results.push(item);
@@ -64,6 +77,11 @@ export function Sidebar() {
 
     // Поиск по названию читов
     MENU_ITEMS.forEach((item) => {
+      // Пропускаем категории, которые всегда показываются
+      if (item.isCategory && (item.id === "personal-cabinet" || item.id === "new-releases")) {
+        return;
+      }
+      
       if (item.cheats) {
         const hasMatchingCheat = item.cheats.some((cheat) =>
           cheat.name.toLowerCase().includes(query)
@@ -76,10 +94,19 @@ export function Sidebar() {
       }
     });
 
-    // Сортировка: сначала категории, потом игры с совпадениями
+    // Сортировка: сначала категории (personal-cabinet, new-releases), потом остальные категории, потом игры
     return results.sort((a, b) => {
+      // Специальные категории всегда первые
+      const aIsSpecial = a.isCategory && (a.id === "personal-cabinet" || a.id === "new-releases");
+      const bIsSpecial = b.isCategory && (b.id === "personal-cabinet" || b.id === "new-releases");
+      
+      if (aIsSpecial && !bIsSpecial) return -1;
+      if (!aIsSpecial && bIsSpecial) return 1;
+      
+      // Затем остальные категории
       if (a.isCategory && !b.isCategory) return -1;
       if (!a.isCategory && b.isCategory) return 1;
+      
       return a.label.localeCompare(b.label);
     });
   }, [searchQuery]);
@@ -127,12 +154,21 @@ export function Sidebar() {
   };
 
   // Функция для фильтрации и сортировки читов по поисковому запросу
-  const getFilteredCheats = (cheats: MenuItem["cheats"]) => {
+  // Если поисковый запрос совпадает с названием игры, показываем все читы
+  const getFilteredCheats = (cheats: MenuItem["cheats"], gameLabel: string) => {
     if (!cheats || !searchQuery.trim()) {
       return cheats || [];
     }
 
     const query = searchQuery.toLowerCase().trim();
+    const gameLabelLower = gameLabel.toLowerCase();
+
+    // Если поисковый запрос совпадает с названием игры, возвращаем все читы
+    if (gameLabelLower.includes(query)) {
+      return cheats;
+    }
+
+    // Иначе фильтруем читы по поисковому запросу
     const filtered = cheats.filter((cheat) =>
       cheat.name.toLowerCase().includes(query)
     );
@@ -148,6 +184,38 @@ export function Sidebar() {
       if (!aStartsWith && bStartsWith) return 1;
       return a.name.localeCompare(b.name);
     });
+  };
+
+  // Функция для навигации к странице чита
+  const handleCheatClick = (gameId: string, cheatId: string, e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    setIsOpen(false);
+    router.push(`/game/${gameId}/cheat/${cheatId}`);
+  };
+
+  // Функция для навигации по категориям
+  const handleCategoryClick = (href: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsOpen(false);
+    router.push(href);
+  };
+
+  // Функция для навигации на главную страницу
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsOpen(false);
+    router.push("/");
+  };
+
+  // Обработчик клика по элементу меню с читами (только переключает dropdown)
+  const handleMenuItemWithCheatsClick = (item: MenuItem, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Только переключаем dropdown, не навигируем
+    toggleDropdown(item.id);
   };
 
   const sidebarVariants = {
@@ -300,7 +368,12 @@ export function Sidebar() {
                   animate="open"
                   exit="closed"
                 >
-                  <Styled.LogoWrapper>
+                  <Styled.LogoWrapper
+                    onClick={handleLogoClick}
+                    as={motion.div}
+                    whileHover={prefersReducedMotion ? {} : { scale: 1.02 }}
+                    whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
+                  >
                     <Image
                       src={chitarenaLogo}
                       alt="CHITARENA"
@@ -361,7 +434,7 @@ export function Sidebar() {
                             <Styled.MenuItemButton
                               $isCategory={item.isCategory}
                               $isOpen={isDropdownOpen}
-                              onClick={() => toggleDropdown(item.id)}
+                              onClick={(e) => handleMenuItemWithCheatsClick(item, e)}
                             >
                               <span>{item.label}</span>
                               <Styled.DropdownIcon $isOpen={isDropdownOpen} />
@@ -370,9 +443,14 @@ export function Sidebar() {
                             <Styled.MenuItemLink
                               href={item.href || "#"}
                               $isCategory={item.isCategory}
+                              $isClickable={!!item.href}
                               onClick={(e) => {
-                                e.preventDefault();
-                                // Handle navigation here
+                                if (item.href) {
+                                  handleCategoryClick(item.href, e);
+                                } else {
+                                  e.preventDefault();
+                                  // Игры без читов не кликабельны
+                                }
                               }}
                             >
                               {item.label}
@@ -384,7 +462,8 @@ export function Sidebar() {
                               {isDropdownOpen &&
                                 (() => {
                                   const filteredCheats = getFilteredCheats(
-                                    item.cheats
+                                    item.cheats,
+                                    item.label
                                   );
                                   return filteredCheats.length > 0 ? (
                                     <Styled.DropdownList
@@ -403,10 +482,9 @@ export function Sidebar() {
                                             animate="open"
                                           >
                                             <a
-                                              href={cheat.href || "#"}
+                                              href={cheat.href || `/game/${item.id}/cheat/${cheat.id}`}
                                               onClick={(e) => {
-                                                e.preventDefault();
-                                                // Handle navigation here
+                                                handleCheatClick(item.id, cheat.id, e);
                                               }}
                                             >
                                               {cheat.name}

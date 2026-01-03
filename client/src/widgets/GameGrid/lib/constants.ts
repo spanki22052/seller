@@ -16,13 +16,24 @@ export const getRandomColor = (seed: string): string => {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
+// Generate random images using Picsum Photos
+const getRandomImage = (
+  seed: string,
+  width: number = 400,
+  height: number = 600
+) => {
+  // Use seed to generate consistent image IDs
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const imageId = Math.abs(hash) % 1000;
+  return `https://picsum.photos/seed/${imageId}/${width}/${height}`;
+};
+
 export const games: Game[] = [
-  { id: "dayz", name: "Dayz", color: getRandomColor("dayz") },
-  { id: "rust", name: "Rust", color: getRandomColor("rust") },
-  { id: "apex", name: "Apex", color: getRandomColor("apex") },
-  { id: "squad", name: "Squad", color: getRandomColor("squad") },
-  { id: "rust2", name: "Rust", color: getRandomColor("rust2") },
-  { id: "game6", name: "", color: getRandomColor("game6") },
-  { id: "game7", name: "", color: getRandomColor("game7") },
-  { id: "game8", name: "", color: getRandomColor("game8") },
+  { id: "dota2", name: "Dota 2", color: getRandomColor("dota2"), image: getRandomImage("dota2") },
+  { id: "scum", name: "Scum", color: getRandomColor("scum"), image: getRandomImage("scum") },
+  { id: "rainbow-six", name: "Rainbow Six", color: getRandomColor("rainbow-six"), image: getRandomImage("rainbow-six") },
+  { id: "deadside", name: "Deadside", color: getRandomColor("deadside"), image: getRandomImage("deadside") },
 ];

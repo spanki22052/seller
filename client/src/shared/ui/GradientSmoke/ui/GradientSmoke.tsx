@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import { motion, MotionValue, useTransform } from "framer-motion";
 import * as Styled from "./styled";
 
@@ -10,7 +10,7 @@ interface GradientSmokeProps {
   prefersReducedMotion: boolean;
 }
 
-export function GradientSmoke({
+export const GradientSmoke = memo(function GradientSmoke({
   mouseX,
   mouseY,
   prefersReducedMotion,
@@ -30,8 +30,12 @@ export function GradientSmoke({
         style={{
           x: smokeX,
           y: smokeY,
+          willChange: "transform",
+          transform: "translateZ(0)",
+          backfaceVisibility: "hidden",
         }}
       >
+        {/* Reduced from 9 to 5 layers for better performance */}
         <Styled.SmokeLayer
           $position="top-left"
           animate={
@@ -100,40 +104,6 @@ export function GradientSmoke({
           }}
         />
         <Styled.SmokeLayer
-          $position="center-left"
-          animate={
-            prefersReducedMotion
-              ? {}
-              : {
-                  opacity: [0.35, 0.65, 0.35],
-                  scale: [1, 1.1, 1],
-                }
-          }
-          transition={{
-            duration: 4.8,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 0.8,
-          }}
-        />
-        <Styled.SmokeLayer
-          $position="center-right"
-          animate={
-            prefersReducedMotion
-              ? {}
-              : {
-                  opacity: [0.45, 0.75, 0.45],
-                  scale: [1, 1.13, 1],
-                }
-          }
-          transition={{
-            duration: 5.2,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1.2,
-          }}
-        />
-        <Styled.SmokeLayer
           $position="top-center"
           animate={
             prefersReducedMotion
@@ -150,25 +120,8 @@ export function GradientSmoke({
             delay: 0.3,
           }}
         />
-        <Styled.SmokeLayer
-          $position="bottom-center"
-          animate={
-            prefersReducedMotion
-              ? {}
-              : {
-                  opacity: [0.35, 0.65, 0.35],
-                  scale: [1, 1.18, 1],
-                }
-          }
-          transition={{
-            duration: 5.8,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1.8,
-          }}
-        />
       </motion.div>
     </Styled.Container>
   );
-}
+});
 

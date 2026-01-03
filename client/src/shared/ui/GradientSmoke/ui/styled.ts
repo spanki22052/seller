@@ -12,6 +12,7 @@ export const Container = styled.div({
   overflow: "visible",
   width: "160%",
   height: "160%",
+  contain: "layout style paint",
 });
 
 interface SmokeLayerProps {
@@ -83,6 +84,10 @@ export const SmokeLayer = styled(motion.div)<SmokeLayerProps>(({ $position }) =>
     `,
     filter: "blur(60px)",
     pointerEvents: "none",
+    willChange: "transform, opacity",
+    transform: "translateZ(0)",
+    backfaceVisibility: "hidden",
+    contain: "layout style paint",
   };
 });
 

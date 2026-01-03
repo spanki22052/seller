@@ -34,6 +34,49 @@ export function OfficialEmailInfo() {
     }),
   };
 
+  const dividerVariants = {
+    hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scaleX: 0 },
+    visible: {
+      opacity: 1,
+      scaleX: prefersReducedMotion ? 1 : 1,
+      transition: {
+        duration: prefersReducedMotion ? 0 : 0.6,
+        ease: [0.22, 1, 0.36, 1],
+        delay: prefersReducedMotion ? 0 : 0.2,
+      },
+    },
+  };
+
+  const neonGlowVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: prefersReducedMotion ? 0.4 : [0.4, 0.8, 0.4],
+      transition: prefersReducedMotion
+        ? { duration: 0 }
+        : {
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 0.5,
+          },
+    },
+  };
+
+  const neonDotsVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: prefersReducedMotion ? 1 : [0.5, 1, 0.5],
+      transition: prefersReducedMotion
+        ? { duration: 0 }
+        : {
+            duration: 2.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 0.7,
+          },
+    },
+  };
+
   return (
     <Styled.Container
       as={motion.div}
@@ -41,6 +84,26 @@ export function OfficialEmailInfo() {
       initial="hidden"
       animate="visible"
     >
+      <Styled.Divider
+        as={motion.div}
+        variants={dividerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <Styled.NeonGlow
+          as={motion.div}
+          variants={neonGlowVariants}
+          initial="hidden"
+          animate="visible"
+        />
+        <Styled.NeonDots
+          as={motion.div}
+          variants={neonDotsVariants}
+          initial="hidden"
+          animate="visible"
+        />
+      </Styled.Divider>
+
       <Styled.LinksContainer>
         {LINKS.map((link, index) => (
           <Styled.Link
@@ -67,4 +130,3 @@ export function OfficialEmailInfo() {
     </Styled.Container>
   );
 }
-

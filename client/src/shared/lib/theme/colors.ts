@@ -24,9 +24,9 @@ export const colors = {
 
   // Accent colors (purple/blue gradients)
   accent: {
-    purple: "#8b5cf6", // Primary purple
-    purpleLight: "#a78bfa", // Lighter purple
-    purpleDark: "#6d28d9", // Darker purple
+    purple: "#ff00ff", // Primary purple (magenta)
+    purpleLight: "#ff66ff", // Lighter purple (magenta)
+    purpleDark: "#cc00cc", // Darker purple (magenta)
     blue: "#3b82f6", // Blue accent
     blueLight: "#60a5fa", // Lighter blue
     pink: "#ec4899", // Pink accent (for teaser buttons)
@@ -35,11 +35,11 @@ export const colors = {
 
   // Gradient colors
   gradient: {
-    purpleBlue: "linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%)",
-    purpleBlueVertical: "linear-gradient(180deg, #8b5cf6 0%, #3b82f6 100%)",
-    purplePink: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+    purpleBlue: "linear-gradient(135deg, #ff00ff 0%, #3b82f6 100%)",
+    purpleBlueVertical: "linear-gradient(180deg, #ff00ff 0%, #3b82f6 100%)",
+    purplePink: "linear-gradient(135deg, #ff00ff 0%, #ec4899 100%)",
     glowPurple:
-      "radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%)",
+      "radial-gradient(circle, rgba(255, 0, 255, 0.3) 0%, transparent 70%)",
     glowBlue:
       "radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%)",
   },
@@ -48,7 +48,7 @@ export const colors = {
   border: {
     primary: "#2a2a2a",
     secondary: "#3a3a3a",
-    accent: "#8b5cf6",
+    accent: "#ff00ff",
   },
 
   // Status colors

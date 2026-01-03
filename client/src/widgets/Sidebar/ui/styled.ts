@@ -77,10 +77,16 @@ export const LogoWrapper = styled.div(({ theme }) => ({
   marginBottom: theme.spacing.xl,
   display: "flex",
   alignItems: "center",
+  cursor: "pointer",
+  transition: theme.transitions.fast,
   "& img": {
     width: "auto",
     height: "auto",
     maxWidth: "100%",
+    transition: theme.transitions.fast,
+  },
+  "&:hover": {
+    opacity: 0.8,
   },
 }));
 
@@ -121,10 +127,10 @@ export const MenuList = styled(motion.ul)({
     background: "transparent",
   },
   "&::-webkit-scrollbar-thumb": {
-    background: "rgba(139, 92, 246, 0.3)",
+    background: "rgba(255, 0, 255, 0.3)",
     borderRadius: 3,
     "&:hover": {
-      background: "rgba(139, 92, 246, 0.5)",
+      background: "rgba(255, 0, 255, 0.5)",
     },
   },
 });
@@ -156,21 +162,23 @@ export const MenuItemButton = styled.button<{ $isCategory?: boolean; $isOpen?: b
   })
 );
 
-export const MenuItemLink = styled.a<{ $isCategory?: boolean }>(({ theme, $isCategory }) => ({
-  display: "block",
-  padding: `${theme.spacing.sm} ${theme.spacing.md}`,
-  color: $isCategory ? theme.colors.text.primary : theme.colors.text.secondary,
-  textDecoration: "none",
-  fontSize: $isCategory ? "16px" : "14px",
-  fontWeight: $isCategory ? 700 : 500,
-  borderRadius: theme.borderRadius.sm,
-  transition: theme.transitions.fast,
-  cursor: "pointer",
-  "&:hover": {
-    backgroundColor: theme.colors.bg.hover,
-    color: theme.colors.text.primary,
-  },
-}));
+export const MenuItemLink = styled.a<{ $isCategory?: boolean; $isClickable?: boolean }>(
+  ({ theme, $isCategory, $isClickable = false }) => ({
+    display: "block",
+    padding: `${theme.spacing.sm} ${theme.spacing.md}`,
+    color: $isCategory ? theme.colors.text.primary : theme.colors.text.secondary,
+    textDecoration: "none",
+    fontSize: $isCategory ? "16px" : "14px",
+    fontWeight: $isCategory ? 700 : 500,
+    borderRadius: theme.borderRadius.sm,
+    transition: theme.transitions.fast,
+    cursor: $isClickable ? "pointer" : "default",
+    "&:hover": {
+      backgroundColor: $isClickable ? theme.colors.bg.hover : "transparent",
+      color: $isClickable ? theme.colors.text.primary : undefined,
+    },
+  })
+);
 
 export const DropdownIcon = styled.span<{ $isOpen: boolean }>(({ theme, $isOpen }) => ({
   display: "inline-flex",

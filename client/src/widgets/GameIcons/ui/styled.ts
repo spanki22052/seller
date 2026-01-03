@@ -1,44 +1,98 @@
-import styled from "styled-components";
+import styled, { keyframes, css } from "styled-components";
 
-export const Container = styled.div(({ theme }) => ({
-  display: "flex",
-  justifyContent: "space-around",
-  alignItems: "center",
-  gap: "16px",
-  paddingTop: theme.spacing.xl,
-  paddingBottom: theme.spacing.xl,
-  width: "100%",
-  position: "relative",
-  zIndex: 5,
-  flexWrap: "wrap",
-  overflow: "visible",
-  "&::before": {
-    content: '""',
-    position: "absolute",
-    left: 0,
-    top: 0,
-    bottom: 0,
-    width: "2px",
-    background: theme.colors.gradient.purpleBlueVertical,
-    boxShadow: theme.shadows.glow,
-    zIndex: 1,
-  },
-  "&::after": {
-    content: '""',
-    position: "absolute",
-    right: 0,
-    top: 0,
-    bottom: 0,
-    width: "2px",
-    background: theme.colors.gradient.purpleBlueVertical,
-    boxShadow: theme.shadows.glow,
-    zIndex: 1,
-  },
-  "@media (max-width: 768px)": {
-    gap: "16px",
-    padding: theme.spacing.lg,
-  },
-}));
+const neonPulse = keyframes`
+  0%, 100% {
+    box-shadow: 
+      0 0 10px rgba(236, 72, 153, 0.5),
+      0 0 20px rgba(255, 0, 255, 0.4),
+      0 0 30px rgba(59, 130, 246, 0.3),
+      inset 0 0 20px rgba(255, 0, 255, 0.25);
+    opacity: 0.9;
+  }
+  50% {
+    box-shadow: 
+      0 0 15px rgba(236, 72, 153, 0.8),
+      0 0 30px rgba(255, 0, 255, 0.6),
+      0 0 45px rgba(59, 130, 246, 0.5),
+      inset 0 0 30px rgba(255, 0, 255, 0.4);
+    opacity: 1;
+  }
+`;
+
+export const Container = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 16px;
+  padding-top: ${({ theme }) => theme.spacing.xl};
+  padding-bottom: ${({ theme }) => theme.spacing.xl};
+  width: 100%;
+  position: relative;
+  z-index: 5;
+  flex-wrap: wrap;
+  overflow: visible;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(
+      180deg,
+      ${({ theme }) => theme.colors.accent.pink} 0%,
+      ${({ theme }) => theme.colors.accent.purple} 50%,
+      ${({ theme }) => theme.colors.accent.blue} 100%
+    );
+    box-shadow: 0 0 10px ${({ theme }) => theme.colors.accent.pink}80,
+      0 0 20px ${({ theme }) => theme.colors.accent.purple}60,
+      0 0 30px ${({ theme }) => theme.colors.accent.blue}40,
+      inset 0 0 20px ${({ theme }) => theme.colors.accent.purple}40;
+    filter: blur(0.5px);
+    z-index: 1;
+    animation: ${css`
+      ${neonPulse} 2s ease-in-out infinite
+    `};
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(
+      180deg,
+      ${({ theme }) => theme.colors.accent.pink} 0%,
+      ${({ theme }) => theme.colors.accent.purple} 50%,
+      ${({ theme }) => theme.colors.accent.blue} 100%
+    );
+    box-shadow: 0 0 10px ${({ theme }) => theme.colors.accent.pink}80,
+      0 0 20px ${({ theme }) => theme.colors.accent.purple}60,
+      0 0 30px ${({ theme }) => theme.colors.accent.blue}40,
+      inset 0 0 20px ${({ theme }) => theme.colors.accent.purple}40;
+    filter: blur(0.5px);
+    z-index: 1;
+    animation: ${css`
+      ${neonPulse} 2s ease-in-out infinite
+    `};
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    gap: 16px;
+    padding: ${({ theme }) => theme.spacing.lg};
+  }
+`;
 
 export const GameItem = styled.div({
   display: "flex",
@@ -53,28 +107,53 @@ export const GameItem = styled.div({
 });
 
 export const GameIcon = styled.div(({ theme }) => ({
-  width: "190px",
-  height: "190px",
+  width: 190,
+  height: 190,
   borderRadius: "50%",
-  border: `2px solid ${theme.colors.border.secondary}`,
+  border: `1px solid ${theme.colors.text.primary}`,
+  padding: 8,
   overflow: "hidden",
   position: "relative",
-  backgroundColor: theme.colors.bg.secondary,
+  backgroundColor: "transparent",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
   transition: "all 0.3s ease",
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: "50%",
+    background: `linear-gradient(to top, ${theme.colors.accent.purple}80, transparent)`,
+    borderRadius: "0 0 50% 50%",
+    opacity: 0,
+    transition: "opacity 0.3s ease",
+    pointerEvents: "none",
+    zIndex: 1,
+  },
   "&:hover": {
     borderColor: theme.colors.accent.purple,
     boxShadow: `0 0 20px ${theme.colors.accent.purple}66`,
+    "&::before": {
+      opacity: 1,
+    },
   },
   "@media (max-width: 768px)": {
-    width: "100px",
-    height: "100px",
+    width: 100,
+    height: 100,
   },
 }));
 
 export const GameImage = styled.img({
   width: "100%",
   height: "100%",
+  borderRadius: "50%",
   objectFit: "cover",
+  display: "block",
+  position: "relative",
+  zIndex: 2,
   transition: "transform 0.3s ease",
   [`${GameItem}:hover &`]: {
     transform: "scale(1.1)",
