@@ -38,7 +38,19 @@ if [ ! -d "node_modules" ]; then
     npm install
 fi
 
+# Ensure Prisma Client is generated
+if [ ! -d "node_modules/.prisma" ]; then
+    echo -e "${YELLOW}Generating Prisma Client...${NC}"
+    npx prisma generate
+fi
+
+# Check if ts-node exists locally, otherwise use npx
+TS_NODE_BIN="./node_modules/.bin/ts-node"
+if [ ! -f "$TS_NODE_BIN" ]; then
+    TS_NODE_BIN="npx ts-node"
+fi
+
 # Run the TypeScript script with dotenv-cli to load .env file
 echo -e "${GREEN}Creating admin account...${NC}"
-npx dotenv-cli -e .env -- npx ts-node prisma/create-admin.ts "$LOGIN" "$PASSWORD"
+npx dotenv-cli -e .env -- $TS_NODE_BIN --project tsconfig.json prisma/create-admin.ts "$LOGIN" "$PASSWORD"
 
