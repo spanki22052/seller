@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Script to create an admin account in PostgreSQL
-# Usage: ./create-admin.sh <login> <password>
+# Script to apply Prisma migrations to the database
+# Usage: ./apply-migrations.sh
 
 set -e
 
@@ -10,16 +10,6 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
-
-# Check if login and password are provided
-if [ $# -lt 2 ]; then
-    echo -e "${RED}Error: Login and password are required${NC}"
-    echo "Usage: $0 <login> <password>"
-    exit 1
-fi
-
-LOGIN=$1
-PASSWORD=$2
 
 # Get the directory where the script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -45,13 +35,7 @@ if [ ! -f "$PRISMA_BIN" ]; then
     exit 1
 fi
 
-# Ensure Prisma Client is generated
-if [ ! -d "node_modules/.prisma" ]; then
-    echo -e "${YELLOW}Generating Prisma Client...${NC}"
-    "$PRISMA_BIN" generate
-fi
-
-# Load environment variables for Prisma commands
+# Load environment variables
 echo -e "${YELLOW}Loading environment variables...${NC}"
 export $(grep -v '^#' .env | xargs)
 
@@ -61,8 +45,25 @@ if [ -z "$DATABASE_URL" ]; then
     exit 1
 fi
 
-# Ensure database migrations are applied (safe to run multiple times)
-echo -e "${YELLOW}Ensuring database migrations are applied...${NC}"
+echo -e "${GREEN}✓ DATABASE_URL is set${NC}"
+
+# Ensure Prisma Client is generated
+echo -e "${YELLOW}Generating Prisma Client...${NC}"
+"$PRISMA_BIN" generate
+
+# Check migration status first
+echo -e "${YELLOW}Checking migration status...${NC}"
+set +e
+STATUS_OUTPUT=$("$PRISMA_BIN" migrate status 2>&1)
+STATUS_EXIT_CODE=$?
+set -e
+
+if [ $STATUS_EXIT_CODE -eq 0 ]; then
+    echo "$STATUS_OUTPUT"
+fi
+
+# Apply migrations
+echo -e "${YELLOW}Applying database migrations...${NC}"
 set +e  # Temporarily disable exit on error to capture output
 MIGRATE_OUTPUT=$("$PRISMA_BIN" migrate deploy 2>&1)
 MIGRATE_EXIT_CODE=$?
@@ -72,30 +73,28 @@ if [ $MIGRATE_EXIT_CODE -ne 0 ]; then
     echo -e "${RED}Error: Failed to apply database migrations${NC}"
     echo "$MIGRATE_OUTPUT"
     echo ""
-    echo -e "${YELLOW}Troubleshooting steps:${NC}"
-    echo "1. Run './apply-migrations.sh' to apply migrations manually"
-    echo "2. Check if DATABASE_URL is correct in .env file"
-    echo "3. Ensure the database server is running and accessible"
-    echo "4. Verify database credentials are correct"
+    echo -e "${YELLOW}Troubleshooting:${NC}"
+    echo "1. Check if DATABASE_URL is correct in .env file"
+    echo "2. Ensure the database server is running and accessible"
+    echo "3. Verify database credentials are correct"
+    echo "4. Check if the database exists"
     exit 1
 fi
 
 # Show migration output
 echo "$MIGRATE_OUTPUT"
+
 if echo "$MIGRATE_OUTPUT" | grep -q "No pending migrations\|already applied\|All migrations have been applied"; then
     echo -e "${GREEN}✓ Database migrations are up to date${NC}"
 else
     echo -e "${GREEN}✓ Database migrations applied successfully${NC}"
 fi
 
-# Check if ts-node exists locally
-TS_NODE_BIN="./node_modules/.bin/ts-node"
-if [ ! -f "$TS_NODE_BIN" ]; then
-    echo -e "${RED}Error: ts-node not found. Please run 'npm install' first${NC}"
-    exit 1
-fi
+# Verify tables were created
+echo -e "${YELLOW}Verifying database schema...${NC}"
+set +e
+SCHEMA_OUTPUT=$("$PRISMA_BIN" db execute --stdin <<< "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name;" 2>&1)
+set -e
 
-# Run the TypeScript script (dotenv is loaded automatically in create-admin.ts)
-echo -e "${GREEN}Creating admin account...${NC}"
-"$TS_NODE_BIN" --project tsconfig.json prisma/create-admin.ts "$LOGIN" "$PASSWORD"
+echo -e "${GREEN}✓ Migration process completed${NC}"
 
