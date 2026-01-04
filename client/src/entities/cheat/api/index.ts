@@ -1,0 +1,2 @@
+export { getCheat } from "./getCheat";
+

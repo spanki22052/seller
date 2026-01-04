@@ -119,8 +119,8 @@ export const CardsContainer = styled.div(({ theme }) => ({
 }));
 
 export const Card = styled.div(({ theme }) => ({
-  minWidth: 350,
-  maxWidth: 400,
+  minWidth: 292,
+  maxWidth: 333,
   width: "100%",
   borderRadius: theme.borderRadius.lg,
   overflow: "hidden",
@@ -132,13 +132,13 @@ export const Card = styled.div(({ theme }) => ({
   flexShrink: 0,
 
   "@media (max-width: 768px)": {
-    minWidth: 280,
-    maxWidth: 320,
+    minWidth: 233,
+    maxWidth: 267,
   },
 
   "@media (max-width: 480px)": {
-    minWidth: 240,
-    maxWidth: 280,
+    minWidth: 200,
+    maxWidth: 233,
   },
 }));
 
@@ -147,6 +147,14 @@ export const ImageWrapper = styled.div({
   width: "100%",
   paddingBottom: "75%", // 4:3 aspect ratio
   overflow: "hidden",
+
+  "& img": {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+  },
 });
 
 export const CardContent = styled.div(({ theme }) => ({
@@ -318,6 +326,28 @@ export const BuyButton = styled.button(({ theme }) => ({
       inset 0 0 20px rgba(255, 0, 255, 0.1)
     `,
     textShadow: "0 0 10px rgba(255, 0, 255, 0.5)",
+  },
+
+  "&:disabled": {
+    opacity: 0.5,
+    cursor: "not-allowed",
+    boxShadow: "none",
+    textShadow: "none",
+    "&:hover": {
+      backgroundColor: theme.colors.accent.purple,
+      boxShadow: `
+        0 4px 12px rgba(255, 0, 255, 0.4),
+        0 0 20px rgba(255, 0, 255, 0.2),
+        inset 0 0 20px rgba(255, 0, 255, 0.1)
+      `,
+      textShadow: "0 0 10px rgba(255, 0, 255, 0.5)",
+      "&::before": {
+        left: "-100%",
+      },
+      "&::after": {
+        opacity: 0,
+      },
+    },
   },
 
   "@media (prefers-reduced-motion: reduce)": {

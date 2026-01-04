@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/shared/contexts/ThemeContext";
 import { ImageModalProvider } from "@/shared/contexts/ImageModalContext";
 import StyledComponentsRegistry from "./StyledComponentsRegistry";
+import { DataPrefetcher } from "./DataPrefetcher";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,6 +20,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <StyledComponentsRegistry>
       <QueryClientProvider client={queryClient}>
+        <DataPrefetcher />
         <ThemeProvider>
           <ImageModalProvider>{children}</ImageModalProvider>
         </ThemeProvider>

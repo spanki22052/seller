@@ -1,4 +1,5 @@
 import { GamePage } from "@/compositions/GamePage";
+import { getGameWithCheats } from "@/entities/game";
 
 interface GamePageParams {
   params: Promise<{
@@ -8,5 +9,6 @@ interface GamePageParams {
 
 export default async function Game({ params }: GamePageParams) {
   const { id } = await params;
-  return <GamePage gameId={id} />;
+  const gameWithCheats = await getGameWithCheats(id);
+  return <GamePage gameData={gameWithCheats} />;
 }

@@ -1,0 +1,89 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: seller_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-seller_db}
+      POSTGRES_USER: ${DB_USER:-seller_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-seller_secure_password_2024}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-seller_user} -d ${DB_NAME:-seller_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: ["postgres", "-c", "log_min_duration_statement=200"]
+    networks:
+      - seller_network
+
+  minio:
+    image: minio/minio:latest
+    container_name: seller_minio
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-admin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minio_secure_password_2024}
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - seller_network
+
+  backend:
+    build:
+      context: .
+      target: development
+    container_name: seller_backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: ${PORT:-3002}
+      DATABASE_URL: postgresql://${DB_USER:-seller_user}:${DB_PASSWORD:-seller_secure_password_2024}@postgres:5432/${DB_NAME:-seller_db}?schema=public
+      PRISMA_CLIENT_ENGINE_TYPE: library
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_USE_SSL: false
+      MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL:-http://62.181.53.211:9000}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-admin}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minio_secure_password_2024}
+      MINIO_BUCKET_PUBLIC: ${MINIO_BUCKET_PUBLIC:-public}
+      MINIO_BUCKET_PRIVATE: ${MINIO_BUCKET_PRIVATE:-private}
+      MINIO_BUCKET_MEDIA: ${MINIO_BUCKET_MEDIA:-media}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://62.181.53.211:3000,http://62.181.53.211:3001,http://62.181.53.211:3002}
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-this-in-production}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
+    ports:
+      - "3002:3002"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    command: npm run start:dev
+    networks:
+      - seller_network
+
+volumes:
+  postgres_data:
+    driver: local
+  minio_data:
+    driver: local
+
+networks:
+  seller_network:
+    driver: bridge

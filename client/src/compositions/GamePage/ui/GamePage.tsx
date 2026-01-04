@@ -5,6 +5,7 @@ import { Sidebar } from "@/widgets/Sidebar";
 import { CheatsList } from "@/widgets/CheatsList";
 import { AccountShop } from "@/shared/ui/AccountShop";
 import { OfficialEmailInfo } from "@/widgets/OfficialEmailInfo";
+import { GameWithCheats } from "@/entities/game";
 import * as Styled from "./styled";
 import { Navbar } from "@/shared/ui/Navbar";
 
@@ -28,18 +29,18 @@ const BeforeBuyInfo = dynamic(
 );
 
 interface GamePageProps {
-  gameId: string;
+  gameData: GameWithCheats;
 }
 
-export function GamePage({ gameId }: GamePageProps) {
+export function GamePage({ gameData }: GamePageProps) {
   return (
     <>
       <Sidebar />
       <Navbar />
       <Styled.Container>
         <Styled.MainContent>
-          <GameHero gameId={gameId} />
-          <CheatsList gameId={gameId} />
+          <GameHero gameData={gameData} />
+          <CheatsList cheats={gameData.cheats} gameId={gameData.id} />
           <AccountShop />
           <BeforeBuyInfo />
         </Styled.MainContent>

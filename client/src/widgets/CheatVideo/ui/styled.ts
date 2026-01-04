@@ -51,54 +51,19 @@ export const LeftSection = styled.div({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  width: "100%",
 });
 
-export const VideoThumbnail = styled.div(({ theme }) => ({
-  position: "relative",
+export const LoadingPlaceholder = styled.div(({ theme }) => ({
   width: "100%",
-  maxWidth: 500,
   aspectRatio: "16 / 9",
   borderRadius: theme.borderRadius.md,
   backgroundColor: theme.colors.bg.secondary,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  overflow: "hidden",
   border: `2px solid ${theme.colors.border.accent}`,
-}));
-
-export const PlayButton = styled.div(({ theme }) => ({
-  position: "absolute",
-  width: 80,
-  height: 80,
-  borderRadius: "50%",
-  backgroundColor: theme.colors.accent.purple,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  fontSize: 32,
-  color: theme.colors.text.primary,
-  cursor: "pointer",
-  zIndex: 2,
-  boxShadow: `0 4px 20px rgba(255, 0, 255, 0.5)`,
-  transition: "all 0.3s ease",
-
-  "@media (max-width: 768px)": {
-    width: 64,
-    height: 64,
-    fontSize: 24,
-  },
-
-  "@media (max-width: 480px)": {
-    width: 56,
-    height: 56,
-    fontSize: 20,
-  },
-
-  "&:hover": {
-    backgroundColor: theme.colors.accent.purpleLight,
-    boxShadow: `0 6px 30px rgba(255, 0, 255, 0.7)`,
-  },
+  minHeight: 300,
 }));
 
 export const OverlayText = styled.div(({ theme }) => ({

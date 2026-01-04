@@ -3,6 +3,14 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Accept build arguments for Next.js public env vars
+ARG NEXT_PUBLIC_API_URL=http://62.181.53.211:3002/api
+ARG API_URL=http://backend:3002/api
+
+# Set environment variables for build
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV API_URL=${API_URL}
+
 # Copy package files
 COPY package*.json ./
 

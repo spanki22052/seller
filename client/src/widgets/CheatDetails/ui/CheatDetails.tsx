@@ -2,8 +2,13 @@
 
 import React, { useCallback } from "react";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import remarkBreaks from "remark-breaks";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
-import { cheatDetailsData } from "../lib/constants";
+import { VideoPlayer } from "@/shared/ui/VideoPlayer";
+import { getCheat, cheatKeys } from "@/entities/cheat";
 import * as Styled from "./styled";
 
 interface CheatDetailsProps {
@@ -16,8 +21,12 @@ export function CheatDetails({
   onBreadcrumbClick,
 }: CheatDetailsProps) {
   const prefersReducedMotion = useReducedMotion();
-  const data =
-    cheatDetailsData[cheatId || "default"] || cheatDetailsData.default;
+
+  const { data: cheat, isLoading } = useQuery({
+    queryKey: cheatKeys.detail(cheatId || ""),
+    queryFn: () => getCheat(cheatId!),
+    enabled: !!cheatId,
+  });
 
   /**
    * Handles breadcrumb click and scrolls to the corresponding section.
@@ -32,6 +41,10 @@ export function CheatDetails({
     },
     [onBreadcrumbClick]
   );
+
+  if (isLoading || !cheat) {
+    return null;
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -77,16 +90,16 @@ export function CheatDetails({
         animate="visible"
       >
         <Styled.BreadcrumbsContainer as={motion.nav} variants={itemVariants}>
-          {data.breadcrumbs.map((crumb, index) => (
+          {cheat.breadcrumbs.map((crumb, index) => (
             <React.Fragment key={index}>
               <Styled.BreadcrumbLink
                 href={crumb.href || "#"}
-                $isActive={index === data.breadcrumbs.length - 1}
+                $isActive={index === cheat.breadcrumbs.length - 1}
                 onClick={(e) => handleBreadcrumbClick(e, crumb.sectionId)}
               >
                 {crumb.label}
               </Styled.BreadcrumbLink>
-              {index < data.breadcrumbs.length - 1 && (
+              {index < cheat.breadcrumbs.length - 1 && (
                 <Styled.BreadcrumbArrow>→</Styled.BreadcrumbArrow>
               )}
             </React.Fragment>
@@ -110,11 +123,13 @@ export function CheatDetails({
 
           <Styled.ContentWrapper>
             <Styled.VideoSection as={motion.div} variants={videoVariants}>
-              {data.videoUrl ? (
-                <Styled.VideoElement
-                  src={data.videoUrl}
-                  controls
-                  poster={data.videoThumbnail}
+              {cheat.videoUrl ? (
+                <VideoPlayer
+                  src={cheat.videoUrl}
+                  poster={cheat.videoThumbnail}
+                  title="Видео инструкция"
+                  controls={true}
+                  autoplay={false}
                 />
               ) : (
                 <Styled.VideoPlaceholder>
@@ -141,48 +156,48 @@ export function CheatDetails({
               <Styled.RightNeonBorder />
               <Styled.CurvedNeonLine />
 
-              <Styled.ProductName>{data.productName}</Styled.ProductName>
+              <Styled.ProductName>{cheat.brandName}</Styled.ProductName>
 
-              <Styled.SpecsList>
-                <Styled.SpecItem>
-                  <Styled.SpecHighlight>
-                    {data.windowsVersion}
-                  </Styled.SpecHighlight>
-                </Styled.SpecItem>
-                <Styled.SpecItem>
-                  Поддерживаемая версия игры: {data.gameVersion}
-                </Styled.SpecItem>
-                <Styled.SpecItem>Режим игры: {data.gameMode}</Styled.SpecItem>
-                <Styled.SpecItem>Процессоры: {data.processors}</Styled.SpecItem>
-              </Styled.SpecsList>
+              {cheat.descriptionMarkdown && (
+                <Styled.MarkdownContent>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkBreaks]}
+                    rehypePlugins={[rehypeRaw]}
+                  >
+                    {cheat.descriptionMarkdown}
+                  </ReactMarkdown>
+                </Styled.MarkdownContent>
+              )}
 
-              <Styled.ReviewsButton
-                as={motion.button}
-                whileHover={
-                  prefersReducedMotion
-                    ? {}
-                    : {
-                        scale: 1.02,
-                        transition: {
-                          duration: 0.3,
-                          ease: [0.22, 1, 0.36, 1],
-                        },
-                      }
-                }
-                whileTap={
-                  prefersReducedMotion
-                    ? {}
-                    : {
-                        scale: 0.98,
-                        transition: {
-                          duration: 0.15,
-                          ease: [0.22, 1, 0.36, 1],
-                        },
-                      }
-                }
-              >
-                {data.buttonText}
-              </Styled.ReviewsButton>
+              {cheat.buttonText && (
+                <Styled.ReviewsButton
+                  as={motion.button}
+                  whileHover={
+                    prefersReducedMotion
+                      ? {}
+                      : {
+                          scale: 1.02,
+                          transition: {
+                            duration: 0.3,
+                            ease: [0.22, 1, 0.36, 1],
+                          },
+                        }
+                  }
+                  whileTap={
+                    prefersReducedMotion
+                      ? {}
+                      : {
+                          scale: 0.98,
+                          transition: {
+                            duration: 0.15,
+                            ease: [0.22, 1, 0.36, 1],
+                          },
+                        }
+                  }
+                >
+                  {cheat.buttonText}
+                </Styled.ReviewsButton>
+              )}
             </Styled.DetailsSection>
           </Styled.ContentWrapper>
         </Styled.BorderWrapper>

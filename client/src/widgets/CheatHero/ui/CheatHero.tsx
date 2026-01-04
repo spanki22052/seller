@@ -3,10 +3,11 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import { SearchBar } from "@/widgets/SearchBar";
 import { CircularText } from "@/shared/ui/CircularText";
-import { cheatHeroData } from "../lib/constants";
+import { getCheat, cheatKeys } from "@/entities/cheat";
 import { buttonAnimations } from "../lib/animConstants";
 import * as Styled from "./styled";
 
@@ -16,13 +17,17 @@ export interface CheatHeroProps {
   onBuyNowClick?: () => void;
 }
 
-export function CheatHero({
-  gameId,
-  cheatId,
-  onBuyNowClick,
-}: CheatHeroProps) {
+export function CheatHero({ gameId, cheatId, onBuyNowClick }: CheatHeroProps) {
   const prefersReducedMotion = useReducedMotion();
-  const data = cheatHeroData[cheatId] || cheatHeroData.default;
+
+  const { data: cheat, isLoading } = useQuery({
+    queryKey: cheatKeys.detail(cheatId),
+    queryFn: () => getCheat(cheatId),
+  });
+
+  if (isLoading || !cheat) {
+    return null;
+  }
 
   const textVariants = {
     hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 },
@@ -70,9 +75,9 @@ export function CheatHero({
         <Styled.SearchBarWrapper>
           <SearchBar />
         </Styled.SearchBarWrapper>
-        <Styled.BrandName>{data.brandName}</Styled.BrandName>
-        <Styled.Title>{data.title}</Styled.Title>
-        <Styled.Description>{data.description}</Styled.Description>
+        <Styled.BrandName>{cheat.brandName}</Styled.BrandName>
+        <Styled.Title>{cheat.title}</Styled.Title>
+        <Styled.Description>{cheat.description}</Styled.Description>
         <Styled.ButtonGroup
           as={motion.div}
           variants={buttonVariants}
@@ -82,15 +87,31 @@ export function CheatHero({
           <Styled.PrimaryButton
             as={motion.button}
             onClick={onBuyNowClick}
-            whileHover={prefersReducedMotion ? buttonAnimations.reducedMotion.hover : buttonAnimations.hover}
-            whileTap={prefersReducedMotion ? buttonAnimations.reducedMotion.tap : buttonAnimations.tap}
+            whileHover={
+              prefersReducedMotion
+                ? buttonAnimations.reducedMotion.hover
+                : buttonAnimations.hover
+            }
+            whileTap={
+              prefersReducedMotion
+                ? buttonAnimations.reducedMotion.tap
+                : buttonAnimations.tap
+            }
           >
             Купить сейчас
           </Styled.PrimaryButton>
           <Styled.SecondaryButton
             as={motion.button}
-            whileHover={prefersReducedMotion ? buttonAnimations.reducedMotion.hover : buttonAnimations.hover}
-            whileTap={prefersReducedMotion ? buttonAnimations.reducedMotion.tap : buttonAnimations.tap}
+            whileHover={
+              prefersReducedMotion
+                ? buttonAnimations.reducedMotion.hover
+                : buttonAnimations.hover
+            }
+            whileTap={
+              prefersReducedMotion
+                ? buttonAnimations.reducedMotion.tap
+                : buttonAnimations.tap
+            }
           >
             Статусы читов
           </Styled.SecondaryButton>
@@ -108,18 +129,19 @@ export function CheatHero({
         animate="visible"
       >
         <Styled.CircularWrapper>
-          <Styled.CircularImage>
-            <Image
-              src={data.image}
-              alt={data.brandName}
-              fill
-              sizes="(max-width: 768px) 100vw, 600px"
-              style={{ objectFit: "contain" }}
-              priority
-            />
-          </Styled.CircularImage>
+          {cheat.circularImage && (
+            <Styled.CircularImage>
+              <Image
+                src={cheat.circularImage}
+                alt={cheat.brandName}
+                width={300}
+                height={300}
+                unoptimized
+              />
+            </Styled.CircularImage>
+          )}
           <CircularText
-            text={data.circularText}
+            text="приватные читы на сайте cheatarena.com "
             radius={200}
             fontSize={12}
             mobileFontSize={8}

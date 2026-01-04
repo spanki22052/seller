@@ -81,7 +81,7 @@ export const Title = styled.h1(({ theme }) => ({
 }));
 
 export const Description = styled.p(({ theme }) => ({
-  fontSize: 18,
+  fontSize: 32,
   fontWeight: 400,
   color: theme.colors.text.primary,
   lineHeight: 1.6,
@@ -348,13 +348,31 @@ export const CircularWrapper = styled.div({
 });
 
 export const CircularImage = styled.div({
-  position: "relative",
-  width: "100%",
-  height: "100%",
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 300,
+  height: 300,
   borderRadius: "50%",
   overflow: "hidden",
   zIndex: 2,
   filter: "drop-shadow(0 0 40px rgba(255, 0, 255, 0.5))",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+
+  "@media (max-width: 768px)": {
+    width: 210,
+    height: 210,
+  },
+
+  "& img": {
+    width: "100%",
+    height: "100%",
+    objectFit: "contain",
+    objectPosition: "center center",
+  },
 });
 
 interface CircularCharProps {

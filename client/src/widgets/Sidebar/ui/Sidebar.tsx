@@ -3,24 +3,91 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Input } from "antd";
+import { Input, Spin } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { motion, AnimatePresence } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
+import { useDebounce } from "@/shared/lib/hooks/useDebounce";
 import { useImageModalState } from "@/shared/contexts/ImageModalContext";
+import {
+  searchGames,
+  gameKeys,
+  type GameWithCheats,
+  type Cheat,
+} from "@/entities/game";
 import chitarenaLogo from "@/shared/assets/images/chitarena-full-logo.png";
-import { MENU_ITEMS, SIDEBAR_WIDTH_OPEN } from "../lib/constants";
+import { SIDEBAR_WIDTH_OPEN } from "../lib/constants";
 import { MenuItem } from "../model/types";
 import { CloseIcon } from "./CloseIcon";
+import { useSidebarData } from "../hooks/useSidebarData";
 import * as Styled from "./styled";
 
 export function Sidebar() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [openDropdowns, setOpenDropdowns] = useState<Set<string>>(new Set());
   const prefersReducedMotion = useReducedMotion();
   const { isImageModalOpen } = useImageModalState();
+  const { menuItems: allMenuItems, isLoading: isLoadingAll } = useSidebarData();
+
+  // Backend search query
+  const { data: searchResults = [], isLoading: isLoadingSearch } = useQuery({
+    queryKey: gameKeys.search(debouncedSearchQuery),
+    queryFn: () => searchGames(debouncedSearchQuery),
+    enabled: debouncedSearchQuery.trim().length > 0,
+  });
+
+  // Transform backend search results to MenuItem format
+  const searchMenuItems = useMemo(() => {
+    if (!debouncedSearchQuery.trim() || searchResults.length === 0) {
+      return [];
+    }
+
+    const baseItems: MenuItem[] = [
+      { id: "home", label: "Главная", isCategory: true, href: "/" },
+      {
+        id: "personal-cabinet",
+        label: "ЛИЧНЫЙ КАБИНЕТ",
+        isCategory: true,
+        href: "/personal-cabinet",
+      },
+      {
+        id: "new-releases",
+        label: "НОВИНКИ",
+        isCategory: true,
+        href: "/new-releases",
+      },
+    ];
+
+    const gameItems: MenuItem[] = searchResults.map((game: GameWithCheats) => ({
+      id: game.id,
+      label: game.name.toUpperCase(),
+      href: `/game/${game.id}`,
+      cheats: [
+        {
+          id: `${game.id}-main`,
+          name: "Смотреть главную страницу",
+          href: `/game/${game.id}`,
+        },
+        ...game.cheats.map((cheat: Cheat) => ({
+          id: cheat.id,
+          name: cheat.brandName,
+          href: `/game/${game.id}/cheat/${cheat.id}`,
+        })),
+      ],
+    }));
+
+    return [...baseItems, ...gameItems];
+  }, [searchResults, debouncedSearchQuery]);
+
+  // Use search results if searching, otherwise use all items
+  const menuItems =
+    debouncedSearchQuery.trim().length > 0 ? searchMenuItems : allMenuItems;
+  const isLoading =
+    debouncedSearchQuery.trim().length > 0 ? isLoadingSearch : isLoadingAll;
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -45,120 +112,34 @@ export function Sidebar() {
     };
   }, [isOpen]);
 
-  // Логика поиска и фильтрации
+  // Логика поиска и фильтрации - используем backend search результаты
   const filteredAndSortedItems = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return MENU_ITEMS;
+    // Если нет поискового запроса, показываем все элементы
+    if (!debouncedSearchQuery.trim()) {
+      return menuItems;
     }
 
-    const query = searchQuery.toLowerCase().trim();
-    const results: MenuItem[] = [];
-    const matchedGameIds = new Set<string>();
-
-    // Всегда добавляем категории "Главная", "ЛИЧНЫЙ КАБИНЕТ" и "НОВИНКИ"
-    const alwaysShowCategories = MENU_ITEMS.filter(
-      (item) =>
-        item.isCategory &&
-        (item.id === "home" ||
-          item.id === "personal-cabinet" ||
-          item.id === "new-releases")
-    );
-    results.push(...alwaysShowCategories);
-
-    // Поиск по названию игры (пропускаем категории, которые всегда показываются)
-    MENU_ITEMS.forEach((item) => {
-      // Пропускаем категории, которые уже добавлены
-      if (
-        item.isCategory &&
-        (item.id === "home" ||
-          item.id === "personal-cabinet" ||
-          item.id === "new-releases")
-      ) {
-        return;
-      }
-
-      const itemLabelLower = item.label.toLowerCase();
-      if (itemLabelLower.includes(query)) {
-        results.push(item);
-        if (item.cheats) {
-          matchedGameIds.add(item.id);
-        }
-      }
-    });
-
-    // Поиск по названию читов
-    MENU_ITEMS.forEach((item) => {
-      // Пропускаем категории, которые всегда показываются
-      if (
-        item.isCategory &&
-        (item.id === "home" ||
-          item.id === "personal-cabinet" ||
-          item.id === "new-releases")
-      ) {
-        return;
-      }
-
-      if (item.cheats) {
-        const hasMatchingCheat = item.cheats.some((cheat) =>
-          cheat.name.toLowerCase().includes(query)
-        );
-
-        if (hasMatchingCheat && !matchedGameIds.has(item.id)) {
-          results.push(item);
-          matchedGameIds.add(item.id);
-        }
-      }
-    });
-
-    // Сортировка: сначала категории (home, personal-cabinet, new-releases), потом остальные категории, потом игры
-    return results.sort((a, b) => {
-      // Специальные категории всегда первые
-      const aIsSpecial =
-        a.isCategory &&
-        (a.id === "home" ||
-          a.id === "personal-cabinet" ||
-          a.id === "new-releases");
-      const bIsSpecial =
-        b.isCategory &&
-        (b.id === "home" ||
-          b.id === "personal-cabinet" ||
-          b.id === "new-releases");
-
-      if (aIsSpecial && !bIsSpecial) return -1;
-      if (!aIsSpecial && bIsSpecial) return 1;
-
-      // Затем остальные категории
-      if (a.isCategory && !b.isCategory) return -1;
-      if (!a.isCategory && b.isCategory) return 1;
-
-      return a.label.localeCompare(b.label);
-    });
-  }, [searchQuery]);
+    // Backend уже отфильтровал результаты, просто используем их
+    return menuItems;
+  }, [debouncedSearchQuery, menuItems]);
 
   // Вычисляем какие dropdown должны быть открыты при поиске
   const autoOpenDropdowns = useMemo(() => {
-    if (!searchQuery.trim()) {
+    if (!debouncedSearchQuery.trim()) {
       return new Set<string>();
     }
 
-    const query = searchQuery.toLowerCase().trim();
     const newOpenDropdowns = new Set<string>();
 
+    // При поиске открываем все игры с читами (backend уже отфильтровал)
     filteredAndSortedItems.forEach((item) => {
-      if (item.cheats) {
-        const hasMatchingCheat = item.cheats.some((cheat) =>
-          cheat.name.toLowerCase().includes(query)
-        );
-        const matchesGameName = item.label.toLowerCase().includes(query);
-
-        if (hasMatchingCheat || matchesGameName) {
-          newOpenDropdowns.add(item.id);
-        }
+      if (item.cheats && item.cheats.length > 0) {
+        newOpenDropdowns.add(item.id);
       }
     });
 
     return newOpenDropdowns;
-  }, [searchQuery, filteredAndSortedItems]);
+  }, [debouncedSearchQuery, filteredAndSortedItems]);
 
   // Синхронизируем открытые dropdown с результатами поиска
   useEffect(() => {
@@ -177,49 +158,36 @@ export function Sidebar() {
     });
   };
 
-  // Функция для фильтрации и сортировки читов по поисковому запросу
-  // Если поисковый запрос совпадает с названием игры, показываем все читы
-  const getFilteredCheats = (cheats: MenuItem["cheats"], gameLabel: string) => {
-    if (!cheats || !searchQuery.trim()) {
-      return cheats || [];
+  // Функция для получения читов (backend уже отфильтровал их)
+  const getFilteredCheats = (cheats: MenuItem["cheats"]) => {
+    if (!cheats) {
+      return [];
     }
 
-    const query = searchQuery.toLowerCase().trim();
-    const gameLabelLower = gameLabel.toLowerCase();
-
-    // Если поисковый запрос совпадает с названием игры, возвращаем все читы
-    if (gameLabelLower.includes(query)) {
-      return cheats;
-    }
-
-    // Иначе фильтруем читы по поисковому запросу
-    const filtered = cheats.filter((cheat) =>
-      cheat.name.toLowerCase().includes(query)
-    );
-
-    // Сортировка: читы, которые начинаются с поискового запроса, идут первыми
-    return filtered.sort((a, b) => {
-      const aName = a.name.toLowerCase();
-      const bName = b.name.toLowerCase();
-      const aStartsWith = aName.startsWith(query);
-      const bStartsWith = bName.startsWith(query);
-
-      if (aStartsWith && !bStartsWith) return -1;
-      if (!aStartsWith && bStartsWith) return 1;
-      return a.name.localeCompare(b.name);
-    });
+    // Backend уже отфильтровал читы, просто возвращаем их
+    return cheats;
   };
 
   // Функция для навигации к странице чита
   const handleCheatClick = (
     gameId: string,
     cheatId: string,
+    cheatName: string,
     e?: React.MouseEvent
   ) => {
     e?.preventDefault();
     e?.stopPropagation();
     setIsOpen(false);
-    router.push(`/game/${gameId}/cheat/${cheatId}`);
+
+    // Если это "Смотреть главную страницу", переходим на страницу игры
+    const isMainPage =
+      cheatId.endsWith("-main") || cheatName === "Смотреть главную страницу";
+
+    if (isMainPage) {
+      router.push(`/game/${gameId}`);
+    } else {
+      router.push(`/game/${gameId}/cheat/${cheatId}`);
+    }
   };
 
   // Функция для навигации по категориям
@@ -425,6 +393,11 @@ export function Sidebar() {
                     <Input
                       placeholder="Поиск..."
                       prefix={<SearchOutlined />}
+                      suffix={
+                        isLoading && debouncedSearchQuery.trim().length > 0 ? (
+                          <Spin size="small" />
+                        ) : null
+                      }
                       size="large"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
@@ -438,7 +411,17 @@ export function Sidebar() {
                   animate="open"
                   exit="closed"
                 >
-                  {filteredAndSortedItems.length === 0 ? (
+                  {isLoading ? (
+                    <Styled.MenuItem
+                      variants={menuItemVariants}
+                      initial="closed"
+                      animate="open"
+                    >
+                      <Styled.MenuItemLink $isCategory>
+                        <Spin size="small" /> Загрузка...
+                      </Styled.MenuItemLink>
+                    </Styled.MenuItem>
+                  ) : filteredAndSortedItems.length === 0 ? (
                     <Styled.MenuItem
                       variants={menuItemVariants}
                       initial="closed"
@@ -495,8 +478,7 @@ export function Sidebar() {
                               {isDropdownOpen &&
                                 (() => {
                                   const filteredCheats = getFilteredCheats(
-                                    item.cheats,
-                                    item.label
+                                    item.cheats
                                   );
                                   return filteredCheats.length > 0 ? (
                                     <Styled.DropdownList
@@ -517,12 +499,17 @@ export function Sidebar() {
                                             <a
                                               href={
                                                 cheat.href ||
-                                                `/game/${item.id}/cheat/${cheat.id}`
+                                                (cheat.id.endsWith("-main") ||
+                                                cheat.name ===
+                                                  "Смотреть главную страницу"
+                                                  ? `/game/${item.id}`
+                                                  : `/game/${item.id}/cheat/${cheat.id}`)
                                               }
                                               onClick={(e) => {
                                                 handleCheatClick(
                                                   item.id,
                                                   cheat.id,
+                                                  cheat.name,
                                                   e
                                                 );
                                               }}

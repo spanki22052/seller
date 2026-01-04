@@ -1,16 +1,19 @@
 "use client";
 
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { Input } from "antd";
+import { Input, Spin } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { motion, AnimatePresence } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import { useDebounce } from "@/shared/lib/hooks/useDebounce";
-import { MENU_ITEMS } from "@/widgets/Sidebar/lib/constants";
+import { searchGames, gameKeys } from "@/entities/game";
 import { MenuItem } from "@/widgets/Sidebar/model/types";
 import * as Styled from "./styled";
 
 export function SearchBar() {
+  const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
@@ -18,106 +21,40 @@ export function SearchBar() {
   const searchBarRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Filter games and cheats based on debounced search query
+  // Backend search query
+  const { data: searchResults = [], isLoading } = useQuery({
+    queryKey: gameKeys.search(debouncedSearchQuery),
+    queryFn: () => searchGames(debouncedSearchQuery),
+    enabled: debouncedSearchQuery.trim().length > 0,
+  });
+
+  // Transform backend results to MenuItem format
   const filteredResults = useMemo(() => {
-    if (!debouncedSearchQuery.trim()) {
+    if (!debouncedSearchQuery.trim() || searchResults.length === 0) {
       return [];
     }
 
-    const query = debouncedSearchQuery.toLowerCase().trim();
-    const results: MenuItem[] = [];
-    const matchedGameIds = new Set<string>();
+    return searchResults.map((game) => ({
+      id: game.id,
+      label: game.name,
+      href: `/game/${game.id}`,
+      cheats: game.cheats.map((cheat) => ({
+        id: cheat.id,
+        name: cheat.name,
+        href: `/game/${game.id}/cheat/${cheat.id}`,
+      })),
+    }));
+  }, [searchResults, debouncedSearchQuery]);
 
-    // First: Search by game name (exact match gets priority)
-    MENU_ITEMS.forEach((item) => {
-      if (item.isCategory) return; // Skip categories
-
-      const itemLabelLower = item.label.toLowerCase();
-      const isExactMatch = itemLabelLower === query;
-      const isPartialMatch = itemLabelLower.includes(query);
-
-      if (isExactMatch || isPartialMatch) {
-        results.push(item);
-        if (item.cheats) {
-          matchedGameIds.add(item.id);
-        }
-      }
-    });
-
-    // Second: Search by cheat name
-    MENU_ITEMS.forEach((item) => {
-      if (item.isCategory || matchedGameIds.has(item.id)) return;
-
-      if (item.cheats) {
-        const hasMatchingCheat = item.cheats.some((cheat) =>
-          cheat.name.toLowerCase().includes(query)
-        );
-
-        if (hasMatchingCheat) {
-          results.push(item);
-          matchedGameIds.add(item.id);
-        }
-      }
-    });
-
-    // Sort: exact game matches first, then partial matches, then cheat matches
-    return results.sort((a, b) => {
-      const aLabelLower = a.label.toLowerCase();
-      const bLabelLower = b.label.toLowerCase();
-      const aExact = aLabelLower === query;
-      const bExact = bLabelLower === query;
-      const aStartsWith = aLabelLower.startsWith(query);
-      const bStartsWith = bLabelLower.startsWith(query);
-
-      if (aExact && !bExact) return -1;
-      if (!aExact && bExact) return 1;
-      if (aStartsWith && !bStartsWith) return -1;
-      if (!aStartsWith && bStartsWith) return 1;
-      return a.label.localeCompare(b.label);
-    });
-  }, [debouncedSearchQuery]);
-
-  // Filter cheats for a specific game and check if query matches game name
-  const getFilteredCheats = (cheats: MenuItem["cheats"], gameLabel: string) => {
+  // Get cheats for a game (backend already filters them)
+  const getFilteredCheats = (cheats: MenuItem["cheats"]) => {
     if (!cheats) {
-      return { cheats: [], shouldShowAll: false };
+      return { cheats: [] };
     }
 
-    const query = debouncedSearchQuery.toLowerCase().trim();
-    const gameLabelLower = gameLabel.toLowerCase();
-
-    // If query matches game name exactly or partially, show all cheats
-    const shouldShowAll =
-      gameLabelLower === query || gameLabelLower.includes(query);
-
-    if (shouldShowAll) {
-      return {
-        cheats: cheats.sort((a, b) => a.name.localeCompare(b.name)),
-        shouldShowAll: true,
-      };
-    }
-
-    // Otherwise, filter cheats by query
-    const filtered = cheats.filter((cheat) =>
-      cheat.name.toLowerCase().includes(query)
-    );
-
-    const sorted = filtered.sort((a, b) => {
-      const aName = a.name.toLowerCase();
-      const bName = b.name.toLowerCase();
-      const aStartsWith = aName.startsWith(query);
-      const bStartsWith = bName.startsWith(query);
-      const aExact = aName === query;
-      const bExact = bName === query;
-
-      if (aExact && !bExact) return -1;
-      if (!aExact && bExact) return 1;
-      if (aStartsWith && !bStartsWith) return -1;
-      if (!aStartsWith && bStartsWith) return 1;
-      return a.name.localeCompare(b.name);
-    });
-
-    return { cheats: sorted, shouldShowAll: false };
+    return {
+      cheats: cheats.sort((a, b) => a.name.localeCompare(b.name)),
+    };
   };
 
   // Check if a cheat matches the search query (for highlighting)
@@ -128,8 +65,12 @@ export function SearchBar() {
 
   // Compute dropdown visibility
   const shouldShowDropdown = useMemo(() => {
-    return debouncedSearchQuery.trim().length > 0 && filteredResults.length > 0;
-  }, [debouncedSearchQuery, filteredResults]);
+    return (
+      debouncedSearchQuery.trim().length > 0 &&
+      !isLoading &&
+      filteredResults.length > 0
+    );
+  }, [debouncedSearchQuery, isLoading, filteredResults]);
 
   // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -232,6 +173,7 @@ export function SearchBar() {
       <Input
         placeholder="Поиск..."
         prefix={<SearchOutlined />}
+        suffix={isLoading ? <Spin size="small" /> : null}
         size="large"
         value={searchQuery}
         onChange={handleInputChange}
@@ -254,8 +196,7 @@ export function SearchBar() {
             <Styled.DropdownContent>
               {filteredResults.map((item, index) => {
                 const { cheats: filteredCheats } = getFilteredCheats(
-                  item.cheats,
-                  item.label
+                  item.cheats
                 );
                 const hasCheats = filteredCheats && filteredCheats.length > 0;
 
@@ -292,7 +233,11 @@ export function SearchBar() {
                                     e: React.MouseEvent<HTMLAnchorElement>
                                   ) => {
                                     e.preventDefault();
-                                    // Handle navigation here
+                                    if (cheat.href) {
+                                      router.push(cheat.href);
+                                      setIsDropdownOpen(false);
+                                      setSearchQuery("");
+                                    }
                                   }}
                                 >
                                   {cheat.name}

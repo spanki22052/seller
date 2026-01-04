@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import { useImageModalActions } from "@/shared/contexts/ImageModalContext";
@@ -92,15 +91,14 @@ export function ImageModal({
               exit="exit"
               onClick={(e) => e.stopPropagation()}
             >
-              <Image
+              <img
                 src={imageSrc}
                 alt={imageAlt}
-                fill
-                sizes="90vw"
                 style={{
+                  width: "100%",
+                  height: "100%",
                   objectFit: "contain",
                 }}
-                priority
               />
             </Styled.ImageWrapper>
           </Styled.Backdrop>

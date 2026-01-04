@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import { ImageModal } from "@/shared/ui/ImageModal";
-import { screenshots } from "../lib/constants";
+import { getCheat, cheatKeys } from "@/entities/cheat";
 import * as Styled from "./styled";
 
 interface CheatScreenshotsProps {
@@ -18,6 +18,15 @@ export function CheatScreenshots({ cheatId }: CheatScreenshotsProps) {
     src: string;
     alt: string;
   } | null>(null);
+
+  const { data: cheat, isLoading } = useQuery({
+    queryKey: cheatKeys.detail(cheatId),
+    queryFn: () => getCheat(cheatId),
+  });
+
+  if (isLoading || !cheat || !cheat.screenshots || cheat.screenshots.length === 0) {
+    return null;
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -59,24 +68,22 @@ export function CheatScreenshots({ cheatId }: CheatScreenshotsProps) {
         initial="hidden"
         animate="visible"
       >
-        {screenshots.map((screenshot) => (
+        {cheat.screenshots.map((screenshot, index) => (
           <Styled.ScreenshotWrapper
-            key={screenshot.id}
+            key={index}
             as={motion.div}
             variants={itemVariants}
             whileHover={prefersReducedMotion ? {} : { scale: 1.05, zIndex: 10 }}
             whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
             onClick={() =>
-              handleScreenshotClick(screenshot.image, screenshot.alt)
+              handleScreenshotClick(screenshot, `Screenshot ${index + 1}`)
             }
           >
             <Styled.ImageContainer>
-              <Image
-                src={screenshot.image}
-                alt={screenshot.alt}
-                fill
-                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                style={{ objectFit: "cover" }}
+              <img
+                src={screenshot}
+                alt={`Screenshot ${index + 1}`}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
               <Styled.Watermark>CHITARENA</Styled.Watermark>
             </Styled.ImageContainer>

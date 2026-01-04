@@ -2,11 +2,23 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
+import { VideoPlayer } from "@/shared/ui/VideoPlayer";
+import { getSettings, settingsKeys } from "@/entities/settings";
 import * as Styled from "./styled";
 
-export function CheatVideo() {
+export interface CheatVideoProps {
+  cheatId: string;
+}
+
+export function CheatVideo({ cheatId }: CheatVideoProps) {
   const prefersReducedMotion = useReducedMotion();
+
+  const { data: settings, isLoading } = useQuery({
+    queryKey: settingsKeys.detail(),
+    queryFn: () => getSettings(),
+  });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -31,7 +43,7 @@ export function CheatVideo() {
     },
   };
 
-  const imageVariants = {
+  const videoVariants = {
     hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: 20 },
     visible: {
       opacity: 1,
@@ -44,6 +56,21 @@ export function CheatVideo() {
     },
   };
 
+  if (isLoading) {
+    return (
+      <Styled.Container>
+        <Styled.Title>Видео как купить и скачать</Styled.Title>
+        <Styled.ContentWrapper>
+          <Styled.LoadingPlaceholder />
+        </Styled.ContentWrapper>
+      </Styled.Container>
+    );
+  }
+
+  if (!settings?.howToBuyVideoUrl) {
+    return null;
+  }
+
   return (
     <Styled.Container>
       <Styled.Title>Видео как купить и скачать</Styled.Title>
@@ -55,19 +82,17 @@ export function CheatVideo() {
       >
         <Styled.LeftSection
           as={motion.div}
-          variants={imageVariants}
+          variants={videoVariants}
           initial="hidden"
           animate="visible"
         >
-          <Styled.VideoThumbnail>
-            <Styled.PlayButton
-              as={motion.div}
-              whileHover={prefersReducedMotion ? {} : { scale: 1.1 }}
-              whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
-            >
-              ▶
-            </Styled.PlayButton>
-          </Styled.VideoThumbnail>
+          <VideoPlayer
+            src={settings.howToBuyVideoUrl}
+            poster={settings.howToBuyVideoThumbnail}
+            title="Видео инструкция по покупке"
+            controls={true}
+            autoplay={false}
+          />
         </Styled.LeftSection>
 
         <Styled.RightSection

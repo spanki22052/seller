@@ -2,13 +2,24 @@ import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 
 let apiInstance: AxiosInstance | null = null;
 
-export function createApiClient(baseURL: string = "/api"): AxiosInstance {
+const getBaseURL = (): string => {
+  if (typeof window !== "undefined") {
+    // Client-side: use external URL (accessible from browser)
+    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002/api";
+  }
+  // Server-side: use Docker internal URL for server-to-server communication
+  return process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002/api";
+};
+
+export function createApiClient(baseURL?: string): AxiosInstance {
   if (apiInstance) {
     return apiInstance;
   }
 
+  const finalBaseURL = baseURL || getBaseURL();
+
   apiInstance = axios.create({
-    baseURL,
+    baseURL: finalBaseURL,
     timeout: 10000,
     headers: {
       "Content-Type": "application/json",

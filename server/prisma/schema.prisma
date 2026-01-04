@@ -1,0 +1,121 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CheatStatus {
+  AVAILABLE   @map("available")   // Доступен (зеленый)
+  UPDATING    @map("updating")     // Обновляется (синий)
+  FROZEN      @map("frozen")       // Заморожен (серый)
+
+  @@map("cheat_status")
+}
+
+// Example model - replace with your actual models
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([email])
+  @@index([deletedAt])
+  @@map("users")
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  login     String   @unique
+  password  String   @map("password_hash")
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([login])
+  @@index([deletedAt])
+  @@map("admins")
+}
+
+model Game {
+  id              String   @id @default(cuid())
+  name            String
+  color           String
+  image           String?
+  backgroundImage String?  @map("background_image")
+  icon            String?
+  deletedAt       DateTime? @map("deleted_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  cheats    Cheat[]
+
+  @@index([name])
+  @@index([deletedAt])
+  @@map("games")
+}
+
+model Cheat {
+  id                String   @id @default(cuid())
+  gameId            String   @map("game_id")
+  name              String
+  brandName         String   @map("brand_name")
+  title             String
+  description       String?
+  descriptionMarkdown String? @map("description_markdown")
+  circularText      String?  @map("circular_text")
+  image             String?
+  circularImage     String?  @map("circular_image")
+  backgroundImage   String?  @map("background_image")
+  productName       String   @map("product_name")
+  windowsVersion    String?  @map("windows_version")
+  gameVersion       String?  @map("game_version")
+  gameMode          String?  @map("game_mode")
+  processors        String?
+  supportedSystems  String[] @default([]) @map("supported_systems")
+  buttonText        String?  @map("button_text")
+  videoUrl          String?  @map("video_url")
+  videoThumbnail    String?  @map("video_thumbnail")
+  screenshots       Json?
+  price             Json
+  breadcrumbs       Json
+  functions         Json?
+  pricingPlans      Json?    @map("pricing_plans")
+  isNew             Boolean  @default(false) @map("is_new")
+  isComingSoon      Boolean  @default(false) @map("is_coming_soon")
+  status            CheatStatus @default(AVAILABLE) @map("status")
+  deletedAt         DateTime? @map("deleted_at")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  game              Game     @relation(fields: [gameId], references: [id])
+
+  @@index([gameId])
+  @@index([name])
+  @@index([deletedAt])
+  @@index([isNew])
+  @@index([isComingSoon])
+  @@index([status])
+  @@map("cheats")
+}
+
+model Settings {
+  id                String   @id @default(cuid())
+  howToBuyVideoUrl  String?  @map("how_to_buy_video_url")
+  howToBuyVideoThumbnail String? @map("how_to_buy_video_thumbnail")
+  deletedAt         DateTime? @map("deleted_at")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@index([deletedAt])
+  @@map("settings")
+}
+

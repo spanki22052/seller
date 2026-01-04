@@ -15,6 +15,24 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "via.placeholder.com",
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "9000",
+        pathname: "/public/**",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "9000",
+        pathname: "/public/**",
+      },
+      {
+        protocol: "http",
+        hostname: "62.181.53.211",
+        port: "9000",
+        pathname: "/public/**",
+      },
     ],
   },
   // Note: src/compositions is for FSD page compositions, not Next.js routes

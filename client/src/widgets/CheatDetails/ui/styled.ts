@@ -205,6 +205,29 @@ export const SpecHighlight = styled.span(({ theme }) => ({
   fontWeight: 600,
 }));
 
+export const MarkdownContent = styled.div(({ theme }) => ({
+  fontSize: 16,
+  fontWeight: 400,
+  color: theme.colors.text.primary,
+  lineHeight: 1.6,
+
+  "& p": {
+    margin: 0,
+    marginBottom: theme.spacing.md,
+    "&:last-child": {
+      marginBottom: 0,
+    },
+  },
+
+  "& span": {
+    display: "inline",
+  },
+
+  "@media (max-width: 768px)": {
+    fontSize: 14,
+  },
+}));
+
 export const ReviewsButton = styled.button`
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.xl};
   background-color: transparent;

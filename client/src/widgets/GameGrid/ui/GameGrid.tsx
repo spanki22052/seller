@@ -3,14 +3,20 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import { NeonLine } from "@/shared/ui/NeonLine";
-import { games } from "../lib/constants";
+import { getGames, gameKeys, Game } from "@/entities/game";
 import * as Styled from "./styled";
 
 export function GameGrid() {
   const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
+
+  const { data: games = [], isLoading } = useQuery({
+    queryKey: gameKeys.lists(),
+    queryFn: getGames,
+  });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -39,6 +45,20 @@ export function GameGrid() {
     router.push(`/game/${gameId}`);
   };
 
+  if (isLoading) {
+    return (
+      <Styled.Container>
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Styled.GameTile key={`skeleton-${index}`}>
+            <Styled.GameImageWrapper $backgroundColor="#333">
+              <div style={{ width: "100%", height: "100%", backgroundColor: "#444" }} />
+            </Styled.GameImageWrapper>
+          </Styled.GameTile>
+        ))}
+      </Styled.Container>
+    );
+  }
+
   return (
     <Styled.Container
       as={motion.div}
@@ -46,7 +66,7 @@ export function GameGrid() {
       initial="hidden"
       animate="visible"
     >
-      {games.map((game) => (
+      {games.map((game: Game) => (
         <Styled.GameTile
           key={game.id}
           as={motion.div}

@@ -1,0 +1,50 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { IsString, IsOptional } from "class-validator";
+
+export class UpdateGameDto {
+  @ApiProperty({
+    description: "Game name",
+    example: "Battlefield 2042",
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  name?: string;
+
+  @ApiProperty({
+    description: "Game color theme (hex code)",
+    example: "#FF5733",
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  color?: string;
+
+  @ApiProperty({
+    description: "Game image URL",
+    example: "/images/games/battlefield-2042.png",
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  image?: string;
+
+  @ApiProperty({
+    description: "Game background image URL (jpg, jpeg, png)",
+    example: "/images/games/battlefield-2042-background.jpg",
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  backgroundImage?: string;
+
+  @ApiProperty({
+    description: "Game icon image URL",
+    example: "/images/games/battlefield-2042-icon.png",
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  icon?: string;
+}
+

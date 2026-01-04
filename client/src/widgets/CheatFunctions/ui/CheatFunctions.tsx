@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
-import { functionCategories } from "../lib/constants";
+import { getCheat, cheatKeys } from "@/entities/cheat";
 import * as Styled from "./styled";
 
 interface CheatFunctionsProps {
@@ -13,6 +14,15 @@ interface CheatFunctionsProps {
 export function CheatFunctions({ cheatId }: CheatFunctionsProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const prefersReducedMotion = useReducedMotion();
+
+  const { data: cheat, isLoading } = useQuery({
+    queryKey: cheatKeys.detail(cheatId),
+    queryFn: () => getCheat(cheatId),
+  });
+
+  if (isLoading || !cheat || !cheat.functions || cheat.functions.length === 0) {
+    return null;
+  }
 
   const toggleExpanded = (id: string) => {
     setExpandedId(expandedId === id ? null : id);
@@ -69,7 +79,7 @@ export function CheatFunctions({ cheatId }: CheatFunctionsProps) {
         initial="hidden"
         animate="visible"
       >
-        {functionCategories.map((category) => {
+        {cheat.functions.map((category) => {
           const isExpanded = expandedId === category.id;
           return (
             <Styled.Item

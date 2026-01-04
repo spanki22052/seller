@@ -3,37 +3,19 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
+import { getGames, gameKeys } from "@/entities/game";
 import * as Styled from "./styled";
-
-interface Game {
-  id: string;
-  name: string;
-  image: string;
-}
-
-// Generate random images using Picsum Photos
-const getRandomImage = (
-  _seed: string,
-  width: number = 400,
-  height: number = 400
-) => {
-  // Picsum Photos format: /{width}/{height} returns random images from Unsplash
-  // Returns random photos from Picsum Photos service
-  return `https://picsum.photos/${width}/${height}`;
-};
-
-const games: Game[] = [
-  { id: "rust", name: "RUST", image: getRandomImage("rust") },
-  { id: "abi", name: "ABI", image: getRandomImage("abi") },
-  { id: "dayz", name: "DAYZ", image: getRandomImage("dayz") },
-  { id: "stalkreft", name: "STALKREFT", image: getRandomImage("stalkreft") },
-  { id: "eft", name: "EFT", image: getRandomImage("eft") },
-];
 
 export function GameIcons() {
   const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
+
+  const { data: games = [], isLoading } = useQuery({
+    queryKey: gameKeys.lists(),
+    queryFn: getGames,
+  });
 
   const handleGameClick = (gameId: string) => {
     router.push(`/game/${gameId}`);
@@ -61,6 +43,10 @@ export function GameIcons() {
       },
     },
   };
+  if (isLoading) {
+    return null; // или можно показать скелетон/загрузку
+  }
+
   return (
     <Styled.Container
       as={motion.div}
@@ -79,7 +65,7 @@ export function GameIcons() {
         >
           <Styled.GameIcon>
             <Styled.GameImage
-              src={game.image}
+              src={game.icon || game.image || `https://picsum.photos/400/400`}
               alt={game.name}
               onError={(e) => {
                 const target = e.currentTarget;

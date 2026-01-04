@@ -183,7 +183,7 @@ export function CheatPage({ gameId, cheatId }: CheatPageProps) {
             <CheatFunctions cheatId={cheatId} />
           </div>
           <div ref={videoRef}>
-            <CheatVideo />
+            <CheatVideo cheatId={cheatId} />
           </div>
           <div ref={pricingRef}>
             <CheatPricing cheatId={cheatId} />

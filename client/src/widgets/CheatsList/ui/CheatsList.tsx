@@ -1,20 +1,19 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import { NeonLine } from "@/shared/ui/NeonLine";
-import { cheats } from "../lib/constants";
-import { Cheat } from "../model/types";
+import { Cheat } from "@/entities/game";
 import * as Styled from "./styled";
 
 interface CheatsListProps {
-  gameId?: string;
+  cheats: Cheat[];
+  gameId: string;
 }
 
-export function CheatsList({ gameId }: CheatsListProps) {
+export function CheatsList({ cheats, gameId }: CheatsListProps) {
   const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
 
@@ -48,12 +47,41 @@ export function CheatsList({ gameId }: CheatsListProps) {
     return `От ${price.amount}`;
   };
 
-  const handleCheatClick = (cheatId: string) => {
-    console.log(gameId);
-    if (gameId) {
-      router.push(`/game/${gameId}/cheat/${cheatId}`);
+  const getStatusLabel = (status: Cheat["status"]): string => {
+    switch (status) {
+      case "AVAILABLE":
+        return "Доступен";
+      case "UPDATING":
+        return "Обновляется";
+      case "FROZEN":
+        return "Заморожен";
+      default:
+        return status;
     }
   };
+
+  const getStatusColor = (status: Cheat["status"]): string => {
+    switch (status) {
+      case "AVAILABLE":
+        return "#10b981"; // green
+      case "UPDATING":
+        return "#3b82f6"; // blue
+      case "FROZEN":
+        return "#6b7280"; // gray
+      default:
+        return "#6b7280";
+    }
+  };
+
+  const handleCheatClick = (cheatId: string) => {
+    router.push(`/game/${gameId}/cheat/${cheatId}`);
+  };
+
+  if (!cheats || cheats.length === 0) {
+    return null;
+  }
+
+  console.log(cheats);
 
   return (
     <Styled.Container
@@ -72,14 +100,17 @@ export function CheatsList({ gameId }: CheatsListProps) {
           onClick={() => handleCheatClick(cheat.id)}
         >
           <Styled.ImageWrapper>
-            <Image
-              src={cheat.image}
-              alt={cheat.name}
-              fill
-              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
-              style={{ objectFit: "cover" }}
-            />
+            {cheat.image ? (
+              <Styled.CheatImageWrapper>
+                <Styled.CheatImage src={cheat.image} alt={cheat.name} />
+              </Styled.CheatImageWrapper>
+            ) : (
+              <Styled.Placeholder>{cheat.name}</Styled.Placeholder>
+            )}
             <Styled.ChitarenaOverlay />
+            <Styled.StatusBadge $color={getStatusColor(cheat.status)}>
+              {getStatusLabel(cheat.status)}
+            </Styled.StatusBadge>
             {cheat.isNew && <Styled.NewBadge>NEW</Styled.NewBadge>}
             {cheat.isComingSoon && (
               <Styled.ComingSoonBadge>СКОРО</Styled.ComingSoonBadge>

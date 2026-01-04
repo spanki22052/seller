@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useRef } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
-import { pricingPlans } from "../lib/constants";
+import { getCheat, cheatKeys } from "@/entities/cheat";
 import {
   buttonAnimations,
   telegramButtonAnimations,
@@ -18,6 +18,20 @@ interface CheatPricingProps {
 export function CheatPricing({ cheatId }: CheatPricingProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
+
+  const { data: cheat, isLoading } = useQuery({
+    queryKey: cheatKeys.detail(cheatId),
+    queryFn: () => getCheat(cheatId),
+  });
+
+  if (
+    isLoading ||
+    !cheat ||
+    !cheat.pricingPlans ||
+    cheat.pricingPlans.length === 0
+  ) {
+    return null;
+  }
 
   const handleScroll = (direction: "left" | "right") => {
     if (!scrollContainerRef.current) return;
@@ -75,22 +89,26 @@ export function CheatPricing({ cheatId }: CheatPricingProps) {
         </Styled.NavButton>
 
         <Styled.CardsContainer ref={scrollContainerRef}>
-          {pricingPlans.map((plan) => (
+          {cheat.pricingPlans.map((plan) => (
             <Styled.Card
               key={plan.id}
               as={motion.div}
               variants={cardVariants}
               whileHover={prefersReducedMotion ? {} : { y: -4 }}
             >
-              <Styled.ImageWrapper>
-                <Image
-                  src={plan.image}
-                  alt={plan.duration}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 400px"
-                  style={{ objectFit: "cover" }}
-                />
-              </Styled.ImageWrapper>
+              {(plan.image || cheat.image) && (
+                <Styled.ImageWrapper>
+                  <img
+                    src={plan.image || cheat.image}
+                    alt={plan.duration}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </Styled.ImageWrapper>
+              )}
               <Styled.CardContent>
                 <Styled.PriceText>
                   {plan.isAvailable
@@ -116,6 +134,16 @@ export function CheatPricing({ cheatId }: CheatPricingProps) {
                             ? buttonAnimations.reducedMotion.tap
                             : buttonAnimations.tap
                         }
+                        onClick={() => {
+                          if (plan.redirectUrl) {
+                            window.open(
+                              plan.redirectUrl,
+                              "_blank",
+                              "noopener,noreferrer"
+                            );
+                          }
+                        }}
+                        disabled={!plan.redirectUrl}
                       >
                         Купить
                       </Styled.BuyButton>

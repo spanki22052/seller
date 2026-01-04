@@ -346,6 +346,30 @@ export const CharacterWrapper = styled.div({
   },
 });
 
+export const ImageWrapper = styled.div({
+  position: "relative",
+  width: "100%",
+  maxWidth: 600,
+  height: 600,
+  overflow: "hidden",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  borderRadius: 8,
+  "@media (max-width: 1024px)": {
+    maxWidth: 500,
+    height: 500,
+  },
+  "@media (max-width: 768px)": {
+    maxWidth: 400,
+    height: 400,
+  },
+  "@media (max-width: 480px)": {
+    maxWidth: "100%",
+    height: 300,
+  },
+});
+
 export const NeonLines = styled.div(({ theme }) => ({
   position: "absolute",
   top: "-10%",

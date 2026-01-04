@@ -1,0 +1,165 @@
+/* Custom Plyr styles for purple theme */
+
+/* Override Plyr CSS variables */
+.plyr,
+.plyr-react {
+  --plyr-color-main: #ff00ff !important;
+  --plyr-video-background: #1a1a1a !important;
+  --plyr-control-icon-size: 18px !important;
+  --plyr-control-spacing: 10px !important;
+  --plyr-control-radius: 8px !important;
+  --plyr-progress-loading-background: #252525 !important;
+  --plyr-progress-buffered-background: #252525 !important;
+  --plyr-progress-played-background: #ff00ff !important;
+  --plyr-audio-progress-buffered-background: #252525 !important;
+  --plyr-audio-progress-played-background: #ff00ff !important;
+  --plyr-menu-background: #1a1a1a !important;
+  --plyr-menu-color: #ffffff !important;
+  --plyr-menu-border-color: #2a2a2a !important;
+  --plyr-menu-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  --plyr-control-background-hover: rgba(255, 0, 255, 0.2) !important;
+  --plyr-control-foreground: #ffffff !important;
+  --plyr-control-foreground-hover: #ffffff !important;
+  --plyr-range-thumb-background: #ff00ff !important;
+  --plyr-range-thumb-active-shadow-width: 0 0 0 3px !important;
+  --plyr-range-thumb-active-shadow-color: rgba(255, 0, 255, 0.3) !important;
+  --plyr-range-track-height: 6px !important;
+  --plyr-range-thumb-height: 14px !important;
+  --plyr-range-thumb-width: 14px !important;
+  --plyr-range-fill-background: #ff00ff !important;
+  --plyr-video-controls-background: linear-gradient(180deg, transparent 0%, rgba(26, 26, 26, 0.95) 100%) !important;
+  --plyr-video-control-color: #ffffff !important;
+  --plyr-audio-controls-background: #1a1a1a !important;
+  --plyr-audio-control-color: #ffffff !important;
+  --plyr-tooltip-background: #1a1a1a !important;
+  --plyr-tooltip-color: #ffffff !important;
+  --plyr-tooltip-border-color: #ff00ff !important;
+}
+
+/* Control bar */
+.plyr__controls {
+  background: linear-gradient(180deg, transparent 0%, rgba(26, 26, 26, 0.95) 100%) !important;
+  border-top: 1px solid #ff00ff !important;
+}
+
+/* All control buttons */
+.plyr__control {
+  color: #ffffff !important;
+  transition: all 0.2s ease !important;
+  border-radius: 8px !important;
+}
+
+.plyr__control:hover {
+  background-color: rgba(255, 0, 255, 0.2) !important;
+  color: #ff66ff !important;
+  transform: scale(1.05) !important;
+}
+
+.plyr__control:focus {
+  outline: 2px solid #ff00ff !important;
+  outline-offset: 2px !important;
+}
+
+.plyr__control svg {
+  fill: currentColor !important;
+}
+
+/* Play button (large overlay) */
+.plyr__control--overlaid {
+  background-color: #ff00ff !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 20px rgba(255, 0, 255, 0.5) !important;
+  transition: all 0.3s ease !important;
+  border: 2px solid #ff00ff !important;
+}
+
+.plyr__control--overlaid:hover {
+  background-color: #ff66ff !important;
+  box-shadow: 0 6px 30px rgba(255, 0, 255, 0.7) !important;
+  transform: scale(1.1) !important;
+  border-color: #ff66ff !important;
+}
+
+.plyr__control--overlaid svg {
+  fill: #ffffff !important;
+}
+
+/* Progress bar */
+.plyr__progress__played {
+  background: #ff00ff !important;
+  box-shadow: 0 0 10px rgba(255, 0, 255, 0.5) !important;
+}
+
+.plyr__progress__buffer {
+  background: #252525 !important;
+}
+
+/* Volume control */
+.plyr__volume input[type="range"]::-webkit-slider-thumb {
+  background-color: #ff00ff !important;
+  box-shadow: 0 0 0 3px rgba(255, 0, 255, 0.3) !important;
+  border: 2px solid #ff00ff !important;
+}
+
+.plyr__volume input[type="range"]::-moz-range-thumb {
+  background-color: #ff00ff !important;
+  box-shadow: 0 0 0 3px rgba(255, 0, 255, 0.3) !important;
+  border: 2px solid #ff00ff !important;
+}
+
+.plyr__volume input[type="range"]::-webkit-slider-runnable-track {
+  background: #252525 !important;
+}
+
+.plyr__volume input[type="range"]::-moz-range-track {
+  background: #252525 !important;
+}
+
+/* Menu */
+.plyr__menu {
+  background-color: #1a1a1a !important;
+  border: 1px solid #ff00ff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.plyr__menu__container {
+  background-color: #1a1a1a !important;
+}
+
+.plyr__menu__container .plyr__control {
+  color: #ffffff !important;
+}
+
+.plyr__menu__container .plyr__control:hover {
+  background-color: rgba(255, 0, 255, 0.2) !important;
+  color: #ff66ff !important;
+}
+
+/* Settings button when expanded */
+.plyr__control[aria-expanded="true"] {
+  background-color: rgba(255, 0, 255, 0.2) !important;
+  color: #ff66ff !important;
+}
+
+/* Time display */
+.plyr__time {
+  color: #b0b0b0 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+/* Tooltip */
+.plyr__tooltip {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border: 1px solid #ff00ff !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Video element */
+.plyr video {
+  background-color: #1a1a1a !important;
+}
+

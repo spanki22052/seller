@@ -60,6 +60,14 @@ export const ImageContainer = styled.div(({ theme }) => {
     "@media (max-width: 768px)": {
       borderRadius: `${baseRadius * 1.5}px`, // 2 times less (baseRadius * 3 / 2)
     },
+
+    "& img": {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+    },
   };
 });
 

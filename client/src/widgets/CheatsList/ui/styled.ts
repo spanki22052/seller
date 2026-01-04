@@ -50,14 +50,37 @@ export const ImageWrapper = styled.div({
   borderRadius: "inherit",
 });
 
-export const CheatImage = styled.img({
+export const CheatImageWrapper = styled.div({
   position: "absolute",
   top: 0,
   left: 0,
   width: "100%",
   height: "100%",
-  objectFit: "cover",
+  overflow: "hidden",
 });
+
+export const CheatImage = styled.img({
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  display: "block",
+});
+
+export const Placeholder = styled.div(({ theme }) => ({
+  position: "absolute",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  backgroundColor: "#333",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "#fff",
+  fontSize: 14,
+  fontWeight: 600,
+  textTransform: "uppercase",
+}));
 
 export const ChitarenaOverlay = styled.div(({ theme }) => ({
   position: "absolute",
@@ -84,9 +107,25 @@ export const ChitarenaOverlay = styled.div(({ theme }) => ({
   },
 }));
 
-export const NewBadge = styled.div(({ theme }) => ({
+export const StatusBadge = styled.div<{ $color: string }>(({ theme, $color }) => ({
   position: "absolute",
   top: theme.spacing.sm,
+  right: theme.spacing.sm,
+  backgroundColor: $color,
+  color: "#fff",
+  fontSize: 11,
+  fontWeight: 700,
+  padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
+  borderRadius: theme.borderRadius.sm,
+  textTransform: "uppercase",
+  zIndex: 3,
+  boxShadow: `0 2px 8px ${$color}40`,
+  letterSpacing: 0.5,
+}));
+
+export const NewBadge = styled.div(({ theme }) => ({
+  position: "absolute",
+  top: 40,
   right: theme.spacing.sm,
   backgroundColor: "#ef4444",
   color: theme.colors.text.primary,

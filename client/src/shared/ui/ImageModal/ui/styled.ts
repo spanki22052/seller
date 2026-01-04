@@ -28,6 +28,16 @@ export const ImageWrapper = styled.div(({ theme }) => ({
   borderRadius: theme.borderRadius.md,
   overflow: "hidden",
   boxShadow: "0 20px 60px rgba(0, 0, 0, 0.5)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+
+  "& img": {
+    maxWidth: "100%",
+    maxHeight: "100%",
+    width: "auto",
+    height: "auto",
+  },
 }));
 
 export const CloseButton = styled.button(({ theme }) => ({
