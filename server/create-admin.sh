@@ -51,10 +51,15 @@ if [ ! -d "node_modules/.prisma" ]; then
     "$PRISMA_BIN" generate
 fi
 
+# Load environment variables for Prisma commands
+export $(grep -v '^#' .env | xargs)
+
 # Ensure database migrations are applied (safe to run multiple times)
 echo -e "${YELLOW}Ensuring database migrations are applied...${NC}"
+set +e  # Temporarily disable exit on error to capture output
 MIGRATE_OUTPUT=$("$PRISMA_BIN" migrate deploy 2>&1)
 MIGRATE_EXIT_CODE=$?
+set -e  # Re-enable exit on error
 
 if [ $MIGRATE_EXIT_CODE -ne 0 ]; then
     echo -e "${RED}Error: Failed to apply database migrations${NC}"
@@ -63,11 +68,11 @@ if [ $MIGRATE_EXIT_CODE -ne 0 ]; then
     exit 1
 fi
 
-# Show migration output if there were changes
-if echo "$MIGRATE_OUTPUT" | grep -q "No pending migrations"; then
+# Show migration output
+echo "$MIGRATE_OUTPUT"
+if echo "$MIGRATE_OUTPUT" | grep -q "No pending migrations\|already applied"; then
     echo -e "${GREEN}✓ Database migrations are up to date${NC}"
 else
-    echo "$MIGRATE_OUTPUT"
     echo -e "${GREEN}✓ Database migrations applied successfully${NC}"
 fi
 
