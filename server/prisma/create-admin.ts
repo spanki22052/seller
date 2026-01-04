@@ -1,12 +1,13 @@
-import { PrismaClient } from "@prisma/client";
-import * as bcrypt from "bcrypt";
+// Load environment variables FIRST, before any imports that need them
 import * as dotenv from "dotenv";
 import * as path from "path";
 
-// Load environment variables from .env file
-// dotenv-cli will also load it, but this is a backup
 const envPath = path.resolve(process.cwd(), ".env");
 dotenv.config({ path: envPath });
+
+// Now import PrismaClient after env vars are loaded
+import { PrismaClient } from "@prisma/client";
+import * as bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
