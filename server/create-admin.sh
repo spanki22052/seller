@@ -51,6 +51,15 @@ if [ ! -d "node_modules/.prisma" ]; then
     "$PRISMA_BIN" generate
 fi
 
+# Ensure database migrations are applied (safe to run multiple times)
+echo -e "${YELLOW}Ensuring database migrations are applied...${NC}"
+if ! "$PRISMA_BIN" migrate deploy; then
+    echo -e "${RED}Error: Failed to apply database migrations${NC}"
+    echo -e "${YELLOW}Please check your DATABASE_URL and ensure the database is accessible${NC}"
+    exit 1
+fi
+echo -e "${GREEN}✓ Database migrations are up to date${NC}"
+
 # Check if ts-node exists locally
 TS_NODE_BIN="./node_modules/.bin/ts-node"
 if [ ! -f "$TS_NODE_BIN" ]; then
