@@ -26,12 +26,12 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: development
-      PORT: ${PORT:-3002}
+      PORT: "${PORT:-3002}"
       DATABASE_URL: postgresql://${DB_USER:-seller_user}:${DB_PASSWORD:-seller_secure_password_2024}@postgres:5432/${DB_NAME:-seller_db}?schema=public
       PRISMA_CLIENT_ENGINE_TYPE: library
       MINIO_ENDPOINT: minio
-      MINIO_PORT: 9000
-      MINIO_USE_SSL: false
+      MINIO_PORT: "9000"
+      MINIO_USE_SSL: "false"
       MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL:-http://localhost:9000}
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-admin}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minio_secure_password_2024}
