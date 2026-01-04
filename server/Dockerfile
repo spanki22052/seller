@@ -16,15 +16,12 @@ COPY prisma ./prisma/
 # Install dependencies
 RUN npm ci
 
-# Copy entrypoint script for development first with proper permissions
-COPY --chmod=755 docker-entrypoint-dev.sh /app/docker-entrypoint-dev.sh
-
-# Copy source code (this may overwrite the script, so we'll set permissions again)
+# Copy source code
 COPY . .
 
-# Ensure entrypoint script has execute permissions
-RUN chmod +x /app/docker-entrypoint-dev.sh && \
-    ls -la /app/docker-entrypoint-dev.sh
+# Copy entrypoint script for development and set permissions
+COPY docker-entrypoint-dev.sh /app/docker-entrypoint-dev.sh
+RUN chmod +x /app/docker-entrypoint-dev.sh
 
 # Generate Prisma Client
 RUN npx prisma generate
@@ -83,8 +80,8 @@ COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
 COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nestjs:nodejs /app/package*.json ./
 COPY --from=builder --chown=nestjs:nodejs /app/prisma ./prisma
-COPY --chmod=755 docker-entrypoint.sh /app/docker-entrypoint.sh
-RUN chown nestjs:nodejs /app/docker-entrypoint.sh
+COPY docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh && chown nestjs:nodejs /app/docker-entrypoint.sh
 
 USER nestjs
 
