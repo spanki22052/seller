@@ -1,9 +1,53 @@
 // Load environment variables FIRST, before any imports that need them
 import * as dotenv from "dotenv";
 import * as path from "path";
+import * as fs from "fs";
 
-const envPath = path.resolve(process.cwd(), ".env");
-dotenv.config({ path: envPath });
+// Try multiple possible .env file locations
+const possibleEnvPaths = [
+  path.resolve(process.cwd(), ".env"),           // Current working directory (server/)
+  path.resolve(process.cwd(), "../.env"),        // Parent directory
+];
+
+let envLoaded = false;
+let loadedPath = "";
+
+for (const envPath of possibleEnvPaths) {
+  if (fs.existsSync(envPath)) {
+    const result = dotenv.config({ path: envPath });
+    if (!result.error) {
+      envLoaded = true;
+      loadedPath = envPath;
+      break;
+    }
+  }
+}
+
+// Fallback: try dotenv.config() without path (uses default .env in cwd)
+if (!envLoaded) {
+  const result = dotenv.config();
+  if (!result.error) {
+    envLoaded = true;
+    loadedPath = "default (.env in cwd)";
+  }
+}
+
+// Verify DATABASE_URL is loaded
+if (!process.env.DATABASE_URL) {
+  console.error("❌ Error: DATABASE_URL environment variable is not set!");
+  console.error("   Please ensure your .env file contains DATABASE_URL");
+  if (envLoaded) {
+    console.error(`   .env file was found at: ${loadedPath}`);
+    console.error("   But DATABASE_URL was not loaded from it.");
+  } else {
+    console.error("   Checked paths:", possibleEnvPaths.join(", "));
+  }
+  process.exit(1);
+}
+
+if (envLoaded) {
+  console.log(`✓ Loaded .env from: ${loadedPath}`);
+}
 
 // Now import PrismaClient after env vars are loaded
 import { PrismaClient } from "@prisma/client";
