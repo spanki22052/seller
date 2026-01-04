@@ -53,12 +53,23 @@ fi
 
 # Ensure database migrations are applied (safe to run multiple times)
 echo -e "${YELLOW}Ensuring database migrations are applied...${NC}"
-if ! "$PRISMA_BIN" migrate deploy; then
+MIGRATE_OUTPUT=$("$PRISMA_BIN" migrate deploy 2>&1)
+MIGRATE_EXIT_CODE=$?
+
+if [ $MIGRATE_EXIT_CODE -ne 0 ]; then
     echo -e "${RED}Error: Failed to apply database migrations${NC}"
+    echo "$MIGRATE_OUTPUT"
     echo -e "${YELLOW}Please check your DATABASE_URL and ensure the database is accessible${NC}"
     exit 1
 fi
-echo -e "${GREEN}✓ Database migrations are up to date${NC}"
+
+# Show migration output if there were changes
+if echo "$MIGRATE_OUTPUT" | grep -q "No pending migrations"; then
+    echo -e "${GREEN}✓ Database migrations are up to date${NC}"
+else
+    echo "$MIGRATE_OUTPUT"
+    echo -e "${GREEN}✓ Database migrations applied successfully${NC}"
+fi
 
 # Check if ts-node exists locally
 TS_NODE_BIN="./node_modules/.bin/ts-node"

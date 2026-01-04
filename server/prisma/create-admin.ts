@@ -99,8 +99,15 @@ async function createAdmin(login: string, password: string) {
     console.log(`   ID: ${admin.id}`);
     console.log(`   Login: ${admin.login}`);
     console.log(`   Created at: ${admin.createdAt.toISOString()}`);
-  } catch (error) {
-    console.error("Error creating admin:", error);
+  } catch (error: any) {
+    if (error?.code === "P2021") {
+      console.error("❌ Error: Database table 'admins' does not exist.");
+      console.error("   This usually means database migrations have not been applied.");
+      console.error("   Please run: npm run prisma:migrate:deploy");
+      console.error("   Or use: ./create-admin.sh (it should apply migrations automatically)");
+    } else {
+      console.error("Error creating admin:", error);
+    }
     process.exit(1);
   } finally {
     await prisma.$disconnect();
