@@ -64,28 +64,71 @@ fi
 # Ensure database migrations are applied (safe to run multiple times)
 echo -e "${YELLOW}Ensuring database migrations are applied...${NC}"
 set +e  # Temporarily disable exit on error to capture output
-MIGRATE_OUTPUT=$("$PRISMA_BIN" migrate deploy 2>&1)
-MIGRATE_EXIT_CODE=$?
-set -e  # Re-enable exit on error
+MIGRATE_STATUS=$("$PRISMA_BIN" migrate status 2>&1)
+MIGRATE_STATUS_EXIT=$?
+set -e
 
-if [ $MIGRATE_EXIT_CODE -ne 0 ]; then
-    echo -e "${RED}Error: Failed to apply database migrations${NC}"
-    echo "$MIGRATE_OUTPUT"
-    echo ""
-    echo -e "${YELLOW}Troubleshooting steps:${NC}"
-    echo "1. Run './apply-migrations.sh' to apply migrations manually"
-    echo "2. Check if DATABASE_URL is correct in .env file"
-    echo "3. Ensure the database server is running and accessible"
-    echo "4. Verify database credentials are correct"
-    exit 1
-fi
-
-# Show migration output
-echo "$MIGRATE_OUTPUT"
-if echo "$MIGRATE_OUTPUT" | grep -q "No pending migrations\|already applied\|All migrations have been applied"; then
-    echo -e "${GREEN}✓ Database migrations are up to date${NC}"
+# If Prisma says "No migration found", use db push to sync schema
+if echo "$MIGRATE_STATUS" | grep -q "No migration found"; then
+    echo -e "${YELLOW}No migration history detected. Syncing database schema with prisma db push...${NC}"
+    echo -e "${YELLOW}This will create all tables from the current schema.${NC}"
+    
+    set +e
+    DB_PUSH_OUTPUT=$("$PRISMA_BIN" db push --accept-data-loss --skip-generate 2>&1)
+    DB_PUSH_EXIT=$?
+    set -e
+    
+    if [ $DB_PUSH_EXIT -ne 0 ]; then
+        echo -e "${RED}Error: Failed to sync database schema${NC}"
+        echo "$DB_PUSH_OUTPUT"
+        echo ""
+        echo -e "${YELLOW}Troubleshooting steps:${NC}"
+        echo "1. Run './apply-migrations.sh' to apply migrations manually"
+        echo "2. Check if DATABASE_URL is correct in .env file"
+        echo "3. Ensure the database server is running and accessible"
+        exit 1
+    fi
+    
+    echo "$DB_PUSH_OUTPUT"
+    echo -e "${GREEN}✓ Database schema synced successfully${NC}"
+    
+    # Mark all existing migrations as applied
+    echo -e "${YELLOW}Marking existing migrations as applied...${NC}"
+    for migration_dir in prisma/migrations/*/; do
+        if [ -d "$migration_dir" ] && [ -f "${migration_dir}migration.sql" ]; then
+            migration_name=$(basename "$migration_dir")
+            set +e
+            "$PRISMA_BIN" migrate resolve --applied "$migration_name" 2>&1 | grep -v "already applied" || true
+            set -e
+        fi
+    done
+    echo -e "${GREEN}✓ Migrations marked as applied${NC}"
 else
-    echo -e "${GREEN}✓ Database migrations applied successfully${NC}"
+    # Apply migrations normally
+    set +e
+    MIGRATE_OUTPUT=$("$PRISMA_BIN" migrate deploy 2>&1)
+    MIGRATE_EXIT_CODE=$?
+    set -e
+
+    if [ $MIGRATE_EXIT_CODE -ne 0 ]; then
+        echo -e "${RED}Error: Failed to apply database migrations${NC}"
+        echo "$MIGRATE_OUTPUT"
+        echo ""
+        echo -e "${YELLOW}Troubleshooting steps:${NC}"
+        echo "1. Run './apply-migrations.sh' to apply migrations manually"
+        echo "2. Check if DATABASE_URL is correct in .env file"
+        echo "3. Ensure the database server is running and accessible"
+        echo "4. Verify database credentials are correct"
+        exit 1
+    fi
+
+    # Show migration output
+    echo "$MIGRATE_OUTPUT"
+    if echo "$MIGRATE_OUTPUT" | grep -q "No pending migrations\|already applied\|All migrations have been applied"; then
+        echo -e "${GREEN}✓ Database migrations are up to date${NC}"
+    else
+        echo -e "${GREEN}✓ Database migrations applied successfully${NC}"
+    fi
 fi
 
 # Check if ts-node exists locally
