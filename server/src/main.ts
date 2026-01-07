@@ -32,18 +32,20 @@ async function bootstrap() {
   );
 
   // CORS configuration with manual middleware
+  const defaultCorsOrigins = [
+    "http://62.181.53.211:3000", // Client (Production - HTTP)
+    "https://62.181.53.211:3000", // Client (Production - HTTPS)
+    "http://62.181.53.211:3001", // Client Admin (Production - HTTP)
+    "https://62.181.53.211:3001", // Client Admin (Production - HTTPS)
+    "http://62.181.53.211:3002", // Server (for Swagger)
+    "http://localhost:3000", // Client (Development)
+    "http://localhost:3001", // Client Admin (Development)
+    "http://localhost:3002", // Server (Development)
+  ];
+
   const corsOrigins = process.env.CORS_ORIGIN
-    ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
-    : [
-        "http://62.181.53.211:3000", // Client (Production - HTTP)
-        "https://62.181.53.211:3000", // Client (Production - HTTPS)
-        "http://62.181.53.211:3001", // Client Admin (Production - HTTP)
-        "https://62.181.53.211:3001", // Client Admin (Production - HTTPS)
-        "http://62.181.53.211:3002", // Server (for Swagger)
-        "http://localhost:3000", // Client (Development)
-        "http://localhost:3001", // Client Admin (Development)
-        "http://localhost:3002", // Server (Development)
-      ];
+    ? [...defaultCorsOrigins, ...process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())]
+    : defaultCorsOrigins;
 
   // Ensure development origins are always included in development
   if (configService.get<string>("NODE_ENV") === "development") {
@@ -57,9 +59,12 @@ async function bootstrap() {
 
   // Manual CORS middleware - handle preflight and actual requests
   // IMPORTANT: Access-Control-Allow-Credentials can ONLY be set when Access-Control-Allow-Origin is also set
+  console.log(`CORS: Allowed origins: ${corsOrigins.join(', ')}`);
   app.use((req: Request, res: Response, next: NextFunction) => {
     const origin = req.headers.origin;
     const isOriginAllowed = origin && corsOrigins.includes(origin);
+
+    console.log(`CORS: Request from origin: ${origin}, method: ${req.method}, allowed: ${isOriginAllowed}`);
 
     // For preflight OPTIONS requests
     if (req.method === "OPTIONS") {
@@ -74,6 +79,7 @@ async function bootstrap() {
         );
         res.header("Access-Control-Expose-Headers", "Content-Type,Authorization");
         res.header("Access-Control-Max-Age", "86400"); // Cache preflight for 24 hours
+        console.log(`CORS: Allowed OPTIONS request from ${origin}`);
         res.sendStatus(204);
       } else {
         // For OPTIONS requests from non-allowed origins, respond without CORS headers
@@ -94,6 +100,7 @@ async function bootstrap() {
         "Content-Type,Authorization,X-Requested-With,Accept,Origin",
       );
       res.header("Access-Control-Expose-Headers", "Content-Type,Authorization");
+      console.log(`CORS: Set headers for request from ${origin}`);
     }
 
     next();
