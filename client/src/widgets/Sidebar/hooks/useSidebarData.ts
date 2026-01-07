@@ -5,7 +5,11 @@ import { getActiveHomeLinks, homeLinkKeys } from "@/entities/home-link";
 import { MenuItem } from "../model/types";
 
 export function useSidebarData() {
-  const { data: gamesData, isLoading: isLoadingGames, error: gamesError } = useQuery({
+  const {
+    data: gamesData,
+    isLoading: isLoadingGames,
+    error: gamesError,
+  } = useQuery({
     queryKey: gameKeys.allWithCheats(),
     queryFn: getAllGamesWithCheats,
     staleTime: 60 * 1000, // 1 minute - data is fresh for 1 minute
@@ -13,7 +17,11 @@ export function useSidebarData() {
     refetchOnWindowFocus: false,
   });
 
-  const { data: homeLinksData, isLoading: isLoadingHomeLinks, error: homeLinksError } = useQuery({
+  const {
+    data: homeLinksData,
+    isLoading: isLoadingHomeLinks,
+    error: homeLinksError,
+  } = useQuery({
     queryKey: homeLinkKeys.active(),
     queryFn: getActiveHomeLinks,
     staleTime: 60 * 1000, // 1 minute - data is fresh for 1 minute
@@ -28,9 +36,6 @@ export function useSidebarData() {
         label: "Главная",
         homeLinks: homeLinksData || [],
       },
-      { id: "games", label: "ИГРЫ", isCategory: true, href: "/games" },
-      { id: "personal-cabinet", label: "ЛИЧНЫЙ КАБИНЕТ", isCategory: true, href: "/personal-cabinet" },
-      { id: "new-releases", label: "НОВИНКИ", isCategory: true, href: "/new-releases" },
     ];
 
     if (!gamesData) {
@@ -63,4 +68,3 @@ export function useSidebarData() {
     error: gamesError || homeLinksError,
   };
 }
-

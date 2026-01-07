@@ -52,18 +52,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
     const baseItems: MenuItem[] = [
       { id: "home", label: "Главная", isCategory: true, href: "/" },
-      {
-        id: "personal-cabinet",
-        label: "ЛИЧНЫЙ КАБИНЕТ",
-        isCategory: true,
-        href: "/personal-cabinet",
-      },
-      {
-        id: "new-releases",
-        label: "НОВИНКИ",
-        isCategory: true,
-        href: "/new-releases",
-      },
     ];
 
     const gameItems: MenuItem[] = searchResults.map((game: GameWithCheats) => ({
@@ -432,7 +420,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     filteredAndSortedItems.map((item, index) => {
                       const isDropdownOpen = openDropdowns.has(item.id);
                       const hasCheats = item.cheats && item.cheats.length > 0;
-                      const hasHomeLinks = item.homeLinks && item.homeLinks.length > 0;
+                      const hasHomeLinks =
+                        item.homeLinks && item.homeLinks.length > 0;
 
                       return (
                         <Styled.MenuItem
@@ -476,9 +465,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                               {isDropdownOpen &&
                                 (() => {
                                   if (hasHomeLinks) {
-                                    const filteredHomeLinks = getFilteredHomeLinks(
-                                      item.homeLinks
-                                    );
+                                    const filteredHomeLinks =
+                                      getFilteredHomeLinks(item.homeLinks);
                                     return filteredHomeLinks.length > 0 ? (
                                       <Styled.DropdownList
                                         variants={dropdownVariants}
@@ -501,7 +489,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                                                   e.preventDefault();
                                                   e.stopPropagation();
                                                   onClose();
-                                                  window.open(homeLink.url, '_blank');
+                                                  window.open(
+                                                    homeLink.url,
+                                                    "_blank"
+                                                  );
                                                 }}
                                               >
                                                 {homeLink.title}
