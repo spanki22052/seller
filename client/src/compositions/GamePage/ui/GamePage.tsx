@@ -2,12 +2,12 @@
 
 import dynamic from "next/dynamic";
 import { Sidebar } from "@/widgets/Sidebar";
+import { useSidebar } from "@/shared/contexts/SidebarContext";
 import { CheatsList } from "@/widgets/CheatsList";
 import { AccountShop } from "@/shared/ui/AccountShop";
-import { OfficialEmailInfo } from "@/widgets/OfficialEmailInfo";
+import { Footer } from "@/widgets/Footer";
 import { GameWithCheats } from "@/entities/game";
 import * as Styled from "./styled";
-import { Navbar } from "@/shared/ui/Navbar";
 
 const GameHero = dynamic(
   () => import("@/widgets/GameHero").then((mod) => ({ default: mod.GameHero })),
@@ -33,10 +33,11 @@ interface GamePageProps {
 }
 
 export function GamePage({ gameData }: GamePageProps) {
+  const { isSidebarOpen, closeSidebar } = useSidebar();
+
   return (
     <>
-      <Sidebar />
-      <Navbar />
+      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
       <Styled.Container>
         <Styled.MainContent>
           <GameHero gameData={gameData} />
@@ -45,7 +46,7 @@ export function GamePage({ gameData }: GamePageProps) {
           <BeforeBuyInfo />
         </Styled.MainContent>
 
-        <OfficialEmailInfo />
+        <Footer />
       </Styled.Container>
     </>
   );

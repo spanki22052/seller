@@ -21,3 +21,16 @@ export const Tab = styled.button<{ $active: boolean }>(({ theme, $active }) => (
   },
 }));
 
+export const LoadingTab = styled.div(({ theme }) => ({
+  padding: `${theme.spacing.sm} ${theme.spacing.lg}`,
+  borderRadius: theme.borderRadius.md,
+  border: `1px solid ${theme.colors.border.secondary}`,
+  backgroundColor: "transparent",
+  color: theme.colors.text.secondary,
+  fontSize: "16px",
+  fontWeight: 600,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+

@@ -102,10 +102,10 @@ export function CheatsList({ cheats, gameId }: CheatsListProps) {
           <Styled.ImageWrapper>
             {cheat.image ? (
               <Styled.CheatImageWrapper>
-                <Styled.CheatImage src={cheat.image} alt={cheat.name} />
+                <Styled.CheatImage src={cheat.image} alt={cheat.brandName} />
               </Styled.CheatImageWrapper>
             ) : (
-              <Styled.Placeholder>{cheat.name}</Styled.Placeholder>
+              <Styled.Placeholder>{cheat.brandName}</Styled.Placeholder>
             )}
             <Styled.ChitarenaOverlay />
             <Styled.StatusBadge $color={getStatusColor(cheat.status)}>
@@ -117,7 +117,7 @@ export function CheatsList({ cheats, gameId }: CheatsListProps) {
             )}
           </Styled.ImageWrapper>
           <Styled.CardContent>
-            <Styled.CheatName>{cheat.name}</Styled.CheatName>
+            <Styled.CheatName>{cheat.brandName}</Styled.CheatName>
             <Styled.Price>
               <Styled.PriceAmount>
                 {formatPrice(cheat.price)}

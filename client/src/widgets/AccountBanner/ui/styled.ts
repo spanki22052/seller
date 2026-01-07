@@ -25,17 +25,6 @@ export const Container = styled.div(({ theme }) => ({
   },
 }));
 
-export const CrystalsContainer = styled.div({
-  position: "absolute",
-  top: "-10%",
-  left: "-10%",
-  right: "-10%",
-  bottom: "-10%",
-  pointerEvents: "none",
-  zIndex: 10,
-  overflow: "visible",
-});
-
 export const NeonBlinkContainer = styled.div({
   position: "absolute",
   top: "-10%",

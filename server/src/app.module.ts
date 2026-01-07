@@ -4,10 +4,14 @@ import { PrismaModule } from "./shared/prisma/prisma.module";
 import { MinioModule } from "./shared/minio/minio.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { GamesModule } from "./modules/games/games.module";
+import { BrandsModule } from "./modules/brands/brands.module";
+import { CategoriesModule } from "./modules/categories/categories.module";
 import { CheatsModule } from "./modules/cheats/cheats.module";
 import { FilesModule } from "./modules/files/files.module";
 import { DashboardModule } from "./modules/dashboard/dashboard.module";
 import { SettingsModule } from "./modules/settings/settings.module";
+import { HomeLinksModule } from "./modules/home-links/home-links.module";
+import { FaqsModule } from "./modules/faqs/faqs.module";
 
 @Module({
   imports: [
@@ -19,10 +23,14 @@ import { SettingsModule } from "./modules/settings/settings.module";
     MinioModule,
     AuthModule,
     GamesModule,
+    BrandsModule,
+    CategoriesModule,
     CheatsModule,
     FilesModule,
     DashboardModule,
     SettingsModule,
+    HomeLinksModule,
+    FaqsModule,
   ],
 })
 export class AppModule {}

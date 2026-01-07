@@ -33,9 +33,8 @@ export interface PricingPlanDto {
 
 export interface CreateCheatDto {
   gameId: string;
-  name: string;
-  brandName: string;
-  title: string;
+  name?: string;
+  brandId: string;
   description?: string;
   descriptionMarkdown?: string;
   circularText?: string;

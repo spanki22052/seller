@@ -1,0 +1,2 @@
+export { getCategories } from "./getCategories";
+

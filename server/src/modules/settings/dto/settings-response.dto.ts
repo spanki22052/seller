@@ -1,5 +1,19 @@
 import { ApiProperty } from "@nestjs/swagger";
 
+class FooterLinkResponseDto {
+  @ApiProperty({
+    description: "Link label/text",
+    example: "Discord",
+  })
+  label!: string;
+
+  @ApiProperty({
+    description: "Link URL",
+    example: "https://discord.gg/example",
+  })
+  href!: string;
+}
+
 export class SettingsResponseDto {
   @ApiProperty({
     description: "Settings unique identifier",
@@ -20,6 +34,40 @@ export class SettingsResponseDto {
     required: false,
   })
   howToBuyVideoThumbnail?: string;
+
+  @ApiProperty({
+    description: "Game circular icons URLs",
+    example: ["/images/game1-circular.png", "/images/game2-circular.png"],
+    type: [String],
+    required: false,
+  })
+  gameIdsForIcons?: string[];
+
+  @ApiProperty({
+    description: "Game IDs for carousel",
+    example: ["clx1234567890abcdef", "clx0987654321fedcba"],
+    type: [String],
+    required: false,
+  })
+  gameIdsForCarousel?: string[];
+
+  @ApiProperty({
+    description: "Footer links array",
+    type: [FooterLinkResponseDto],
+    example: [
+      { label: "Discord", href: "https://discord.gg/example" },
+      { label: "Telegram", href: "https://t.me/example" }
+    ],
+    required: false,
+  })
+  footerLinks?: FooterLinkResponseDto[];
+
+  @ApiProperty({
+    description: "Support link URL",
+    example: "https://discord.gg/support",
+    required: false,
+  })
+  supportLink?: string;
 
   @ApiProperty({
     description: "Creation timestamp",

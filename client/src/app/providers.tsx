@@ -4,6 +4,7 @@ import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/shared/contexts/ThemeContext";
 import { ImageModalProvider } from "@/shared/contexts/ImageModalContext";
+import { SidebarProvider } from "@/shared/contexts/SidebarContext";
 import StyledComponentsRegistry from "./StyledComponentsRegistry";
 import { DataPrefetcher } from "./DataPrefetcher";
 
@@ -22,7 +23,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <DataPrefetcher />
         <ThemeProvider>
-          <ImageModalProvider>{children}</ImageModalProvider>
+          <ImageModalProvider>
+            <SidebarProvider>{children}</SidebarProvider>
+          </ImageModalProvider>
         </ThemeProvider>
       </QueryClientProvider>
     </StyledComponentsRegistry>

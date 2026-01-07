@@ -1,0 +1,1 @@
+export { useGameCarouselTab } from "./useGameCarouselTab";

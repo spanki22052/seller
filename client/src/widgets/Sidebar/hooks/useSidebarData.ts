@@ -1,10 +1,11 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllGamesWithCheats, gameKeys } from "@/entities/game";
+import { getActiveHomeLinks, homeLinkKeys } from "@/entities/home-link";
 import { MenuItem } from "../model/types";
 
 export function useSidebarData() {
-  const { data, isLoading, error } = useQuery({
+  const { data: gamesData, isLoading: isLoadingGames, error: gamesError } = useQuery({
     queryKey: gameKeys.allWithCheats(),
     queryFn: getAllGamesWithCheats,
     staleTime: 60 * 1000, // 1 minute - data is fresh for 1 minute
@@ -12,19 +13,31 @@ export function useSidebarData() {
     refetchOnWindowFocus: false,
   });
 
+  const { data: homeLinksData, isLoading: isLoadingHomeLinks, error: homeLinksError } = useQuery({
+    queryKey: homeLinkKeys.active(),
+    queryFn: getActiveHomeLinks,
+    staleTime: 60 * 1000, // 1 minute - data is fresh for 1 minute
+    refetchOnWindowFocus: false,
+  });
+
   // Преобразуем данные из API в формат MenuItem с мемоизацией
   const menuItems: MenuItem[] = useMemo(() => {
     const baseItems: MenuItem[] = [
-      { id: "home", label: "Главная", isCategory: true, href: "/" },
+      {
+        id: "home",
+        label: "Главная",
+        homeLinks: homeLinksData || [],
+      },
+      { id: "games", label: "ИГРЫ", isCategory: true, href: "/games" },
       { id: "personal-cabinet", label: "ЛИЧНЫЙ КАБИНЕТ", isCategory: true, href: "/personal-cabinet" },
       { id: "new-releases", label: "НОВИНКИ", isCategory: true, href: "/new-releases" },
     ];
 
-    if (!data) {
+    if (!gamesData) {
       return baseItems;
     }
 
-    const gameItems: MenuItem[] = data
+    const gameItems: MenuItem[] = gamesData
       .filter((game) => game.cheats && game.cheats.length > 0)
       .map((game) => ({
         id: game.id,
@@ -42,12 +55,12 @@ export function useSidebarData() {
       }));
 
     return [...baseItems, ...gameItems];
-  }, [data]);
+  }, [gamesData, homeLinksData]);
 
   return {
     menuItems,
-    isLoading,
-    error,
+    isLoading: isLoadingGames || isLoadingHomeLinks,
+    error: gamesError || homeLinksError,
   };
 }
 

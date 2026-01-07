@@ -22,12 +22,23 @@ export class CheatsService {
       throw new BadRequestException(`Game with ID ${createCheatDto.gameId} not found`);
     }
 
+    // Verify brand exists
+    const brand = await this.prisma.brand.findFirst({
+      where: { id: createCheatDto.brandId, deletedAt: null },
+    });
+
+    if (!brand) {
+      throw new BadRequestException(`Brand with ID ${createCheatDto.brandId} not found`);
+    }
+
+    // Generate name from brand name if not provided
+    const cheatName = createCheatDto.name || brand.name;
+
     const cheat = await this.prisma.cheat.create({
       data: {
         gameId: createCheatDto.gameId,
-        name: createCheatDto.name,
-        brandName: createCheatDto.brandName,
-        title: createCheatDto.title,
+        brandId: createCheatDto.brandId,
+        name: cheatName,
         description: createCheatDto.description && createCheatDto.description.trim() !== "" ? createCheatDto.description : null,
         descriptionMarkdown: createCheatDto.descriptionMarkdown && createCheatDto.descriptionMarkdown.trim() !== "" ? createCheatDto.descriptionMarkdown : null,
         circularText: createCheatDto.circularText && createCheatDto.circularText.trim() !== "" ? createCheatDto.circularText : null,
@@ -58,6 +69,11 @@ export class CheatsService {
             name: true,
           },
         },
+        brand: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
@@ -73,6 +89,11 @@ export class CheatsService {
             name: true,
           },
         },
+        brand: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
@@ -84,6 +105,11 @@ export class CheatsService {
       where: { id, deletedAt: null },
       include: {
         game: {
+          select: {
+            name: true,
+          },
+        },
+        brand: {
           select: {
             name: true,
           },
@@ -118,12 +144,22 @@ export class CheatsService {
       }
     }
 
+    // Verify brand exists if brandId is being updated
+    if (updateCheatDto.brandId) {
+      const brand = await this.prisma.brand.findFirst({
+        where: { id: updateCheatDto.brandId, deletedAt: null },
+      });
+
+      if (!brand) {
+        throw new BadRequestException(`Brand with ID ${updateCheatDto.brandId} not found`);
+      }
+    }
+
     const updateData: any = {};
 
     if (updateCheatDto.gameId) updateData.gameId = updateCheatDto.gameId;
+    if (updateCheatDto.brandId) updateData.brandId = updateCheatDto.brandId;
     if (updateCheatDto.name) updateData.name = updateCheatDto.name;
-    if (updateCheatDto.brandName) updateData.brandName = updateCheatDto.brandName;
-    if (updateCheatDto.title) updateData.title = updateCheatDto.title;
     if (updateCheatDto.description !== undefined) {
       updateData.description = updateCheatDto.description && updateCheatDto.description.trim() !== "" ? updateCheatDto.description : null;
     }
@@ -175,6 +211,11 @@ export class CheatsService {
             name: true,
           },
         },
+        brand: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
@@ -187,8 +228,7 @@ export class CheatsService {
       gameId: cheat.gameId,
       gameName: cheat.game?.name ?? "",
       name: cheat.name,
-      brandName: cheat.brandName,
-      title: cheat.title,
+      brandName: cheat.brand?.name ?? "",
       description: cheat.description,
       descriptionMarkdown: cheat.descriptionMarkdown ?? undefined,
       circularText: cheat.circularText,

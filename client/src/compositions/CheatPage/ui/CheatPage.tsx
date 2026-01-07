@@ -3,7 +3,8 @@
 import { useRef, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { Sidebar } from "@/widgets/Sidebar";
-import { OfficialEmailInfo } from "@/widgets/OfficialEmailInfo";
+import { useSidebar } from "@/shared/contexts/SidebarContext";
+import { Footer } from "@/widgets/Footer";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import * as Styled from "./styled";
 
@@ -58,6 +59,17 @@ const CheatPricing = dynamic(
   }
 );
 
+const CheatPurchaseSelector = dynamic(
+  () =>
+    import("@/widgets/CheatPurchaseSelector").then((mod) => ({
+      default: mod.CheatPurchaseSelector,
+    })),
+  {
+    ssr: false,
+    loading: () => <Styled.LoadingPlaceholder $minHeight={300} />,
+  }
+);
+
 const CheatDetails = dynamic(
   () =>
     import("@/widgets/CheatDetails").then((mod) => ({
@@ -82,6 +94,7 @@ interface CheatPageProps {
  * @param cheatId - The unique identifier of the cheat
  */
 export function CheatPage({ gameId, cheatId }: CheatPageProps) {
+  const { isSidebarOpen, closeSidebar } = useSidebar();
   const pricingRef = useRef<HTMLDivElement>(null);
   const screenshotsRef = useRef<HTMLDivElement>(null);
   const functionsRef = useRef<HTMLDivElement>(null);
@@ -165,7 +178,7 @@ export function CheatPage({ gameId, cheatId }: CheatPageProps) {
 
   return (
     <>
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
       <Styled.Container>
         <Styled.MainContent>
           <Styled.CheatHeroWrapper>
@@ -191,7 +204,7 @@ export function CheatPage({ gameId, cheatId }: CheatPageProps) {
         </Styled.MainContent>
 
         <div ref={accountsRef}>
-          <OfficialEmailInfo />
+          <Footer />
         </div>
       </Styled.Container>
     </>

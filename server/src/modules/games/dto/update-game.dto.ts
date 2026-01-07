@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional } from "class-validator";
+import { IsString, IsOptional, IsUUID } from "class-validator";
 
 export class UpdateGameDto {
   @ApiProperty({
@@ -19,6 +19,15 @@ export class UpdateGameDto {
   @IsString()
   @IsOptional()
   color?: string;
+
+  @ApiProperty({
+    description: "Game category ID",
+    example: "cm0q8x8x8x8x8x8x8x8x8",
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  categoryId?: string;
 
   @ApiProperty({
     description: "Game image URL",

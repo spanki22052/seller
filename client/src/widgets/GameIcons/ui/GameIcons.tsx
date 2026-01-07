@@ -6,16 +6,30 @@ import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import { getGames, gameKeys } from "@/entities/game";
+import { getSettings, settingsKeys } from "@/entities/settings";
 import * as Styled from "./styled";
 
 export function GameIcons() {
   const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
 
-  const { data: games = [], isLoading } = useQuery({
+  const { data: games = [] } = useQuery({
     queryKey: gameKeys.lists(),
     queryFn: getGames,
   });
+
+  const { data: settings } = useQuery({
+    queryKey: settingsKeys.detail(),
+    queryFn: getSettings,
+  });
+
+  // Filter games based on settings - show only selected games or first 5 if none selected
+  const selectedGameIds = settings?.gameIdsForIcons || [];
+  const displayGames = selectedGameIds.length > 0
+    ? games.filter(game => selectedGameIds.includes(game.id))
+    : games.slice(0, 5);
+
+  const isLoading = !settings || games.length === 0;
 
   const handleGameClick = (gameId: string) => {
     router.push(`/game/${gameId}`);
@@ -54,12 +68,11 @@ export function GameIcons() {
       initial="hidden"
       animate="visible"
     >
-      {games.map((game) => (
+      {displayGames.map((game) => (
         <Styled.GameItem
           key={game.id}
           as={motion.div}
           variants={itemVariants}
-          whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
           whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
           onClick={() => handleGameClick(game.id)}
         >

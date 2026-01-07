@@ -18,7 +18,6 @@ export const Container = styled.div(({ theme }) => ({
   gridTemplateRows: "auto 1fr",
   gap: theme.spacing.xl,
   width: "100%",
-  alignItems: "center",
   minHeight: 600,
   padding: `${theme.spacing.xl} 0`,
 
@@ -46,7 +45,12 @@ export const LeftSection = styled.div({
 export const BrandName = styled.div`
   font-size: 24px;
   font-weight: 700;
-  background: linear-gradient(135deg, ${({ theme }) => theme.colors.accent.purple} 0%, ${({ theme }) => theme.colors.accent.purpleLight} 50%, ${({ theme }) => theme.colors.accent.blue} 100%);
+  background: linear-gradient(
+    135deg,
+    ${({ theme }) => theme.colors.accent.purple} 0%,
+    ${({ theme }) => theme.colors.accent.purpleLight} 50%,
+    ${({ theme }) => theme.colors.accent.blue} 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -54,15 +58,66 @@ export const BrandName = styled.div`
   letter-spacing: 2px;
   position: relative;
   display: inline-block;
-  filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.6)) drop-shadow(0 0 16px rgba(255, 0, 255, 0.4));
+  filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.6))
+    drop-shadow(0 0 16px rgba(255, 0, 255, 0.4));
   background-size: 200% 200%;
   animation: ${css`
     ${gradientShift} 3s ease infinite
   `};
-  
+
   @media (prefers-reduced-motion: reduce) {
     animation: none;
     background-position: 0% 50%;
+  }
+`;
+
+export const CheatAvatar = styled.div(({ theme }) => ({
+  width: 180,
+  height: 180,
+  borderRadius: "50%",
+  overflow: "hidden",
+  border: `4px solid ${theme.colors.accent.purple}`,
+  boxShadow: `
+    0 0 20px rgba(255, 0, 255, 0.4),
+    0 0 40px rgba(255, 0, 255, 0.2),
+    inset 0 0 20px rgba(255, 0, 255, 0.1)
+  `,
+  marginBottom: 24,
+  position: "relative",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  background: `linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1))`,
+
+  "@media (max-width: 768px)": {
+    width: 120,
+    height: 120,
+    marginBottom: 16,
+  },
+}));
+
+export const CheatAvatarGlow = styled.div`
+  position: absolute;
+  top: -9px;
+  left: -9px;
+  right: -9px;
+  bottom: -9px;
+  border-radius: 50%;
+  background: linear-gradient(
+    45deg,
+    ${({ theme }) => theme.colors.accent.purple},
+    ${({ theme }) => theme.colors.accent.blue},
+    ${({ theme }) => theme.colors.accent.purple}
+  );
+  background-size: 200% 200%;
+  animation: ${css`
+    ${gradientShift} 3s ease infinite
+  `};
+  opacity: 0.7;
+  z-index: -1;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
   }
 `;
 
@@ -146,22 +201,19 @@ export const PrimaryButton = styled.button(({ theme }) => ({
   },
 
   "&:hover": {
-    backgroundColor: theme.colors.accent.purpleLight,
     boxShadow: `
-      0 6px 20px rgba(255, 0, 255, 0.6),
-      0 0 30px rgba(255, 0, 255, 0.4),
-      0 0 50px rgba(255, 0, 255, 0.2),
-      inset 0 0 30px rgba(255, 0, 255, 0.2)
+      0 6px 20px rgba(255, 0, 255, 0.5),
+      0 0 30px rgba(255, 0, 255, 0.3),
+      inset 0 0 30px rgba(255, 0, 255, 0.1)
     `,
-    textShadow:
-      "0 0 15px rgba(255, 0, 255, 0.8), 0 0 25px rgba(255, 0, 255, 0.6)",
+    textShadow: "0 0 12px rgba(255, 0, 255, 0.6)",
 
     "&::before": {
       left: "100%",
     },
 
     "&::after": {
-      opacity: 1,
+      opacity: 0.8,
     },
   },
 
@@ -250,22 +302,19 @@ export const SecondaryButton = styled.button(({ theme }) => ({
   },
 
   "&:hover": {
-    backgroundColor: theme.colors.accent.purple,
-    borderColor: theme.colors.accent.purpleLight,
+    borderColor: theme.colors.accent.purple,
     boxShadow: `
-      0 0 20px rgba(255, 0, 255, 0.5),
-      0 0 40px rgba(255, 0, 255, 0.3),
-      inset 0 0 20px rgba(255, 0, 255, 0.2)
+      0 0 15px rgba(255, 0, 255, 0.4),
+      inset 0 0 15px rgba(255, 0, 255, 0.1)
     `,
-    textShadow:
-      "0 0 15px rgba(255, 0, 255, 0.8), 0 0 25px rgba(255, 0, 255, 0.6)",
+    textShadow: "0 0 12px rgba(255, 0, 255, 0.6)",
 
     "&::before": {
       left: "100%",
     },
 
     "&::after": {
-      opacity: 0.6,
+      opacity: 0.4,
       backgroundPosition: "100% 50%",
     },
   },

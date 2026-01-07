@@ -7,14 +7,11 @@ import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import skeletonImage from "@/shared/assets/images/skeleton-looking.png";
 import {
   platforms,
-  generateCrystals,
   generateNeonBlinks,
-  CRYSTAL_COUNT,
   NEON_BLINK_COUNT,
   RED_LINES_IMAGE,
   SPRING_CONFIG,
 } from "../lib/constants";
-import { Crystal } from "@/shared/ui/Crystal";
 import { NeonBlink } from "./NeonBlink";
 import * as Styled from "./styled";
 
@@ -27,15 +24,11 @@ export function AccountBanner() {
   const smoothMouseX = useSpring(mouseX, SPRING_CONFIG);
   const smoothMouseY = useSpring(mouseY, SPRING_CONFIG);
 
-  const [crystals, setCrystals] = useState<ReturnType<typeof generateCrystals>>(
-    []
-  );
   const [neonBlinks, setNeonBlinks] = useState<
     ReturnType<typeof generateNeonBlinks>
   >([]);
 
   useEffect(() => {
-    setCrystals(generateCrystals(CRYSTAL_COUNT));
     setNeonBlinks(generateNeonBlinks(NEON_BLINK_COUNT));
   }, []);
 
@@ -92,17 +85,6 @@ export function AccountBanner() {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      <Styled.CrystalsContainer>
-        {crystals.map((crystal) => (
-          <Crystal
-            key={crystal.id}
-            crystal={crystal}
-            mouseX={smoothMouseX}
-            mouseY={smoothMouseY}
-            prefersReducedMotion={prefersReducedMotion}
-          />
-        ))}
-      </Styled.CrystalsContainer>
       <Styled.NeonBlinkContainer>
         {neonBlinks.map((blink) => (
           <NeonBlink

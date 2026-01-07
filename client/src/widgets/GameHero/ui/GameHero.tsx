@@ -119,8 +119,6 @@ export function GameHero({ gameData }: GameHeroProps) {
     },
   };
 
-  console.log(gameData);
-
   return (
     <Styled.Container ref={containerRef}>
       <Styled.LeftSection

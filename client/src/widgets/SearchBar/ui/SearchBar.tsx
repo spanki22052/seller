@@ -40,7 +40,7 @@ export function SearchBar() {
       href: `/game/${game.id}`,
       cheats: game.cheats.map((cheat) => ({
         id: cheat.id,
-        name: cheat.name,
+        name: cheat.brandName,
         href: `/game/${game.id}/cheat/${cheat.id}`,
       })),
     }));

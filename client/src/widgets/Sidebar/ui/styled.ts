@@ -1,6 +1,15 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
+// Единый стиль шрифта для всех ссылок в sidebar
+const LINK_FONT_STYLE = {
+  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+  fontSize: "14px",
+  fontWeight: 500,
+  letterSpacing: "0.025em",
+  lineHeight: 1.4,
+} as const;
+
 export const SidebarContainer = styled(motion.aside)(({ theme }) => ({
   position: "fixed",
   top: 0,
@@ -152,8 +161,8 @@ export const MenuItemButton = styled.button<{
   backgroundColor: "transparent",
   border: "none",
   textAlign: "left",
-  fontSize: $isCategory ? "16px" : "14px",
-  fontWeight: $isCategory ? 700 : 500,
+  ...LINK_FONT_STYLE,
+  fontWeight: $isCategory ? 600 : LINK_FONT_STYLE.fontWeight,
   borderRadius: theme.borderRadius.sm,
   transition: theme.transitions.fast,
   cursor: "pointer",
@@ -171,8 +180,8 @@ export const MenuItemLink = styled.a<{
   padding: `${theme.spacing.sm} ${theme.spacing.md}`,
   color: $isCategory ? theme.colors.text.primary : theme.colors.text.secondary,
   textDecoration: "none",
-  fontSize: $isCategory ? "16px" : "14px",
-  fontWeight: $isCategory ? 700 : 500,
+  ...LINK_FONT_STYLE,
+  fontWeight: $isCategory ? 600 : LINK_FONT_STYLE.fontWeight,
   borderRadius: theme.borderRadius.sm,
   transition: theme.transitions.fast,
   cursor: $isClickable ? "pointer" : "default",
@@ -214,8 +223,7 @@ export const DropdownItem = styled(motion.li)(({ theme }) => ({
     padding: `${theme.spacing.sm} ${theme.spacing.md}`,
     color: theme.colors.text.primary,
     textDecoration: "none",
-    fontSize: "14px",
-    fontWeight: 400,
+    ...LINK_FONT_STYLE,
     borderRadius: theme.borderRadius.sm,
     transition: theme.transitions.fast,
     cursor: "pointer",

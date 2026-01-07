@@ -5,6 +5,8 @@ export interface Game {
   image?: string;
   backgroundImage?: string;
   icon?: string;
+  categoryId?: string;
+  categoryName?: string;
   createdAt: string;
   updatedAt: string;
 }

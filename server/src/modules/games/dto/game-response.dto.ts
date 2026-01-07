@@ -20,6 +20,20 @@ export class GameResponseDto {
   color!: string;
 
   @ApiProperty({
+    description: "Game category ID",
+    example: "cm0q8x8x8x8x8x8x8x8x8",
+    required: false,
+  })
+  categoryId?: string;
+
+  @ApiProperty({
+    description: "Game category name",
+    example: "Shooter",
+    required: false,
+  })
+  categoryName?: string;
+
+  @ApiProperty({
     description: "Game image URL",
     example: "/images/games/battlefield-2042.png",
     required: false,

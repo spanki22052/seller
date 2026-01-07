@@ -49,5 +49,8 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
+# Note: API_URL and NEXT_PUBLIC_API_URL should be set via docker-compose environment
+# They are runtime variables and will be available to the Node.js process
+
 CMD ["node", "server.js"]
 

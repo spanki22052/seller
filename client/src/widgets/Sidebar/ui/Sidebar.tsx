@@ -23,9 +23,13 @@ import { CloseIcon } from "./CloseIcon";
 import { useSidebarData } from "../hooks/useSidebarData";
 import * as Styled from "./styled";
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [openDropdowns, setOpenDropdowns] = useState<Set<string>>(new Set());
@@ -92,13 +96,13 @@ export function Sidebar() {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
-        setIsOpen(false);
+        onClose();
       }
     };
 
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     if (isOpen) {
@@ -168,6 +172,15 @@ export function Sidebar() {
     return cheats;
   };
 
+  // Функция для получения ссылок главной страницы
+  const getFilteredHomeLinks = (homeLinks: MenuItem["homeLinks"]) => {
+    if (!homeLinks) {
+      return [];
+    }
+
+    return homeLinks;
+  };
+
   // Функция для навигации к странице чита
   const handleCheatClick = (
     gameId: string,
@@ -177,7 +190,7 @@ export function Sidebar() {
   ) => {
     e?.preventDefault();
     e?.stopPropagation();
-    setIsOpen(false);
+    onClose();
 
     // Если это "Смотреть главную страницу", переходим на страницу игры
     const isMainPage =
@@ -194,7 +207,7 @@ export function Sidebar() {
   const handleCategoryClick = (href: string, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsOpen(false);
+    onClose();
     router.push(href);
   };
 
@@ -202,7 +215,7 @@ export function Sidebar() {
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsOpen(false);
+    onClose();
     router.push("/");
   };
 
@@ -326,22 +339,6 @@ export function Sidebar() {
 
   return (
     <>
-      {!isOpen && !isImageModalOpen && (
-        <Styled.HamburgerButton
-          onClick={() => setIsOpen(true)}
-          aria-label="Open sidebar"
-          as={motion.button}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
-          whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
-        >
-          <Styled.HamburgerLine />
-          <Styled.HamburgerLine />
-          <Styled.HamburgerLine />
-        </Styled.HamburgerButton>
-      )}
-
       <AnimatePresence>
         {isOpen && (
           <>
@@ -350,7 +347,7 @@ export function Sidebar() {
               initial="closed"
               animate="open"
               exit="closed"
-              onClick={() => setIsOpen(false)}
+              onClick={onClose}
             />
             <Styled.SidebarContainer
               variants={sidebarVariants}
@@ -359,7 +356,7 @@ export function Sidebar() {
               exit="closed"
               style={{ width: SIDEBAR_WIDTH_OPEN }}
             >
-              <CloseIcon onClick={() => setIsOpen(false)} />
+              <CloseIcon onClick={onClose} />
               <Styled.SidebarContent>
                 <motion.div
                   variants={contentVariants}
@@ -435,6 +432,7 @@ export function Sidebar() {
                     filteredAndSortedItems.map((item, index) => {
                       const isDropdownOpen = openDropdowns.has(item.id);
                       const hasCheats = item.cheats && item.cheats.length > 0;
+                      const hasHomeLinks = item.homeLinks && item.homeLinks.length > 0;
 
                       return (
                         <Styled.MenuItem
@@ -444,7 +442,7 @@ export function Sidebar() {
                           initial="closed"
                           animate="open"
                         >
-                          {hasCheats ? (
+                          {hasCheats || item.homeLinks ? (
                             <Styled.MenuItemButton
                               $isCategory={item.isCategory}
                               $isOpen={isDropdownOpen}
@@ -473,54 +471,93 @@ export function Sidebar() {
                             </Styled.MenuItemLink>
                           )}
 
-                          {hasCheats && (
+                          {(hasCheats || hasHomeLinks) && (
                             <AnimatePresence>
                               {isDropdownOpen &&
                                 (() => {
-                                  const filteredCheats = getFilteredCheats(
-                                    item.cheats
-                                  );
-                                  return filteredCheats.length > 0 ? (
-                                    <Styled.DropdownList
-                                      variants={dropdownVariants}
-                                      initial="closed"
-                                      animate="open"
-                                      exit="closed"
-                                    >
-                                      {filteredCheats.map(
-                                        (cheat, cheatIndex) => (
-                                          <Styled.DropdownItem
-                                            key={cheat.id}
-                                            custom={cheatIndex}
-                                            variants={dropdownItemVariants}
-                                            initial="closed"
-                                            animate="open"
-                                          >
-                                            <a
-                                              href={
-                                                cheat.href ||
-                                                (cheat.id.endsWith("-main") ||
-                                                cheat.name ===
-                                                  "Смотреть главную страницу"
-                                                  ? `/game/${item.id}`
-                                                  : `/game/${item.id}/cheat/${cheat.id}`)
-                                              }
-                                              onClick={(e) => {
-                                                handleCheatClick(
-                                                  item.id,
-                                                  cheat.id,
-                                                  cheat.name,
-                                                  e
-                                                );
-                                              }}
+                                  if (hasHomeLinks) {
+                                    const filteredHomeLinks = getFilteredHomeLinks(
+                                      item.homeLinks
+                                    );
+                                    return filteredHomeLinks.length > 0 ? (
+                                      <Styled.DropdownList
+                                        variants={dropdownVariants}
+                                        initial="closed"
+                                        animate="open"
+                                        exit="closed"
+                                      >
+                                        {filteredHomeLinks.map(
+                                          (homeLink, linkIndex) => (
+                                            <Styled.DropdownItem
+                                              key={homeLink.id}
+                                              custom={linkIndex}
+                                              variants={dropdownItemVariants}
+                                              initial="closed"
+                                              animate="open"
                                             >
-                                              {cheat.name}
-                                            </a>
-                                          </Styled.DropdownItem>
-                                        )
-                                      )}
-                                    </Styled.DropdownList>
-                                  ) : null;
+                                              <a
+                                                href={homeLink.url}
+                                                onClick={(e) => {
+                                                  e.preventDefault();
+                                                  e.stopPropagation();
+                                                  onClose();
+                                                  window.open(homeLink.url, '_blank');
+                                                }}
+                                              >
+                                                {homeLink.title}
+                                              </a>
+                                            </Styled.DropdownItem>
+                                          )
+                                        )}
+                                      </Styled.DropdownList>
+                                    ) : null;
+                                  } else if (hasCheats) {
+                                    const filteredCheats = getFilteredCheats(
+                                      item.cheats
+                                    );
+                                    return filteredCheats.length > 0 ? (
+                                      <Styled.DropdownList
+                                        variants={dropdownVariants}
+                                        initial="closed"
+                                        animate="open"
+                                        exit="closed"
+                                      >
+                                        {filteredCheats.map(
+                                          (cheat, cheatIndex) => (
+                                            <Styled.DropdownItem
+                                              key={cheat.id}
+                                              custom={cheatIndex}
+                                              variants={dropdownItemVariants}
+                                              initial="closed"
+                                              animate="open"
+                                            >
+                                              <a
+                                                href={
+                                                  cheat.href ||
+                                                  (cheat.id.endsWith("-main") ||
+                                                  cheat.name ===
+                                                    "Смотреть главную страницу"
+                                                    ? `/game/${item.id}`
+                                                    : `/game/${item.id}/cheat/${cheat.id}`)
+                                                }
+                                                onClick={(e) => {
+                                                  handleCheatClick(
+                                                    item.id,
+                                                    cheat.id,
+                                                    cheat.name,
+                                                    e
+                                                  );
+                                                }}
+                                              >
+                                                {cheat.name}
+                                              </a>
+                                            </Styled.DropdownItem>
+                                          )
+                                        )}
+                                      </Styled.DropdownList>
+                                    ) : null;
+                                  }
+                                  return null;
                                 })()}
                             </AnimatePresence>
                           )}

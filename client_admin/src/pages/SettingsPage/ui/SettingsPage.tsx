@@ -1,11 +1,21 @@
-import { useState } from "react";
-import { Card, Form, Button, Upload, message, Input, Spin } from "antd";
-import { UploadOutlined, SaveOutlined } from "@ant-design/icons";
+import React from "react";
+import { Card, Form, Spin, Tabs, TabsProps } from "antd";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getSettings, updateSettings, settingsKeys } from "@/entities/settings";
-import { uploadFile } from "@/entities/file";
+import {
+  getSettings,
+  updateSettings,
+  settingsKeys,
+  FooterLink,
+} from "@/entities/settings";
+import {
+  TutorialTab,
+  GameIconsTab,
+  GameCarouselTab,
+  FooterLinksTab,
+  SupportLinkTab,
+} from "./tabs";
 import * as Styled from "./styled";
 
 const pageVariants = {
@@ -17,57 +27,70 @@ const pageVariants = {
 export function SettingsPage() {
   const { t } = useTranslation();
   const [form] = Form.useForm();
+  const [gameIconsForm] = Form.useForm();
+  const [gameCarouselForm] = Form.useForm();
+  const [footerLinksValue, setFooterLinksValue] = React.useState<FooterLink[]>(
+    []
+  );
+  const footerLinksFormRef = React.useRef<{
+    getValue: () => FooterLink[];
+  } | null>(null);
+  const [supportLinkForm] = Form.useForm();
   const queryClient = useQueryClient();
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
   const { data: settings, isLoading } = useQuery({
     queryKey: settingsKeys.detail(),
     queryFn: getSettings,
   });
 
+
+  // Update gameIconsForm when settings are loaded
+  React.useEffect(() => {
+    if (settings?.gameIdsForIcons) {
+      gameIconsForm.setFieldsValue({
+        gameIdsForIcons: settings.gameIdsForIcons,
+      });
+    }
+  }, [settings, gameIconsForm]);
+
+  // Update gameCarouselForm when settings are loaded
+  React.useEffect(() => {
+    if (settings?.gameIdsForCarousel) {
+      gameCarouselForm.setFieldsValue({
+        gameIdsForCarousel: settings.gameIdsForCarousel,
+      });
+    }
+  }, [settings, gameCarouselForm]);
+
+  // Update footerLinksValue when settings are loaded
+  React.useEffect(() => {
+    if (settings?.footerLinks) {
+      setFooterLinksValue(settings.footerLinks);
+    }
+  }, [settings]);
+
+  // Update supportLinkForm when settings are loaded
+  React.useEffect(() => {
+    if (settings?.supportLink) {
+      supportLinkForm.setFieldsValue({
+        supportLink: settings.supportLink,
+      });
+    }
+  }, [settings, supportLinkForm]);
+
   const updateMutation = useMutation({
     mutationFn: updateSettings,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: settingsKeys.detail() });
-      message.success(t("settings.settingsUpdated"));
+      // Success message will be shown in individual tab components
     },
     onError: () => {
-      message.error(t("settings.settingsUpdateFailed"));
+      // Error message will be shown in individual tab components
     },
   });
 
-  const handleVideoUpload = async (file: File) => {
-    try {
-      const response = await uploadFile(file);
-      form.setFieldsValue({ howToBuyVideoUrl: response.url });
-      setVideoFile(null);
-      message.success(t("settings.videoUploaded"));
-      return false; // Prevent default upload
-    } catch (error) {
-      message.error(t("settings.videoUploadFailed"));
-      return false;
-    }
-  };
-
-  const handleThumbnailUpload = async (file: File) => {
-    try {
-      const response = await uploadFile(file);
-      form.setFieldsValue({ howToBuyVideoThumbnail: response.url });
-      setThumbnailFile(null);
-      message.success(t("settings.thumbnailUploaded"));
-      return false; // Prevent default upload
-    } catch (error) {
-      message.error(t("settings.thumbnailUploadFailed"));
-      return false;
-    }
-  };
-
-  const handleSubmit = async (values: any) => {
-    updateMutation.mutate({
-      howToBuyVideoUrl: values.howToBuyVideoUrl,
-      howToBuyVideoThumbnail: values.howToBuyVideoThumbnail,
-    });
+  const handleSubmit = async (values: Record<string, unknown>) => {
+    updateMutation.mutate(values);
   };
 
   if (isLoading) {
@@ -83,6 +106,70 @@ export function SettingsPage() {
     );
   }
 
+  const tabsItems: TabsProps["items"] = [
+    {
+      key: "tutorial",
+      label: t("settings.tutorialTab"),
+      children: (
+        <TutorialTab
+          form={form}
+          settings={settings}
+          onSubmit={handleSubmit}
+          isUpdating={updateMutation.isPending}
+        />
+      ),
+    },
+    {
+      key: "gameIcons",
+      label: t("settings.gameIconsTab"),
+      children: (
+        <GameIconsTab
+          form={gameIconsForm}
+          settings={settings}
+          onSubmit={handleSubmit}
+          isUpdating={updateMutation.isPending}
+        />
+      ),
+    },
+    {
+      key: "gameCarousel",
+      label: t("settings.gameCarouselTab"),
+      children: (
+        <GameCarouselTab
+          form={gameCarouselForm}
+          settings={settings}
+          onSubmit={handleSubmit}
+          isUpdating={updateMutation.isPending}
+        />
+      ),
+    },
+    {
+      key: "footerLinks",
+      label: t("settings.footerLinksTab", "Ссылки футера"),
+      children: (
+        <FooterLinksTab
+          footerLinksValue={footerLinksValue}
+          onFooterLinksChange={setFooterLinksValue}
+          onSubmit={handleSubmit}
+          isUpdating={updateMutation.isPending}
+          footerLinksFormRef={footerLinksFormRef}
+        />
+      ),
+    },
+    {
+      key: "supportLink",
+      label: t("settings.supportLinkTab", "Ссылка поддержки"),
+      children: (
+        <SupportLinkTab
+          form={supportLinkForm}
+          settings={settings}
+          onSubmit={handleSubmit}
+          isUpdating={updateMutation.isPending}
+        />
+      ),
+    },
+  ];
+
   return (
     <motion.div
       variants={pageVariants}
@@ -94,109 +181,10 @@ export function SettingsPage() {
       <Styled.Container>
         <Styled.SettingsCard>
           <Card title={t("settings.title") || "Настройки"}>
-          <Form
-            form={form}
-            layout="vertical"
-            initialValues={{
-              howToBuyVideoUrl: settings?.howToBuyVideoUrl,
-              howToBuyVideoThumbnail: settings?.howToBuyVideoThumbnail,
-            }}
-            onFinish={handleSubmit}
-          >
-            <Form.Item
-              label={t("settings.howToBuyVideo")}
-              name="howToBuyVideoUrl"
-              rules={[
-                {
-                  required: true,
-                  message: t("settings.videoRequired"),
-                },
-              ]}
-            >
-              <Input placeholder={t("settings.videoUrl")} disabled />
-            </Form.Item>
-
-            <Form.Item label={t("settings.uploadVideo")}>
-              <Upload
-                accept="video/mp4,video/mpeg"
-                beforeUpload={(file) => {
-                  handleVideoUpload(file);
-                  return false;
-                }}
-                fileList={videoFile ? [videoFile as any] : []}
-                onChange={(info) => {
-                  if (info.file.originFileObj) {
-                    setVideoFile(info.file.originFileObj);
-                  }
-                }}
-                maxCount={1}
-              >
-                <Button icon={<UploadOutlined />}>{t("settings.selectVideo")}</Button>
-              </Upload>
-            </Form.Item>
-
-            {settings?.howToBuyVideoUrl && (
-              <Form.Item label={t("settings.videoPreview") || "Предпросмотр видео"}>
-                <video
-                  src={settings.howToBuyVideoUrl}
-                  controls
-                  style={{ width: "100%", maxWidth: "100%", borderRadius: 8 }}
-                />
-              </Form.Item>
-            )}
-
-            <Form.Item
-              label={t("settings.videoThumbnail")}
-              name="howToBuyVideoThumbnail"
-            >
-              <Input placeholder={t("settings.thumbnailUrl")} disabled />
-            </Form.Item>
-
-            <Form.Item label={t("settings.uploadThumbnail")}>
-              <Upload
-                accept="image/jpeg,image/jpg,image/png,image/webp"
-                beforeUpload={(file) => {
-                  handleThumbnailUpload(file);
-                  return false;
-                }}
-                fileList={thumbnailFile ? [thumbnailFile as any] : []}
-                onChange={(info) => {
-                  if (info.file.originFileObj) {
-                    setThumbnailFile(info.file.originFileObj);
-                  }
-                }}
-                maxCount={1}
-              >
-                <Button icon={<UploadOutlined />}>{t("settings.selectImage")}</Button>
-              </Upload>
-            </Form.Item>
-
-            {settings?.howToBuyVideoThumbnail && (
-              <Form.Item label={t("settings.thumbnailPreview") || "Предпросмотр миниатюры"}>
-                <img
-                  src={settings.howToBuyVideoThumbnail}
-                  alt="Thumbnail"
-                  style={{ maxWidth: "100%", width: "auto", maxHeight: 300, borderRadius: 8 }}
-                />
-              </Form.Item>
-            )}
-
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                icon={<SaveOutlined />}
-                loading={updateMutation.isPending}
-                size="large"
-              >
-                {t("settings.saveSettings")}
-              </Button>
-            </Form.Item>
-          </Form>
+            <Tabs defaultActiveKey="tutorial" items={tabsItems} />
           </Card>
         </Styled.SettingsCard>
       </Styled.Container>
     </motion.div>
   );
 }
-

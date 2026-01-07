@@ -27,66 +27,8 @@ export const Container = styled.div`
   padding-top: ${({ theme }) => theme.spacing.xl};
   padding-bottom: ${({ theme }) => theme.spacing.xl};
   width: 100%;
-  position: relative;
-  z-index: 5;
   flex-wrap: wrap;
   overflow: visible;
-
-  &::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: linear-gradient(
-      180deg,
-      ${({ theme }) => theme.colors.accent.pink} 0%,
-      ${({ theme }) => theme.colors.accent.purple} 50%,
-      ${({ theme }) => theme.colors.accent.blue} 100%
-    );
-    box-shadow: 0 0 10px ${({ theme }) => theme.colors.accent.pink}80,
-      0 0 20px ${({ theme }) => theme.colors.accent.purple}60,
-      0 0 30px ${({ theme }) => theme.colors.accent.blue}40,
-      inset 0 0 20px ${({ theme }) => theme.colors.accent.purple}40;
-    filter: blur(0.5px);
-    z-index: 1;
-    animation: ${css`
-      ${neonPulse} 2s ease-in-out infinite
-    `};
-
-    @media (prefers-reduced-motion: reduce) {
-      animation: none;
-    }
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: linear-gradient(
-      180deg,
-      ${({ theme }) => theme.colors.accent.pink} 0%,
-      ${({ theme }) => theme.colors.accent.purple} 50%,
-      ${({ theme }) => theme.colors.accent.blue} 100%
-    );
-    box-shadow: 0 0 10px ${({ theme }) => theme.colors.accent.pink}80,
-      0 0 20px ${({ theme }) => theme.colors.accent.purple}60,
-      0 0 30px ${({ theme }) => theme.colors.accent.blue}40,
-      inset 0 0 20px ${({ theme }) => theme.colors.accent.purple}40;
-    filter: blur(0.5px);
-    z-index: 1;
-    animation: ${css`
-      ${neonPulse} 2s ease-in-out infinite
-    `};
-
-    @media (prefers-reduced-motion: reduce) {
-      animation: none;
-    }
-  }
 
   @media (max-width: 768px) {
     gap: 16px;

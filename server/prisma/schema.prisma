@@ -52,23 +52,53 @@ model Game {
   image           String?
   backgroundImage String?  @map("background_image")
   icon            String?
+  categoryId      String?  @map("category_id")
   deletedAt       DateTime? @map("deleted_at")
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   cheats    Cheat[]
+  category  Category? @relation(fields: [categoryId], references: [id])
+
+  @@index([name])
+  @@index([categoryId])
+  @@index([deletedAt])
+  @@map("games")
+}
+
+model Brand {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  cheats    Cheat[]
 
   @@index([name])
   @@index([deletedAt])
-  @@map("games")
+  @@map("brands")
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  games     Game[]
+
+  @@index([name])
+  @@index([deletedAt])
+  @@map("categories")
 }
 
 model Cheat {
   id                String   @id @default(cuid())
   gameId            String   @map("game_id")
+  brandId           String   @map("brand_id")
   name              String
-  brandName         String   @map("brand_name")
-  title             String
   description       String?
   descriptionMarkdown String? @map("description_markdown")
   circularText      String?  @map("circular_text")
@@ -97,8 +127,10 @@ model Cheat {
   updatedAt         DateTime @updatedAt @map("updated_at")
 
   game              Game     @relation(fields: [gameId], references: [id])
+  brand             Brand    @relation(fields: [brandId], references: [id])
 
   @@index([gameId])
+  @@index([brandId])
   @@index([name])
   @@index([deletedAt])
   @@index([isNew])
@@ -111,11 +143,48 @@ model Settings {
   id                String   @id @default(cuid())
   howToBuyVideoUrl  String?  @map("how_to_buy_video_url")
   howToBuyVideoThumbnail String? @map("how_to_buy_video_thumbnail")
+  gameIdsForIcons   String[] @default([]) @map("game_ids_for_icons")
+  gameIdsForCarousel String[] @default([]) @map("game_ids_for_carousel")
+  footerLinks       Json?    @map("footer_links")
+  supportLink       String?  @map("support_link")
   deletedAt         DateTime? @map("deleted_at")
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @updatedAt @map("updated_at")
 
   @@index([deletedAt])
   @@map("settings")
+}
+
+model HomeLink {
+  id          String   @id @default(cuid())
+  title       String
+  url         String
+  description String?
+  isActive    Boolean  @default(true) @map("is_active")
+  sortOrder   Int      @default(0) @map("sort_order")
+  deletedAt   DateTime? @map("deleted_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive])
+  @@index([sortOrder])
+  @@index([deletedAt])
+  @@map("home_links")
+}
+
+model Faq {
+  id          String   @id @default(cuid())
+  question    String
+  answer      String
+  isActive    Boolean  @default(true) @map("is_active")
+  sortOrder   Int      @default(0) @map("sort_order")
+  deletedAt   DateTime? @map("deleted_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive])
+  @@index([sortOrder])
+  @@index([deletedAt])
+  @@map("faqs")
 }
 

@@ -3,6 +3,7 @@ import { ValidationPipe } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
 import { ConfigService } from "@nestjs/config";
+import { Request, Response, NextFunction } from "express";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -11,7 +12,8 @@ async function bootstrap() {
   });
 
   const configService = app.get(ConfigService);
-  const port = configService.get<number>("PORT") || 3002;
+  const port =
+    configService.get<number>("PORT") || (process.env.NODE_ENV === "development" ? 3005 : 3002);
 
   // Note: File upload size limits are configured in:
   // 1. Multer FileInterceptor (per route) - see files.controller.ts
@@ -29,7 +31,7 @@ async function bootstrap() {
     }),
   );
 
-  // CORS configuration
+  // CORS configuration with manual middleware
   const corsOrigins = process.env.CORS_ORIGIN
     ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
     : [
@@ -41,29 +43,58 @@ async function bootstrap() {
         "http://localhost:3002", // Server (Development)
       ];
 
-  const isDevelopment = process.env.NODE_ENV !== "production";
+  // Ensure development origins are always included in development
+  if (configService.get<string>("NODE_ENV") === "development") {
+    const devOrigins = ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"];
+    devOrigins.forEach((origin) => {
+      if (!corsOrigins.includes(origin)) {
+        corsOrigins.push(origin);
+      }
+    });
+  }
 
-  // Simplified CORS configuration following NestJS best practices
-  // https://docs.nestjs.com/security/cors
-  app.enableCors({
-    origin: isDevelopment
-      ? (origin, callback) => {
-          // In development: allow all localhost origins and requests with no origin
-          if (!origin || origin.includes("localhost") || origin.includes("127.0.0.1")) {
-            callback(null, true);
-          } else if (corsOrigins.includes(origin)) {
-            callback(null, true);
-          } else {
-            callback(new Error(`Not allowed by CORS: ${origin}`));
-          }
-        }
-      : corsOrigins, // In production: strict origin list
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
-    exposedHeaders: ["Content-Type", "Authorization"],
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
+  // Manual CORS middleware - handle preflight and actual requests
+  // IMPORTANT: Access-Control-Allow-Credentials can ONLY be set when Access-Control-Allow-Origin is also set
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    const origin = req.headers.origin;
+    const isOriginAllowed = origin && corsOrigins.includes(origin);
+
+    // For preflight OPTIONS requests
+    if (req.method === "OPTIONS") {
+      if (isOriginAllowed) {
+        // Set all CORS headers together - credentials MUST be set with origin
+        res.header("Access-Control-Allow-Origin", origin);
+        res.header("Access-Control-Allow-Credentials", "true");
+        res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH,OPTIONS");
+        res.header(
+          "Access-Control-Allow-Headers",
+          "Content-Type,Authorization,X-Requested-With,Accept,Origin",
+        );
+        res.header("Access-Control-Expose-Headers", "Content-Type,Authorization");
+        res.header("Access-Control-Max-Age", "86400"); // Cache preflight for 24 hours
+        res.sendStatus(204);
+      } else {
+        // For OPTIONS requests from non-allowed origins, respond without CORS headers
+        console.warn(`CORS: Blocking OPTIONS request from disallowed origin: ${origin}`);
+        res.sendStatus(204);
+      }
+      return;
+    }
+
+    // For actual requests, set CORS headers if origin is allowed
+    if (isOriginAllowed) {
+      // Set all CORS headers together - credentials MUST be set with origin
+      res.header("Access-Control-Allow-Origin", origin);
+      res.header("Access-Control-Allow-Credentials", "true");
+      res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH,OPTIONS");
+      res.header(
+        "Access-Control-Allow-Headers",
+        "Content-Type,Authorization,X-Requested-With,Accept,Origin",
+      );
+      res.header("Access-Control-Expose-Headers", "Content-Type,Authorization");
+    }
+
+    next();
   });
 
   // Swagger documentation

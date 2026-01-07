@@ -14,12 +14,6 @@ export function RecentCheatsTable({ cheats }: RecentCheatsTableProps) {
   
   const columns: ColumnsType<Cheat> = [
     {
-      title: t("cheats.name"),
-      dataIndex: "name",
-      key: "name",
-      render: (text: string) => <Styled.NameCell>{text}</Styled.NameCell>,
-    },
-    {
       title: t("cheats.game"),
       dataIndex: "gameName",
       key: "gameName",

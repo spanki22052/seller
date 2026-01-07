@@ -4,6 +4,7 @@ import { Game } from "../model/types";
 export interface CreateGameDto {
   name: string;
   color: string;
+  categoryId?: string;
   image?: string;
   backgroundImage?: string;
   icon?: string;

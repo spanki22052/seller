@@ -1,19 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
 import Image from "next/image";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import skeletonRightTopImage from "@/shared/assets/images/skeleton-right-top.png";
 import infoImage from "@/shared/assets/images/info-img.png";
-import {
-  generateCrystals,
-  generateNeonBlinks,
-  CRYSTAL_COUNT,
-  NEON_BLINK_COUNT,
-  SPRING_CONFIG,
-} from "../lib/constants";
-import { Crystal } from "@/shared/ui/Crystal";
+import { generateNeonBlinks, NEON_BLINK_COUNT } from "../lib/constants";
 import { NeonBlink } from "./NeonBlink";
 import * as Styled from "./styled";
 
@@ -23,30 +16,18 @@ export function InfoBanner() {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const smoothMouseX = useSpring(mouseX, SPRING_CONFIG);
-  const smoothMouseY = useSpring(mouseY, SPRING_CONFIG);
+  const neonBlinks = generateNeonBlinks(NEON_BLINK_COUNT);
 
-  const [crystals, setCrystals] = useState<ReturnType<typeof generateCrystals>>([]);
-  const [neonBlinks, setNeonBlinks] = useState<ReturnType<typeof generateNeonBlinks>>([]);
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (prefersReducedMotion) return;
 
-  useEffect(() => {
-    setCrystals(generateCrystals(CRYSTAL_COUNT));
-    setNeonBlinks(generateNeonBlinks(NEON_BLINK_COUNT));
-  }, []);
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2; // от -1 до 1
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2; // от -1 до 1
 
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (prefersReducedMotion) return;
-
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2; // от -1 до 1
-      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2; // от -1 до 1
-
-      mouseX.set(x);
-      mouseY.set(y);
-    },
-    [mouseX, mouseY, prefersReducedMotion]
-  );
+    mouseX.set(x);
+    mouseY.set(y);
+  };
 
   const handleMouseLeave = useCallback(() => {
     mouseX.set(0);
@@ -78,32 +59,6 @@ export function InfoBanner() {
     },
   };
 
-  const rightImageVariants = {
-    hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: 20 },
-    visible: {
-      opacity: 1,
-      x: prefersReducedMotion ? 0 : 0,
-      transition: {
-        duration: prefersReducedMotion ? 0 : 0.7,
-        delay: prefersReducedMotion ? 0 : 0.3,
-        ease: [0.22, 1, 0.36, 1],
-      },
-    },
-  };
-
-  const textVariants = {
-    hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 10 },
-    visible: {
-      opacity: 1,
-      y: prefersReducedMotion ? 0 : 0,
-      transition: {
-        duration: prefersReducedMotion ? 0 : 0.5,
-        delay: prefersReducedMotion ? 0 : 0.4,
-        ease: [0.22, 1, 0.36, 1],
-      },
-    },
-  };
-
   return (
     <Styled.Container
       as={motion.div}
@@ -113,17 +68,6 @@ export function InfoBanner() {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      <Styled.CrystalsContainer>
-        {crystals.map((crystal) => (
-          <Crystal
-            key={crystal.id}
-            crystal={crystal}
-            mouseX={smoothMouseX}
-            mouseY={smoothMouseY}
-            prefersReducedMotion={prefersReducedMotion}
-          />
-        ))}
-      </Styled.CrystalsContainer>
       <Styled.NeonBlinkContainer>
         {neonBlinks.map((blink) => (
           <NeonBlink

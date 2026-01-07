@@ -59,11 +59,11 @@
       "otherTerm": "OTHER TERM",
       "for": "FOR"
     },
-    "notFound": {
-      "title": "404",
-      "error": "ERROR",
-      "garbledText": "7B9Sy'U@Ar94LÏ±g5i~fœoäï",
-      "goHome": "TO HOMEPAGE"
-    }
+  "notFound": {
+    "title": "404",
+    "error": "ERROR",
+    "garbledText": "7B9Sy'U@Ar94LÏ±g5i~fœoäï",
+    "goHome": "TO HOMEPAGE"
   }
+}
 }

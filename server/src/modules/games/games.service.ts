@@ -19,9 +19,13 @@ export class GamesService {
       data: {
         name: createGameDto.name,
         color: createGameDto.color,
+        categoryId: createGameDto.categoryId,
         image: createGameDto.image,
         backgroundImage: createGameDto.backgroundImage,
         icon: createGameDto.icon,
+      },
+      include: {
+        category: true,
       },
     });
 
@@ -30,6 +34,10 @@ export class GamesService {
 
   async findAll(): Promise<GameResponseDto[]> {
     const games = await this.prisma.game.findMany({
+      where: { deletedAt: null },
+      include: {
+        category: true,
+      },
       orderBy: { createdAt: "desc" },
     });
 
@@ -39,6 +47,9 @@ export class GamesService {
   async findOne(id: string): Promise<GameResponseDto> {
     const game = await this.prisma.game.findFirst({
       where: { id, deletedAt: null },
+      include: {
+        category: true,
+      },
     });
 
     if (!game) {
@@ -52,8 +63,14 @@ export class GamesService {
     const game = await this.prisma.game.findFirst({
       where: { id, deletedAt: null },
       include: {
+        category: true,
         cheats: {
-          where: { deletedAt: null },
+          where: {
+            deletedAt: null,
+          },
+          include: {
+            brand: true,
+          },
           orderBy: { createdAt: "desc" },
         },
       },
@@ -74,10 +91,18 @@ export class GamesService {
 
   async findAllWithCheats(): Promise<GameWithCheatsResponseDto[]> {
     const games = await this.prisma.game.findMany({
-      where: { deletedAt: null },
+      where: {
+        deletedAt: null,
+      },
       include: {
+        category: true,
         cheats: {
-          where: { deletedAt: null },
+          where: {
+            deletedAt: null,
+          },
+          include: {
+            brand: true,
+          },
           orderBy: { createdAt: "desc" },
         },
       },
@@ -102,7 +127,7 @@ export class GamesService {
 
     const searchQuery = query.trim().toLowerCase();
 
-    // Search games by name and cheats by name
+    // Search games by name, category, or cheats
     const games = await this.prisma.game.findMany({
       where: {
         deletedAt: null,
@@ -114,30 +139,46 @@ export class GamesService {
             },
           },
           {
+            category: {
+              name: {
+                contains: searchQuery,
+                mode: "insensitive",
+              },
+            },
+          },
+          {
             cheats: {
               some: {
                 deletedAt: null,
-                name: {
-                  contains: searchQuery,
-                  mode: "insensitive",
-                },
+                OR: [
+                  {
+                    name: {
+                      contains: searchQuery,
+                      mode: "insensitive",
+                    },
+                  },
+                  {
+                    brand: {
+                      name: {
+                        contains: searchQuery,
+                        mode: "insensitive",
+                      },
+                    },
+                  },
+                ],
               },
             },
           },
         ],
       },
       include: {
+        category: true,
         cheats: {
           where: {
             deletedAt: null,
-            OR: [
-              {
-                name: {
-                  contains: searchQuery,
-                  mode: "insensitive",
-                },
-              },
-            ],
+          },
+          include: {
+            brand: true,
           },
           orderBy: { createdAt: "desc" },
         },
@@ -149,20 +190,33 @@ export class GamesService {
     return games
       .map((game) => {
         const gameDto = this.mapToResponseDto(game);
-        const cheats = game.cheats.map((cheat) => this.mapCheatToResponseDto(cheat, game.name));
+        const allCheats = game.cheats.map((cheat) => this.mapCheatToResponseDto(cheat, game.name));
 
-        // If game name matches, include all cheats; otherwise only matching cheats
+        // Check if game name or category matches
         const gameNameMatches = game.name.toLowerCase().includes(searchQuery);
-        const filteredCheats = gameNameMatches
-          ? cheats
-          : cheats.filter((cheat) => cheat.name.toLowerCase().includes(searchQuery));
+        const categoryMatches = game.category?.name.toLowerCase().includes(searchQuery);
+
+        // If game name or category matches, include all cheats; otherwise only matching cheats
+        const filteredCheats =
+          gameNameMatches || categoryMatches
+            ? allCheats
+            : allCheats.filter(
+                (cheat) =>
+                  cheat.name.toLowerCase().includes(searchQuery) ||
+                  cheat.brandName?.toLowerCase().includes(searchQuery),
+              );
 
         return {
           ...gameDto,
           cheats: filteredCheats,
         };
       })
-      .filter((game) => game.cheats.length > 0 || game.name.toLowerCase().includes(searchQuery))
+      .filter((game) => {
+        // Include game if it has matching cheats OR if game name/category matches
+        const gameNameMatches = game.name.toLowerCase().includes(searchQuery);
+        const categoryMatches = game.categoryName?.toLowerCase().includes(searchQuery);
+        return game.cheats.length > 0 || gameNameMatches || categoryMatches;
+      })
       .sort((a, b) => {
         // Prioritize exact game name matches, then games with matching cheats
         const aGameMatch = a.name.toLowerCase() === searchQuery;
@@ -185,8 +239,7 @@ export class GamesService {
       gameId: cheat.gameId,
       gameName: gameName ?? "",
       name: cheat.name,
-      brandName: cheat.brandName,
-      title: cheat.title,
+      brandName: cheat.brand?.name ?? "",
       description: cheat.description,
       descriptionMarkdown: cheat.descriptionMarkdown ?? undefined,
       circularText: cheat.circularText,
@@ -229,11 +282,15 @@ export class GamesService {
       data: {
         ...(updateGameDto.name && { name: updateGameDto.name }),
         ...(updateGameDto.color && { color: updateGameDto.color }),
+        ...(updateGameDto.categoryId !== undefined && { categoryId: updateGameDto.categoryId }),
         ...(updateGameDto.image !== undefined && { image: updateGameDto.image }),
         ...(updateGameDto.backgroundImage !== undefined && {
           backgroundImage: updateGameDto.backgroundImage,
         }),
         ...(updateGameDto.icon !== undefined && { icon: updateGameDto.icon }),
+      },
+      include: {
+        category: true,
       },
     });
 
@@ -245,6 +302,8 @@ export class GamesService {
       id: game.id,
       name: game.name,
       color: game.color,
+      categoryId: game.categoryId,
+      categoryName: game.category?.name,
       // Transform internal MinIO URLs to public URLs
       image: this.minioService.transformToPublicUrl(game.image),
       backgroundImage: this.minioService.transformToPublicUrl(game.backgroundImage),

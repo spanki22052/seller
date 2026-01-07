@@ -32,26 +32,19 @@ export class CreateCheatDto {
   @ApiProperty({
     description: "Cheat name",
     example: "BTG",
+    required: false,
   })
   @IsString()
-  @IsNotEmpty()
-  name!: string;
+  @IsOptional()
+  name?: string;
 
   @ApiProperty({
-    description: "Cheat brand name",
-    example: "CROOKED",
+    description: "Brand ID",
+    example: "clx1234567890abcdef",
   })
   @IsString()
   @IsNotEmpty()
-  brandName!: string;
-
-  @ApiProperty({
-    description: "Cheat title",
-    example: "Чит для BATTLEFIELD 2042",
-  })
-  @IsString()
-  @IsNotEmpty()
-  title!: string;
+  brandId!: string;
 
   @ApiProperty({
     description: "Cheat description",

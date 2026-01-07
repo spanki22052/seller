@@ -37,12 +37,6 @@ export class CheatResponseDto {
   brandName!: string;
 
   @ApiProperty({
-    description: "Cheat title",
-    example: "Чит для BATTLEFIELD 2042",
-  })
-  title!: string;
-
-  @ApiProperty({
     description: "Cheat description",
     example: "Ознакомьтесь подробней и приступайте к оплате",
     required: false,

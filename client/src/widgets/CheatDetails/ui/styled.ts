@@ -1,26 +1,24 @@
 import styled, { keyframes, css } from "styled-components";
 
-const neonPulse = keyframes({
-  "0%, 100%": {
-    opacity: 0.6,
-    filter: "blur(1px)",
-  },
-  "50%": {
-    opacity: 1,
-    filter: "blur(2px)",
-  },
-});
+const neonPulse = keyframes`
+  0%, 100% {
+    opacity: 0.6;
+    filter: blur(1px);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(2px);
+  }
+`;
 
-const neonGlow = keyframes({
-  "0%, 100%": {
-    boxShadow:
-      "0 0 5px rgba(255, 0, 255, 0.5), 0 0 10px rgba(255, 0, 255, 0.3)",
-  },
-  "50%": {
-    boxShadow:
-      "0 0 10px rgba(255, 0, 255, 0.8), 0 0 20px rgba(255, 0, 255, 0.5), 0 0 30px rgba(255, 0, 255, 0.3)",
-  },
-});
+const neonGlow = keyframes`
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 0, 255, 0.5), 0 0 10px rgba(255, 0, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.8), 0 0 20px rgba(255, 0, 255, 0.5), 0 0 30px rgba(255, 0, 255, 0.3);
+  }
+`;
 
 export const Container = styled.div(({ theme }) => ({
   position: "relative",

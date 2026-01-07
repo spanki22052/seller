@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Providers } from "./providers";
+import { Navbar } from "@/shared/ui/Navbar";
 import "antd/dist/reset.css";
 import "./globals.css";
 
@@ -27,7 +28,10 @@ export default function RootLayout({
         className={`${jakarta.variable} antialiased`}
         suppressHydrationWarning
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   );

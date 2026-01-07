@@ -7,8 +7,12 @@ import { MainPage } from "@/pages/MainPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { GamesPage } from "@/pages/GamesPage";
 import { CheatsPage } from "@/pages/CheatsPage";
+import { BrandsPage } from "@/pages/BrandsPage";
+import { CategoriesPage } from "@/pages/CategoriesPage";
 import { CheatFormPage } from "@/pages/CheatFormPage";
 import { SettingsPage } from "@/pages/SettingsPage";
+import { HomePage } from "@/pages/HomePage";
+import { FaqPage } from "@/pages/FaqPage";
 import * as Styled from "./styled";
 
 const { Content } = Layout;
@@ -46,6 +50,38 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <CheatsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/brands"
+              element={
+                <ProtectedRoute>
+                  <BrandsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/categories"
+              element={
+                <ProtectedRoute>
+                  <CategoriesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/faq"
+              element={
+                <ProtectedRoute>
+                  <FaqPage />
                 </ProtectedRoute>
               }
             />

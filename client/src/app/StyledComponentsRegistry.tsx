@@ -9,6 +9,7 @@ export default function StyledComponentsRegistry({
 }: {
   children: React.ReactNode;
 }) {
+  // Only create stylesheet once with lazy initial state
   const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet());
 
   useServerInsertedHTML(() => {
@@ -17,8 +18,12 @@ export default function StyledComponentsRegistry({
     return <>{styles}</>;
   });
 
-  if (typeof window !== "undefined") return <>{children}</>;
+  // Client-side: don't use StyleSheetManager to avoid hydration issues
+  if (typeof window !== "undefined") {
+    return <>{children}</>;
+  }
 
+  // Server-side: use StyleSheetManager to collect styles
   return (
     <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>
       {children}

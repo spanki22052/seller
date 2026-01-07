@@ -1,6 +1,11 @@
 import { useState, useMemo } from "react";
 import { Button, Table, Image, Input } from "antd";
-import { PlusOutlined, EditOutlined, SearchOutlined, ClearOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  EditOutlined,
+  SearchOutlined,
+  ClearOutlined,
+} from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
@@ -168,7 +173,9 @@ export function GamesPage() {
         <Styled.FiltersCard>
           <Styled.FiltersRow>
             <div>
-              <label style={{ display: "block", marginBottom: 8, fontWeight: 500 }}>
+              <label
+                style={{ display: "block", marginBottom: 8, fontWeight: 500 }}
+              >
                 {t("games.filters.searchGame")}
               </label>
               <Search
@@ -204,7 +211,9 @@ export function GamesPage() {
                 pageSize: 10,
                 showSizeChanger: true,
                 showTotal: (total, range) =>
-                  `${range[0]}-${range[1]} ${t("common.of")} ${total} ${t("common.items")}`,
+                  `${range[0]}-${range[1]} ${t("common.of")} ${total} ${t(
+                    "common.items"
+                  )}`,
                 responsive: true,
                 pageSizeOptions: ["10", "20", "50", "100"],
                 showQuickJumper: true,

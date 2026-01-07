@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Button, Table, Tag, Avatar, Input, Select } from "antd";
+import { Button, Table, Tag, Input, Select } from "antd";
 import { PlusOutlined, EditOutlined, SearchOutlined, ClearOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { getCheats, cheatKeys, Cheat } from "@/entities/cheat";
 import { getGames, gameKeys, Game } from "@/entities/game";
+import { getBrands, brandKeys } from "@/entities/brand";
 import { EditGameModal } from "@/features/edit-game";
 import * as Styled from "./styled";
 
@@ -39,25 +40,15 @@ export function CheatsPage() {
     queryFn: getGames,
   });
 
-  // Get unique brands from cheats
-  const brands = useMemo(() => {
-    const brandSet = new Set<string>();
-    cheats.forEach((cheat) => {
-      if (cheat.brandName) {
-        brandSet.add(cheat.brandName);
-      }
-    });
-    return Array.from(brandSet).sort();
-  }, [cheats]);
+  const { data: brands = [] } = useQuery({
+    queryKey: brandKeys.lists(),
+    queryFn: getBrands,
+  });
+
 
   // Filter cheats based on filters
   const filteredCheats = useMemo(() => {
     return cheats.filter((cheat) => {
-      // Search by cheat name
-      if (searchText && !cheat.name.toLowerCase().includes(searchText.toLowerCase())) {
-        return false;
-      }
-      
       // Filter by game
       if (selectedGameId && cheat.gameId !== selectedGameId) {
         return false;
@@ -80,36 +71,6 @@ export function CheatsPage() {
 
   const columns = [
     {
-      title: t("cheats.name"),
-      dataIndex: "name",
-      key: "name",
-      render: (name: string, record: Cheat) => (
-        <Styled.NameCell>
-          <Avatar
-            src={record.circularImage}
-            size={40}
-            style={{ flexShrink: 0 }}
-          >
-            {name?.charAt(0)?.toUpperCase() || "C"}
-          </Avatar>
-          <Styled.NameContent>
-            <Styled.ClickableText
-              onClick={() => navigate(`/cheats/edit/${record.id}`)}
-              ellipsis={{ tooltip: name }}
-              style={{ maxWidth: "100%" }}
-            >
-              {name}
-            </Styled.ClickableText>
-            {record.description && (
-              <Styled.Description ellipsis={{ tooltip: record.description }}>
-                {record.description}
-              </Styled.Description>
-            )}
-          </Styled.NameContent>
-        </Styled.NameCell>
-      ),
-    },
-    {
       title: t("cheats.game"),
       dataIndex: "gameName",
       key: "gameName",
@@ -127,6 +88,12 @@ export function CheatsPage() {
           </Styled.ClickableName>
         );
       },
+    },
+    {
+      title: t("cheats.brand"),
+      dataIndex: "brandName",
+      key: "brandName",
+      render: (brandName: string) => <Styled.NameCell>{brandName}</Styled.NameCell>,
     },
     {
       title: t("cheats.price"),
@@ -272,8 +239,8 @@ export function CheatsPage() {
                 }
               >
                 {brands.map((brand) => (
-                  <Select.Option key={brand} value={brand} label={brand}>
-                    {brand}
+                  <Select.Option key={brand.id} value={brand.name} label={brand.name}>
+                    {brand.name}
                   </Select.Option>
                 ))}
               </Select>

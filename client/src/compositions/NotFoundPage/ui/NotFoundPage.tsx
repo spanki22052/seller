@@ -1,15 +1,16 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Sidebar } from "@/widgets/Sidebar";
-import { Navbar } from "@/shared/ui/Navbar";
+import { useSidebar } from "@/shared/contexts/SidebarContext";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import { pageAnimations } from "../lib/animConstants";
 import * as Styled from "./styled";
 
 export function NotFoundPage() {
+  const { isSidebarOpen, closeSidebar } = useSidebar();
   const prefersReducedMotion = useReducedMotion();
 
   const containerVariants = prefersReducedMotion
@@ -34,8 +35,7 @@ export function NotFoundPage() {
 
   return (
     <>
-      <Sidebar />
-      <Navbar />
+      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
       <Styled.Container
         as={motion.div}
         variants={containerVariants}

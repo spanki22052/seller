@@ -1,6 +1,6 @@
 /**
  * Animation constants for CheatHero component
- * Following Disney-inspired animation principles with 300ms sweet spot
+ * Minimal animations for professional feel
  */
 
 export const buttonAnimations = {
@@ -11,28 +11,26 @@ export const buttonAnimations = {
     y: 0,
     transition: {
       duration: 0.4,
-      ease: [0.22, 1, 0.36, 1], // Custom easing for natural feel
+      ease: [0.22, 1, 0.36, 1],
     },
   },
-  
-  // Hover animation - subtle scale with anticipation
+
+  // Minimal hover animation
   hover: {
-    scale: 1.05,
+    opacity: 0.9,
     transition: {
-      duration: 0.3,
-      ease: [0.22, 1, 0.36, 1],
+      duration: 0.2,
     },
   },
-  
-  // Tap animation - follow through effect
+
+  // Minimal tap animation
   tap: {
-    scale: 0.98,
+    opacity: 0.8,
     transition: {
-      duration: 0.15,
-      ease: [0.22, 1, 0.36, 1],
+      duration: 0.1,
     },
   },
-  
+
   // Reduced motion variants
   reducedMotion: {
     initial: { opacity: 0 },

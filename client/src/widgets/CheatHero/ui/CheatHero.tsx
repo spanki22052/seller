@@ -1,13 +1,12 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import { SearchBar } from "@/widgets/SearchBar";
-import { CircularText } from "@/shared/ui/CircularText";
 import { getCheat, cheatKeys } from "@/entities/cheat";
+import { CheatPurchaseSelector } from "@/widgets/CheatPurchaseSelector";
 import { buttonAnimations } from "../lib/animConstants";
 import * as Styled from "./styled";
 
@@ -72,11 +71,22 @@ export function CheatHero({ gameId, cheatId, onBuyNowClick }: CheatHeroProps) {
         initial="hidden"
         animate="visible"
       >
-        <Styled.SearchBarWrapper>
-          <SearchBar />
-        </Styled.SearchBarWrapper>
-        <Styled.BrandName>{cheat.brandName}</Styled.BrandName>
-        <Styled.Title>{cheat.title}</Styled.Title>
+        {cheat.circularImage && (
+          <Styled.CheatAvatar>
+            <Styled.CheatAvatarGlow />
+            <img
+              src={cheat.circularImage}
+              alt={`${cheat.brandName} avatar`}
+              style={{
+                borderRadius: "50%",
+                objectFit: "cover",
+                width: "100%",
+                height: "100%",
+              }}
+            />
+          </Styled.CheatAvatar>
+        )}
+        <Styled.Title>{cheat.brandName}</Styled.Title>
         <Styled.Description>{cheat.description}</Styled.Description>
         <Styled.ButtonGroup
           as={motion.div}
@@ -128,37 +138,7 @@ export function CheatHero({ gameId, cheatId, onBuyNowClick }: CheatHeroProps) {
         initial="hidden"
         animate="visible"
       >
-        <Styled.CircularWrapper>
-          {cheat.circularImage && (
-            <Styled.CircularImage>
-              <Image
-                src={cheat.circularImage}
-                alt={cheat.brandName}
-                width={300}
-                height={300}
-                unoptimized
-              />
-            </Styled.CircularImage>
-          )}
-          <CircularText
-            text="приватные читы на сайте cheatarena.com "
-            radius={200}
-            fontSize={12}
-            mobileFontSize={8}
-            fontWeight={700}
-            letterSpacing={2}
-          />
-          <CircularText
-            text="помните покупая чит вы сами сделали выбор встать на сторону зла"
-            radius={170}
-            fontSize={8}
-            mobileFontSize={6}
-            mobileRadius={119}
-            fontWeight={600}
-            letterSpacing={1}
-          />
-          <Styled.GlowEffect />
-        </Styled.CircularWrapper>
+        <CheatPurchaseSelector cheatId={cheatId} />
       </Styled.RightSection>
     </Styled.Container>
   );

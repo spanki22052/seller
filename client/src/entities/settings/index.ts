@@ -1,4 +1,2 @@
-export { getSettings } from "./api";
+export { getSettings } from "./api/settingsApi";
 export { settingsKeys } from "./model/keys";
-export type { Settings } from "./model/types";
-

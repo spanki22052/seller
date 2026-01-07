@@ -9,6 +9,10 @@ import {
   MenuUnfoldOutlined,
   SettingOutlined,
   LogoutOutlined,
+  TrademarkOutlined,
+  TagOutlined,
+  HomeOutlined,
+  QuestionCircleOutlined,
 } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { useSidebar } from "../contexts/SidebarContext";
@@ -26,6 +30,16 @@ export function Sidebar() {
 
   const menuItems = [
     {
+      key: "/home",
+      icon: <HomeOutlined />,
+      label: t("sidebar.home"),
+    },
+    {
+      key: "/faq",
+      icon: <QuestionCircleOutlined />,
+      label: "FAQ",
+    },
+    {
       key: "/dashboard",
       icon: <DashboardOutlined />,
       label: t("sidebar.dashboard"),
@@ -39,6 +53,16 @@ export function Sidebar() {
       key: "/cheats",
       icon: <ShoppingOutlined />,
       label: t("sidebar.cheats"),
+    },
+    {
+      key: "/brands",
+      icon: <TrademarkOutlined />,
+      label: t("sidebar.brands"),
+    },
+    {
+      key: "/categories",
+      icon: <TagOutlined />,
+      label: t("sidebar.categories"),
     },
     {
       key: "/settings",

@@ -39,7 +39,6 @@ export function MainCard() {
 
   return (
     <Styled.Container>
-      <SearchBar />
       <Styled.ContentWrapper>
         <Styled.LogoTopRight>
           <Image

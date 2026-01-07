@@ -1,9 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
+import { useSidebar } from "@/shared/contexts/SidebarContext";
 import { navbarAnimations } from "../lib/animConstants";
+import { SearchBar } from "./SearchBar";
+import { getSettings, settingsKeys } from "@/entities/settings";
 import * as Styled from "./styled";
 
 interface NavLink {
@@ -19,26 +23,42 @@ interface NavbarProps {
 
 const defaultLinks: NavLink[] = [
   { id: "home", label: "Главная", href: "/" },
-  { id: "games", label: "Важно", href: "/needToKnow" },
+  { id: "games", label: "Важно", href: "/faq" },
   { id: "cheats", label: "Поддержка", href: "/support" },
-  { id: "about", label: "Аккаунты", href: "/accounts" },
+  { id: "about", label: "Игры", href: "/games" },
 ];
 
 export function Navbar({ links = defaultLinks, logo }: NavbarProps) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const prefersReducedMotion = useReducedMotion();
+  const { toggleSidebar, isSidebarOpen } = useSidebar();
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen((prev) => !prev);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
+  const { data: settings } = useQuery({
+    queryKey: settingsKeys.detail(),
+    queryFn: getSettings,
+  });
 
   const containerVariants = navbarAnimations.container(prefersReducedMotion);
   const linkVariants = navbarAnimations.link(prefersReducedMotion);
-  const mobileMenuVariants = navbarAnimations.mobileMenu(prefersReducedMotion);
+
+  // Create dynamic links based on settings
+  const dynamicLinks = React.useMemo(() => {
+    return defaultLinks.map((link) => {
+      if (link.id === "cheats") {
+        return {
+          ...link,
+          href: settings?.supportLink || "/support",
+        };
+      }
+      return link;
+    });
+  }, [settings?.supportLink]);
+
+  const finalLinks = links.map((link) => {
+    if (link.id === "cheats") {
+      return dynamicLinks.find((dl) => dl.id === "cheats") || link;
+    }
+    return link;
+  });
 
   return (
     <Styled.Container
@@ -51,7 +71,7 @@ export function Navbar({ links = defaultLinks, logo }: NavbarProps) {
         {logo && <Styled.LogoWrapper>{logo}</Styled.LogoWrapper>}
 
         <Styled.DesktopNav>
-          {links.map((link, index) => (
+          {finalLinks.map((link, index) => (
             <motion.div
               key={link.id}
               variants={linkVariants}
@@ -59,59 +79,51 @@ export function Navbar({ links = defaultLinks, logo }: NavbarProps) {
               whileHover={prefersReducedMotion ? {} : navbarAnimations.hover}
               whileTap={prefersReducedMotion ? {} : navbarAnimations.tap}
             >
-              <Styled.NavLink href={link.href}>{link.label}</Styled.NavLink>
+              {link.id === "cheats" ? (
+                <Styled.NavLinkExternal
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {link.label}
+                </Styled.NavLinkExternal>
+              ) : (
+                <Styled.NavLink href={link.href}>{link.label}</Styled.NavLink>
+              )}
             </motion.div>
           ))}
         </Styled.DesktopNav>
 
-        <Styled.MobileMenuButton
-          onClick={toggleMobileMenu}
+        <SearchBar />
+
+        <Styled.SidebarBurgerButton
+          onClick={toggleSidebar}
           as={motion.button}
           whileHover={prefersReducedMotion ? {} : navbarAnimations.hover}
           whileTap={prefersReducedMotion ? {} : navbarAnimations.tap}
-          aria-label="Toggle menu"
-          aria-expanded={isMobileMenuOpen}
+          aria-label="Toggle sidebar"
+          aria-expanded={isSidebarOpen}
         >
-          <Styled.HamburgerIcon $isOpen={isMobileMenuOpen}>
+          <Styled.SidebarHamburgerLine />
+          <Styled.SidebarHamburgerLine />
+          <Styled.SidebarHamburgerLine />
+        </Styled.SidebarBurgerButton>
+
+        <Styled.MobileMenuButton
+          onClick={toggleSidebar}
+          as={motion.button}
+          whileHover={prefersReducedMotion ? {} : navbarAnimations.hover}
+          whileTap={prefersReducedMotion ? {} : navbarAnimations.tap}
+          aria-label="Toggle sidebar"
+          aria-expanded={isSidebarOpen}
+        >
+          <Styled.HamburgerIcon $isOpen={isSidebarOpen}>
             <span />
             <span />
             <span />
           </Styled.HamburgerIcon>
         </Styled.MobileMenuButton>
       </Styled.NavContent>
-
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <Styled.MobileMenu
-            as={motion.div}
-            variants={mobileMenuVariants}
-            initial="closed"
-            animate="open"
-            exit="closed"
-          >
-            <Styled.MobileNav>
-              {links.map((link, index) => (
-                <motion.div
-                  key={link.id}
-                  variants={linkVariants}
-                  custom={index}
-                  whileHover={
-                    prefersReducedMotion ? {} : navbarAnimations.hover
-                  }
-                  whileTap={prefersReducedMotion ? {} : navbarAnimations.tap}
-                >
-                  <Styled.MobileNavLink
-                    href={link.href}
-                    onClick={closeMobileMenu}
-                  >
-                    {link.label}
-                  </Styled.MobileNavLink>
-                </motion.div>
-              ))}
-            </Styled.MobileNav>
-          </Styled.MobileMenu>
-        )}
-      </AnimatePresence>
     </Styled.Container>
   );
 }

@@ -4,7 +4,15 @@ import { useCreateCheat } from "../hooks/useCreateCheat";
 import { CreateCheatDto } from "@/entities/cheat";
 import { useQuery } from "@tanstack/react-query";
 import { getGames, gameKeys } from "@/entities/game";
+import { getBrands, brandKeys } from "@/entities/brand";
 import * as Styled from "./styled";
+
+interface CreateCheatFormValues {
+  gameId: string;
+  brandId: string;
+  price: number;
+  description?: string;
+}
 
 const { TextArea } = Input;
 
@@ -18,8 +26,33 @@ export function CreateCheatForm({ onSuccess }: { onSuccess?: () => void }) {
     queryFn: getGames,
   });
 
-  const handleSubmit = async (values: CreateCheatDto) => {
-    await createCheat.mutateAsync(values);
+  const { data: brands = [], isLoading: brandsLoading } = useQuery({
+    queryKey: brandKeys.lists(),
+    queryFn: getBrands,
+  });
+
+  const handleSubmit = async (values: CreateCheatFormValues) => {
+    // Find selected brand
+    const selectedBrand = brands.find((brand) => brand.id === values.brandId);
+    if (!selectedBrand) {
+      throw new Error("Selected brand not found");
+    }
+
+    // Automatically generate name from brand name
+    const dto: CreateCheatDto = {
+      gameId: values.gameId,
+      brandId: values.brandId,
+      description: values.description,
+      name: selectedBrand.name, // Use brand name as cheat name
+      productName: selectedBrand.name, // Use brand name as product name
+      price: {
+        amount: values.price,
+        currency: "USD",
+      },
+      breadcrumbs: [], // Empty breadcrumbs for simple form
+    };
+
+    await createCheat.mutateAsync(dto);
     form.resetFields();
     onSuccess?.();
   };
@@ -32,14 +65,6 @@ export function CreateCheatForm({ onSuccess }: { onSuccess?: () => void }) {
         onFinish={handleSubmit}
         disabled={createCheat.isPending}
       >
-        <Form.Item
-          name="name"
-          label={t("cheats.form.cheatName")}
-          rules={[{ required: true, message: t("cheats.form.cheatNameRequired") }]}
-        >
-          <Input placeholder={t("cheats.form.cheatNamePlaceholder")} />
-        </Form.Item>
-
         <Form.Item
           name="gameId"
           label={t("cheats.form.game")}
@@ -60,6 +85,27 @@ export function CreateCheatForm({ onSuccess }: { onSuccess?: () => void }) {
         </Form.Item>
 
         <Form.Item
+          name="brandId"
+          label={t("cheats.form.brandName")}
+          rules={[
+            { required: true, message: t("cheats.form.brandNameRequired") },
+          ]}
+        >
+          <Select
+            placeholder={t("cheats.form.brandNamePlaceholder")}
+            loading={brandsLoading}
+            showSearch
+            optionFilterProp="children"
+          >
+            {brands.map((brand) => (
+              <Select.Option key={brand.id} value={brand.id}>
+                {brand.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item
           name="price"
           label={t("cheats.form.price")}
           rules={[{ required: true, message: t("cheats.form.priceRequired") }]}
@@ -74,7 +120,10 @@ export function CreateCheatForm({ onSuccess }: { onSuccess?: () => void }) {
         </Form.Item>
 
         <Form.Item name="description" label={t("cheats.form.description")}>
-          <TextArea rows={4} placeholder={t("cheats.form.descriptionPlaceholder")} />
+          <TextArea
+            rows={4}
+            placeholder={t("cheats.form.descriptionPlaceholder")}
+          />
         </Form.Item>
 
         <Form.Item>
@@ -91,4 +140,3 @@ export function CreateCheatForm({ onSuccess }: { onSuccess?: () => void }) {
     </Styled.FormWrapper>
   );
 }
-

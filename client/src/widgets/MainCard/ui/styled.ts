@@ -3,7 +3,7 @@ import { Button } from "antd";
 
 export const Container = styled.div(({ theme }) => ({
   width: "100%",
-  marginTop: 30,
+  marginTop: 130,
   paddingTop: theme.spacing.xl,
   paddingBottom: theme.spacing.xl,
   position: "relative",
@@ -114,73 +114,14 @@ export const PrimaryButton = styled(Button)(({ theme }) => ({
   borderRadius: "999px",
   padding: "12px 24px",
   height: "auto",
-  boxShadow: `
-    0 4px 12px rgba(255, 0, 255, 0.4),
-    0 0 20px rgba(255, 0, 255, 0.2),
-    inset 0 0 20px rgba(255, 0, 255, 0.1)
-  `,
-  textShadow: "0 0 10px rgba(255, 0, 255, 0.5)",
-  position: "relative",
-  overflow: "hidden",
-  transition: "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
-  "&::before": {
-    content: '""',
-    position: "absolute",
-    top: 0,
-    left: "-100%",
-    width: "100%",
-    height: "100%",
-    background: `linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)`,
-    transition: "left 0.5s ease",
-  },
-  "&::after": {
-    content: '""',
-    position: "absolute",
-    top: "-50%",
-    left: "-50%",
-    width: "200%",
-    height: "200%",
-    background: `radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%)`,
-    opacity: 0,
-    transition: "opacity 0.3s ease",
-    pointerEvents: "none",
-  },
   "&:not(:disabled):hover": {
     backgroundColor: theme.colors.accent.purpleLight,
-    transform: "translateY(-2px)",
-    boxShadow: `
-      0 6px 20px rgba(255, 0, 255, 0.6),
-      0 0 30px rgba(255, 0, 255, 0.4),
-      0 0 50px rgba(255, 0, 255, 0.2),
-      inset 0 0 30px rgba(255, 0, 255, 0.2)
-    `,
-    textShadow: "0 0 15px rgba(255, 0, 255, 0.8), 0 0 25px rgba(255, 0, 255, 0.6)",
-    "&::before": {
-      left: "100%",
-    },
-    "&::after": {
-      opacity: 1,
-    },
   },
   "&:not(:disabled):focus": {
     backgroundColor: theme.colors.accent.purple,
-    boxShadow: `
-      0 6px 20px rgba(255, 0, 255, 0.6),
-      0 0 30px rgba(255, 0, 255, 0.4),
-      0 0 50px rgba(255, 0, 255, 0.2),
-      inset 0 0 30px rgba(255, 0, 255, 0.2),
-      0 0 0 3px rgba(255, 0, 255, 0.3)
-    `,
-    textShadow: "0 0 15px rgba(255, 0, 255, 0.8), 0 0 25px rgba(255, 0, 255, 0.6)",
   },
   "&:not(:disabled):active": {
     backgroundColor: theme.colors.accent.purple,
-    transform: "translateY(0)",
-    boxShadow: `
-      0 4px 12px rgba(255, 0, 255, 0.4),
-      0 0 20px rgba(255, 0, 255, 0.2),
-      inset 0 0 20px rgba(255, 0, 255, 0.1)
-    `,
   },
 }));
 
@@ -192,57 +133,16 @@ export const SecondaryButton = styled(Button)(({ theme }) => ({
   borderRadius: "999px",
   padding: "12px 24px",
   height: "auto",
-  position: "relative",
-  overflow: "visible",
-  transition: "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
-  boxShadow: `
-    0 0 10px rgba(255, 0, 255, 0.3),
-    inset 0 0 10px rgba(255, 0, 255, 0.1)
-  `,
-  textShadow: "0 0 10px rgba(255, 0, 255, 0.5)",
-  "&::before": {
-    content: '""',
-    position: "absolute",
-    top: "-2px",
-    left: "-2px",
-    right: "-2px",
-    bottom: "-2px",
-    borderRadius: "999px",
-    background: `linear-gradient(45deg, ${theme.colors.accent.purple}, ${theme.colors.accent.blue}, ${theme.colors.accent.purple})`,
-    backgroundSize: "200% 200%",
-    opacity: 0,
-    zIndex: -1,
-    transition: "opacity 0.3s ease, background-position 0.3s ease",
-    backgroundPosition: "0% 50%",
-    filter: "blur(8px)",
-    pointerEvents: "none",
-  },
   "&:hover": {
     backgroundColor: "transparent",
     borderColor: theme.colors.accent.purpleLight,
     color: theme.colors.text.primary,
-    transform: "translateY(-2px)",
-    boxShadow: `
-      0 0 20px rgba(255, 0, 255, 0.5),
-      inset 0 0 15px rgba(255, 0, 255, 0.15)
-    `,
-    textShadow: "0 0 15px rgba(255, 0, 255, 0.8), 0 0 25px rgba(255, 0, 255, 0.6)",
-    "&::before": {
-      opacity: 0.6,
-      backgroundPosition: "100% 50%",
-    },
   },
   "&:focus": {
     outline: "none",
-    boxShadow: `
-      0 0 20px rgba(255, 0, 255, 0.5),
-      inset 0 0 15px rgba(255, 0, 255, 0.15),
-      0 0 0 3px rgba(255, 0, 255, 0.3)
-    `,
-    textShadow: "0 0 15px rgba(255, 0, 255, 0.8), 0 0 25px rgba(255, 0, 255, 0.6)",
+    borderColor: theme.colors.accent.purple,
   },
   "&:active": {
-    transform: "translateY(0)",
     borderColor: theme.colors.accent.purple,
   },
 }));

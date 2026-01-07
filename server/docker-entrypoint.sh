@@ -18,6 +18,9 @@ echo "Database is ready!"
 echo "Running database migrations..."
 npx prisma migrate deploy
 
+echo "Generating Prisma Client..."
+npx prisma generate
+
 echo "Starting application..."
 exec "$@"
 

@@ -1,14 +1,8 @@
 import { Platform, NeonBlinkData } from "../model/types";
-import { CrystalData } from "@/shared/ui/Crystal";
 import epicGamesImage from "@/shared/assets/images/epic-games.png";
 import uplayImage from "@/shared/assets/images/uplay.png";
 import steamImage from "@/shared/assets/images/steam.png";
 import originImage from "@/shared/assets/images/origin.png";
-import crystal1 from "@/shared/assets/images/crystalls/crystal1.png";
-import crystal2 from "@/shared/assets/images/crystalls/crystal2.png";
-import crystal3 from "@/shared/assets/images/crystalls/crystal3.png";
-import crystal4 from "@/shared/assets/images/crystalls/crystal4.png";
-import crystal from "@/shared/assets/images/crystalls/crystal.png";
 import neonBlinkImage from "@/shared/assets/images/neon-blink.png";
 import redLinesImage from "@/shared/assets/images/red-lines.png";
 
@@ -19,30 +13,7 @@ export const platforms: Platform[] = [
   { id: "origin", name: "Origin", image: originImage },
 ];
 
-export const CRYSTAL_IMAGES = [crystal1, crystal2, crystal3, crystal4, crystal];
-
-export const CRYSTAL_COUNT = 12;
-
-export const CRYSTAL_SIZE_MIN = 20;
-export const CRYSTAL_SIZE_MAX = 40;
-
-export const CRYSTAL_PARALLAX_MAX = 25;
-
 export const SPRING_CONFIG = { damping: 50, stiffness: 100 };
-
-export function generateCrystals(count: number): CrystalData[] {
-  return Array.from({ length: count }, (_, i) => ({
-    id: i,
-    image: CRYSTAL_IMAGES[Math.floor(Math.random() * CRYSTAL_IMAGES.length)],
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size:
-      CRYSTAL_SIZE_MIN + Math.random() * (CRYSTAL_SIZE_MAX - CRYSTAL_SIZE_MIN),
-    rotation: Math.random() * 360,
-    parallaxX: (Math.random() - 0.5) * CRYSTAL_PARALLAX_MAX * 2,
-    parallaxY: (Math.random() - 0.5) * CRYSTAL_PARALLAX_MAX * 2,
-  }));
-}
 
 export const NEON_BLINK_IMAGE = neonBlinkImage;
 export const RED_LINES_IMAGE = redLinesImage;

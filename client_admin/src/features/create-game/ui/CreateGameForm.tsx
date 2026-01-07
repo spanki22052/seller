@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Form, Input, Button, Upload, message, ColorPicker } from "antd";
+import { Form, Input, Button, Upload, message, ColorPicker, Select } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import type { UploadFile, UploadProps } from "antd";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
 import { useCreateGame } from "../hooks/useCreateGame";
 import { CreateGameDto } from "@/entities/game";
+import { getCategories, categoryKeys } from "@/entities/category";
 import { uploadFile } from "@/entities/file";
 import { CropIconModal } from "@/features/crop-icon-image";
 import * as Styled from "./styled";
@@ -20,6 +22,11 @@ export function CreateGameForm({ onSuccess }: { onSuccess?: () => void }) {
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [iconPreviewSrc, setIconPreviewSrc] = useState<string>("");
 
+  const { data: categories = [] } = useQuery({
+    queryKey: categoryKeys.lists(),
+    queryFn: getCategories,
+  });
+
   const handleFileUpload = async (file: File): Promise<string> => {
     try {
       const response = await uploadFile(file);
@@ -30,12 +37,13 @@ export function CreateGameForm({ onSuccess }: { onSuccess?: () => void }) {
     }
   };
 
-  const handleSubmit = async (values: { name: string; color: string }) => {
+  const handleSubmit = async (values: { name: string; color: string; categoryId?: string }) => {
     setUploading(true);
     try {
       const dto: CreateGameDto = {
         name: values.name,
         color: values.color,
+        categoryId: values.categoryId,
       };
 
       // Upload files if they exist
@@ -135,6 +143,21 @@ export function CreateGameForm({ onSuccess }: { onSuccess?: () => void }) {
           getValueFromEvent={(color) => color.toHexString()}
         >
           <ColorPicker showText format="hex" />
+        </Form.Item>
+
+        <Form.Item
+          name="categoryId"
+          label={t("games.form.category")}
+          rules={[{ required: false }]}
+        >
+          <Select
+            placeholder={t("games.form.categoryPlaceholder")}
+            allowClear
+            options={categories.map(category => ({
+              value: category.id,
+              label: category.name,
+            }))}
+          />
         </Form.Item>
 
         <Form.Item

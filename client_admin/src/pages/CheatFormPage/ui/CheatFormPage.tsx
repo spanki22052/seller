@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { getGames, gameKeys } from "@/entities/game";
+import { getBrands, brandKeys } from "@/entities/brand";
 import {
   getCheatById,
   cheatKeys,
@@ -58,6 +59,11 @@ export function CheatFormPage() {
     queryFn: getGames,
   });
 
+  const { data: brands = [], isLoading: brandsLoading } = useQuery({
+    queryKey: brandKeys.lists(),
+    queryFn: getBrands,
+  });
+
   const { data: cheat, isLoading: cheatLoading } = useQuery({
     queryKey: cheatKeys.detail(id!),
     queryFn: () => getCheatById(id!),
@@ -86,10 +92,12 @@ export function CheatFormPage() {
         redirectUrl: plan.redirectUrl || "",
       }));
 
+      // Find brand by name to set brandId
+      const selectedBrand = brands.find(brand => brand.name === cheat.brandName);
+
       form.setFieldsValue({
         gameId: cheat.gameId,
-        name: cheat.name,
-        brandName: cheat.brandName || "",
+        brandId: selectedBrand?.id || "",
         description: cheat.description || "",
         status: cheat.status || "AVAILABLE",
       });
@@ -158,11 +166,16 @@ export function CheatFormPage() {
           redirectUrl: plan.redirectUrl!,
         }));
 
+      // Find selected brand
+      const selectedBrand = brands.find(brand => brand.id === values.brandId);
+      if (!selectedBrand) {
+        throw new Error("Selected brand not found");
+      }
+
       const dto: CreateCheatDto = {
         gameId: values.gameId,
-        name: values.name,
-        brandName: values.brandName,
-        title: values.name, // Use name as title
+        name: selectedBrand.name, // Generate name from brand name
+        brandId: values.brandId,
         description: values.description || "",
         descriptionMarkdown: descriptionMarkdown || undefined,
         circularText: "",
@@ -171,7 +184,7 @@ export function CheatFormPage() {
           amount: plans.length > 0 ? plans[0].price : null,
           currency: plans.length > 0 ? plans[0].currency : "RUB",
         },
-        productName: values.name,
+        productName: selectedBrand.name, // Generate productName from brand name
         windowsVersion: "",
         gameVersion: "",
         gameMode: "",
@@ -268,19 +281,23 @@ export function CheatFormPage() {
                   </Form.Item>
 
                   <Form.Item
-                    name="brandName"
+                    name="brandId"
                     label={t("cheats.form.brandName")}
                     rules={[{ required: true, message: t("cheats.form.brandNameRequired") }]}
                   >
-                    <Input placeholder={t("cheats.form.brandNamePlaceholder")} size="large" />
-                  </Form.Item>
-
-                  <Form.Item
-                    name="name"
-                    label={t("cheats.form.cheatName")}
-                    rules={[{ required: true, message: t("cheats.form.cheatNameRequired") }]}
-                  >
-                    <Input placeholder={t("cheats.form.cheatNamePlaceholder")} size="large" />
+                    <Select
+                      placeholder={t("cheats.form.brandNamePlaceholder")}
+                      loading={brandsLoading}
+                      showSearch
+                      optionFilterProp="children"
+                      size="large"
+                    >
+                      {brands.map((brand) => (
+                        <Select.Option key={brand.id} value={brand.id}>
+                          {brand.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
                   </Form.Item>
 
                   <Form.Item

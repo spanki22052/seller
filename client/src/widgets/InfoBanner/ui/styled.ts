@@ -25,17 +25,6 @@ export const Container = styled.div(({ theme }) => ({
   },
 }));
 
-export const CrystalsContainer = styled.div({
-  position: "absolute",
-  top: "-10%",
-  left: "-10%",
-  right: "-10%",
-  bottom: "-10%",
-  pointerEvents: "none",
-  zIndex: 10,
-  overflow: "visible",
-});
-
 export const NeonBlinkContainer = styled.div({
   position: "absolute",
   top: "-10%",
@@ -79,11 +68,11 @@ export const RightSection = styled.div({
 export const SkeletonImageWrapper = styled.div({
   position: "relative",
   display: "flex",
-  alignItems: "center",
+  alignItems: "flex-end",
   justifyContent: "center",
   "& img": {
     width: 600,
-    height: 700,
+    height: 600,
   },
   "@media (max-width: 1199px)": {
     display: "none",
