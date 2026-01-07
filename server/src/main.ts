@@ -19,19 +19,7 @@ async function bootstrap() {
   // 1. Multer FileInterceptor (per route) - see files.controller.ts
   // 2. Nginx client_max_body_size - see client_admin/nginx.conf
 
-  // Global API prefix
-  app.setGlobalPrefix("api");
-
-  // Global validation pipe
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }),
-  );
-
-  // Enable CORS using NestJS built-in support
+  // Enable CORS using NestJS built-in support - MUST be before global prefix
   const defaultCorsOrigins = [
     "http://62.181.53.211:3000", // Client (Production - HTTP)
     "https://62.181.53.211:3000", // Client (Production - HTTPS)
@@ -59,26 +47,27 @@ async function bootstrap() {
 
   console.log(`CORS: Enabling CORS for origins: ${corsOrigins.join(', ')}`);
 
-  // Use NestJS built-in CORS support
+  // Use NestJS built-in CORS support with proper origin checking
   app.enableCors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-
-      if (corsOrigins.includes(origin)) {
-        console.log(`CORS: Allowing request from origin: ${origin}`);
-        return callback(null, true);
-      } else {
-        console.warn(`CORS: Blocking request from disallowed origin: ${origin}`);
-        return callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: corsOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
     exposedHeaders: ['Content-Type', 'Authorization'],
     maxAge: 86400, // 24 hours
   });
+
+  // Global API prefix
+  app.setGlobalPrefix("api");
+
+  // Global validation pipe
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   // Swagger documentation
   const config = new DocumentBuilder()
