@@ -15,8 +15,11 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-# Check if .env file exists
-if [ ! -f .env ]; then
+# Check if .env or .env.production file exists
+ENV_FILE=".env"
+if [ "$NODE_ENV" = "production" ] && [ -f .env.production ]; then
+    ENV_FILE=".env.production"
+elif [ ! -f .env ]; then
     echo -e "${RED}Error: .env file not found${NC}"
     echo "Please create a .env file with DATABASE_URL in the server directory"
     exit 1
@@ -36,13 +39,22 @@ if [ ! -f "$PRISMA_BIN" ]; then
 fi
 
 # Load environment variables
-echo -e "${YELLOW}Loading environment variables...${NC}"
-export $(grep -v '^#' .env | xargs)
+echo -e "${YELLOW}Loading environment variables from $ENV_FILE...${NC}"
+export $(grep -v '^#' "$ENV_FILE" | xargs)
 
-# Verify DATABASE_URL is set
+# Construct DATABASE_URL if not set
 if [ -z "$DATABASE_URL" ]; then
-    echo -e "${RED}Error: DATABASE_URL is not set in .env file${NC}"
-    exit 1
+    if [ -n "$DB_USER" ] && [ -n "$DB_PASSWORD" ] && [ -n "$DB_NAME" ]; then
+        # For production, connect to localhost (exposed port), for development use localhost too
+        DB_HOST=${DB_HOST:-localhost}
+        DATABASE_URL="postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:${DB_PORT:-5432}/$DB_NAME?schema=public"
+        export DATABASE_URL
+        echo -e "${YELLOW}Constructed DATABASE_URL: postgresql://$DB_USER:***@$DB_HOST:${DB_PORT:-5432}/$DB_NAME?schema=public${NC}"
+    else
+        echo -e "${RED}Error: DATABASE_URL is not set and cannot construct from DB_* variables${NC}"
+        echo "Please ensure DATABASE_URL is set in $ENV_FILE or all DB_* variables are defined"
+        exit 1
+    fi
 fi
 
 echo -e "${GREEN}✓ DATABASE_URL is set${NC}"
