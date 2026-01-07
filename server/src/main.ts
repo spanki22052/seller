@@ -31,7 +31,7 @@ async function bootstrap() {
     }),
   );
 
-  // CORS configuration with manual middleware
+  // Enable CORS using NestJS built-in support
   const defaultCorsOrigins = [
     "http://62.181.53.211:3000", // Client (Production - HTTP)
     "https://62.181.53.211:3000", // Client (Production - HTTPS)
@@ -57,53 +57,27 @@ async function bootstrap() {
     });
   }
 
-  // Manual CORS middleware - handle preflight and actual requests
-  // IMPORTANT: Access-Control-Allow-Credentials can ONLY be set when Access-Control-Allow-Origin is also set
-  console.log(`CORS: Allowed origins: ${corsOrigins.join(', ')}`);
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    const origin = req.headers.origin;
-    const isOriginAllowed = origin && corsOrigins.includes(origin);
+  console.log(`CORS: Enabling CORS for origins: ${corsOrigins.join(', ')}`);
 
-    console.log(`CORS: Request from origin: ${origin}, method: ${req.method}, allowed: ${isOriginAllowed}`);
+  // Use NestJS built-in CORS support
+  app.enableCors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
 
-    // For preflight OPTIONS requests
-    if (req.method === "OPTIONS") {
-      if (isOriginAllowed) {
-        // Set all CORS headers together - credentials MUST be set with origin
-        res.header("Access-Control-Allow-Origin", origin);
-        res.header("Access-Control-Allow-Credentials", "true");
-        res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH,OPTIONS");
-        res.header(
-          "Access-Control-Allow-Headers",
-          "Content-Type,Authorization,X-Requested-With,Accept,Origin",
-        );
-        res.header("Access-Control-Expose-Headers", "Content-Type,Authorization");
-        res.header("Access-Control-Max-Age", "86400"); // Cache preflight for 24 hours
-        console.log(`CORS: Allowed OPTIONS request from ${origin}`);
-        res.sendStatus(204);
+      if (corsOrigins.includes(origin)) {
+        console.log(`CORS: Allowing request from origin: ${origin}`);
+        return callback(null, true);
       } else {
-        // For OPTIONS requests from non-allowed origins, respond without CORS headers
-        console.warn(`CORS: Blocking OPTIONS request from disallowed origin: ${origin}`);
-        res.sendStatus(204);
+        console.warn(`CORS: Blocking request from disallowed origin: ${origin}`);
+        return callback(new Error('Not allowed by CORS'));
       }
-      return;
-    }
-
-    // For actual requests, set CORS headers if origin is allowed
-    if (isOriginAllowed) {
-      // Set all CORS headers together - credentials MUST be set with origin
-      res.header("Access-Control-Allow-Origin", origin);
-      res.header("Access-Control-Allow-Credentials", "true");
-      res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH,OPTIONS");
-      res.header(
-        "Access-Control-Allow-Headers",
-        "Content-Type,Authorization,X-Requested-With,Accept,Origin",
-      );
-      res.header("Access-Control-Expose-Headers", "Content-Type,Authorization");
-      console.log(`CORS: Set headers for request from ${origin}`);
-    }
-
-    next();
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+    exposedHeaders: ['Content-Type', 'Authorization'],
+    maxAge: 86400, // 24 hours
   });
 
   // Swagger documentation
