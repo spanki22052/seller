@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Accept build arguments for Next.js public env vars
 ARG NEXT_PUBLIC_API_URL=http://62.181.53.211:3002/api
-ARG API_URL=http://backend:3002/api
+ARG API_URL=http://62.181.53.211:3002:3002/api
 
 # Set environment variables for build
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
