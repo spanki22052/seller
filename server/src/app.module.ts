@@ -12,6 +12,7 @@ import { DashboardModule } from "./modules/dashboard/dashboard.module";
 import { SettingsModule } from "./modules/settings/settings.module";
 import { HomeLinksModule } from "./modules/home-links/home-links.module";
 import { FaqsModule } from "./modules/faqs/faqs.module";
+import { HealthModule } from "./modules/health/health.module";
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { FaqsModule } from "./modules/faqs/faqs.module";
     SettingsModule,
     HomeLinksModule,
     FaqsModule,
+    HealthModule,
   ],
 })
 export class AppModule {}

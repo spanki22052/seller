@@ -1,4 +1,4 @@
-.PHONY: help install dev build up down logs clean migrate generate seed dev-up prod-up env-dev env-prod
+.PHONY: help install dev build up down logs clean migrate generate seed dev-up prod-up prod-down deploy-prod env-dev env-prod
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -16,6 +16,7 @@ help: ## Show this help message
 	@echo 'Production:'
 	@echo '  prod-up          Start production environment (configure .env.production first)'
 	@echo '  prod-down        Stop production environment'
+	@echo '  deploy-prod      Deploy to production server (62.181.53.211)'
 	@echo ''
 	@echo 'Database:'
 	@echo '  migrate          Run database migrations'
@@ -67,9 +68,22 @@ prod-up: env-prod ## Start production environment
 	@echo "Starting production environment..."
 	@export $$(cat ../.env.production | xargs) && docker-compose -f ../docker-compose.production.yml up -d
 	@echo "Production environment started!"
+	@echo "Services will be available at:"
+	@echo "  Backend: http://localhost:3002"
+	@echo "  Client: http://localhost:3000"
+	@echo "  Admin: http://localhost:3001"
+	@echo "  MinIO: http://localhost:9001"
 
 prod-down: ## Stop production environment
 	docker-compose -f ../docker-compose.production.yml down
+
+deploy-prod: ## Deploy to production server (62.181.53.211)
+	@echo "Deploying to production server 62.181.53.211..."
+	@if [ ! -f ../.env.production ]; then \
+		echo "Error: ../.env.production not found. Please create it from .env.production.example"; \
+		exit 1; \
+	fi
+	../deploy-production.sh
 
 # Legacy commands (for backward compatibility)
 install: ## Install dependencies

@@ -38,6 +38,7 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+      start_period: 10s
     networks:
       - seller_network_prod
 
@@ -54,7 +55,7 @@ services:
       PRISMA_CLIENT_ENGINE_TYPE: library
       MINIO_ENDPOINT: minio
       MINIO_PORT: "9000"
-      MINIO_USE_SSL: "false"
+      MINIO_USE_SSL: "${MINIO_USE_SSL:-false}"
       MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL}
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
@@ -65,7 +66,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
     ports:
-      - "3002:3002"
+      - "${PORT:-3002}:${PORT:-3002}"
     depends_on:
       postgres:
         condition: service_healthy
@@ -91,7 +92,8 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - seller_network_prod
 
@@ -107,15 +109,10 @@ services:
     ports:
       - "3001:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - seller_network_prod
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
 
 volumes:
   postgres_data_prod:
