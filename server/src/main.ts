@@ -4,7 +4,6 @@ import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
 import { ConfigService } from "@nestjs/config";
 import { Request, Response, NextFunction } from "express";
-import * as cors from "cors";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -48,31 +47,15 @@ async function bootstrap() {
 
   console.log(`CORS: Enabling CORS for origins: ${corsOrigins.join(", ")}`);
 
-  // Use cors middleware directly
-  app.use(
-    cors({
-      origin: (
-        origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void,
-      ) => {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-
-        if (corsOrigins.includes(origin)) {
-          console.log(`CORS: Allowing request from origin: ${origin}`);
-          return callback(null, true);
-        } else {
-          console.warn(`CORS: Blocking request from disallowed origin: ${origin}`);
-          return callback(new Error("Not allowed by CORS"));
-        }
-      },
-      credentials: true,
-      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-      allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
-      exposedHeaders: ["Content-Type", "Authorization"],
-      maxAge: 86400, // 24 hours
-    }),
-  );
+  // Use NestJS built-in CORS support
+  app.enableCors({
+    origin: corsOrigins,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
+    exposedHeaders: ["Content-Type", "Authorization"],
+    maxAge: 86400, // 24 hours
+  });
 
   // Global API prefix
   app.setGlobalPrefix("api");
