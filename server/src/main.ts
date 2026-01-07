@@ -35,8 +35,10 @@ async function bootstrap() {
   const corsOrigins = process.env.CORS_ORIGIN
     ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
     : [
-        "http://62.181.53.211:3000", // Client (Production)
-        "http://62.181.53.211:3001", // Client Admin (Production)
+        "http://62.181.53.211:3000", // Client (Production - HTTP)
+        "https://62.181.53.211:3000", // Client (Production - HTTPS)
+        "http://62.181.53.211:3001", // Client Admin (Production - HTTP)
+        "https://62.181.53.211:3001", // Client Admin (Production - HTTPS)
         "http://62.181.53.211:3002", // Server (for Swagger)
         "http://localhost:3000", // Client (Development)
         "http://localhost:3001", // Client Admin (Development)
