@@ -32,7 +32,7 @@ export const Title = styled.h2(({ theme }) => ({
   lineHeight: 1.2,
   color: theme.colors.text.primary,
   margin: 0,
-  background: theme.colors.gradient.purpleBlueHorizontal,
+  background: theme.colors.gradient.purpleBlue,
   backgroundClip: "text",
   WebkitBackgroundClip: "text",
   WebkitTextFillColor: "transparent",
@@ -77,7 +77,7 @@ export const CookieSection = styled.div(({ theme }) => ({
   border: `1px solid ${theme.colors.border.secondary}`,
   transition: `all ${theme.transitions.fast}`,
   "&:hover": {
-    borderColor: theme.colors.primary,
+    borderColor: theme.colors.border.accent,
     boxShadow: theme.shadows.sm,
   },
 }));
@@ -89,8 +89,8 @@ export const SectionIcon = styled.div(({ theme }) => ({
   width: 48,
   height: 48,
   borderRadius: theme.borderRadius.full,
-  backgroundColor: theme.colors.primary,
-  color: theme.colors.text.inverse,
+  backgroundColor: theme.colors.accent.purple,
+  color: theme.colors.text.primary,
   fontSize: 20,
   fontWeight: 600,
   flexShrink: 0,
@@ -138,10 +138,10 @@ export const ActionButton = styled.button<{ variant?: "primary" | "secondary" }>
   border: "none",
   minWidth: 120,
   ...(variant === "primary" && {
-    backgroundColor: theme.colors.primary,
-    color: theme.colors.text.inverse,
+    backgroundColor: theme.colors.accent.purple,
+    color: theme.colors.text.primary,
     "&:hover": {
-      backgroundColor: theme.colors.primaryHover,
+      backgroundColor: theme.colors.accent.purpleLight,
       transform: "translateY(-1px)",
       boxShadow: theme.shadows.sm,
     },
@@ -152,7 +152,7 @@ export const ActionButton = styled.button<{ variant?: "primary" | "secondary" }>
     border: `1px solid ${theme.colors.border.primary}`,
     "&:hover": {
       backgroundColor: theme.colors.bg.hover,
-      borderColor: theme.colors.primary,
+      borderColor: theme.colors.border.accent,
     },
   }),
   "&:active": {
@@ -172,7 +172,7 @@ export const CookieIcon = styled.div(({ theme }) => ({
   width: 24,
   height: 24,
   opacity: 0.1,
-  color: theme.colors.primary,
+  color: theme.colors.accent.purple,
   fontSize: 24,
   pointerEvents: "none",
   "@media (max-width: 768px)": {
