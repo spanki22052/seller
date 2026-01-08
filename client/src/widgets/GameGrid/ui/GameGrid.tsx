@@ -181,26 +181,23 @@ export function GameGrid({ categoryId }: GameGridProps) {
     return stats;
   }, [gamesWithCheats]);
 
-  // Filter games based on category from UI tabs first, then carousel settings
+  // Filter games based on carousel settings first, then category from UI tabs
   const filteredGames = React.useMemo(() => {
     let filtered = games;
 
-    // Always filter by category from UI tabs first (has highest priority)
-    if (categoryId) {
-      filtered = filtered.filter((game) => game.categoryId === categoryId);
+    // Always filter by carousel game IDs if configured (has highest priority)
+    if (
+      settings?.gameIdsForCarousel &&
+      settings.gameIdsForCarousel.length > 0
+    ) {
+      filtered = filtered.filter((game) =>
+        settings.gameIdsForCarousel!.includes(game.id)
+      );
     }
 
-    // Then apply carousel settings if configured and no category filter from UI
-    if (!categoryId) {
-      // Filter by carousel game IDs if configured
-      if (
-        settings?.gameIdsForCarousel &&
-        settings.gameIdsForCarousel.length > 0
-      ) {
-        filtered = filtered.filter((game) =>
-          settings.gameIdsForCarousel!.includes(game.id)
-        );
-      }
+    // Then filter by category from UI tabs
+    if (categoryId) {
+      filtered = filtered.filter((game) => game.categoryId === categoryId);
     }
 
     return filtered;

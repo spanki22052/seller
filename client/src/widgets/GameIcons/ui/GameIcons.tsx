@@ -23,11 +23,11 @@ export function GameIcons() {
     queryFn: getSettings,
   });
 
-  // Filter games based on settings - show only selected games or first 5 if none selected
+  // Filter games based on settings - show only selected games
   const selectedGameIds = settings?.gameIdsForIcons || [];
-  const displayGames = selectedGameIds.length > 0
-    ? games.filter(game => selectedGameIds.includes(game.id))
-    : games.slice(0, 5);
+  const displayGames = games.filter((game) =>
+    selectedGameIds.includes(game.id)
+  );
 
   const isLoading = !settings || games.length === 0;
 
