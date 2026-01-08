@@ -190,10 +190,7 @@ export function GameGrid({ categoryId }: GameGridProps) {
       filtered = filtered.filter((game) => game.categoryId === categoryId);
     } else {
       // If no category is selected ("All" games), show carousel games if configured
-      if (
-        settings?.gameIdsForCarousel &&
-        settings.gameIdsForCarousel.length > 0
-      ) {
+      if (settings?.gameIdsForCarousel) {
         filtered = filtered.filter((game) =>
           settings.gameIdsForCarousel!.includes(game.id)
         );

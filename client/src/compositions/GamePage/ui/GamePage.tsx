@@ -42,7 +42,6 @@ export function GamePage({ gameData }: GamePageProps) {
         <Styled.MainContent>
           <GameHero gameData={gameData} />
           <CheatsList cheats={gameData.cheats} gameId={gameData.id} />
-          <AccountShop />
           <BeforeBuyInfo />
         </Styled.MainContent>
 
