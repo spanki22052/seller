@@ -5,13 +5,8 @@ import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { Carousel } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import {
-  getGames,
-  gameKeys,
-  Game,
-  getAllGamesWithCheats,
-} from "@/entities/game";
-import { getSettings, settingsKeys } from "@/entities/settings";
+import { gameKeys, Game, getAllGamesWithCheats } from "@/entities/game";
+import { useFilteredGames } from "../hooks/useFilteredGames";
 import * as Styled from "./styled";
 
 // Custom arrow components that properly handle react-slick props
@@ -102,20 +97,16 @@ export function GameGrid({ categoryId }: GameGridProps) {
   const [isPaused, setIsPaused] = useState(false);
   const [cardsPerSlide, setCardsPerSlide] = useState(4); // Default for SSR
 
-  const { data: games = [], isLoading: isGamesLoading } = useQuery({
-    queryKey: gameKeys.lists(),
-    queryFn: getGames,
-  });
-
   const { data: gamesWithCheats = [] } = useQuery({
     queryKey: [...gameKeys.lists(), "with-cheats"],
     queryFn: getAllGamesWithCheats,
   });
 
-  const { data: settings } = useQuery({
-    queryKey: settingsKeys.detail(),
-    queryFn: getSettings,
-  });
+  const {
+    filteredGames,
+    hasGames,
+    isLoading: isGamesLoading,
+  } = useFilteredGames({ categoryId });
 
   // Function to chunk array into groups of specified size
   const chunkArray = (array: Game[], chunkSize: number): Game[][] => {
@@ -181,37 +172,15 @@ export function GameGrid({ categoryId }: GameGridProps) {
     return stats;
   }, [gamesWithCheats]);
 
-  // Filter games based on category selection and carousel settings
-  const filteredGames = React.useMemo(() => {
-    let filtered = games;
-
-    // If a category is selected, filter by category (ignore carousel settings)
-    if (categoryId) {
-      filtered = filtered.filter((game) => game.categoryId === categoryId);
-    } else {
-      // If no category is selected ("All" games), show carousel games if configured
-      if (settings?.gameIdsForCarousel) {
-        filtered = filtered.filter((game) =>
-          settings.gameIdsForCarousel!.includes(game.id)
-        );
-      }
-      // If no carousel games configured and no category selected, show all games
-    }
-
-    return filtered;
-  }, [games, settings, categoryId]);
-
   // Debug logging to verify filtering works correctly
   React.useEffect(() => {
     console.log("GameGrid filtering debug:", {
-      totalGames: games.length,
       categoryId,
-      hasCarouselSettings: !!settings?.gameIdsForCarousel?.length,
-      carouselGameIds: settings?.gameIdsForCarousel,
       filteredGamesCount: filteredGames.length,
       filteredGameIds: filteredGames.map((g) => g.id),
+      hasGames,
     });
-  }, [games, settings, categoryId, filteredGames]);
+  }, [categoryId, filteredGames, hasGames]);
 
   const gameSlides = React.useMemo(
     () => chunkArray(filteredGames, cardsPerSlide),

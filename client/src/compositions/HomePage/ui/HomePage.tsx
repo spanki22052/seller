@@ -9,6 +9,7 @@ import { GameTabs } from "@/widgets/GameTabs";
 import { GameGrid } from "@/widgets/GameGrid";
 import { GameIcons } from "@/widgets/GameIcons";
 import { Footer } from "@/widgets/Footer";
+import { useFilteredGames } from "@/widgets/GameGrid/hooks/useFilteredGames";
 import * as Styled from "./styled";
 
 const AccountBanner = dynamic(
@@ -37,6 +38,8 @@ export function HomePage() {
     string | null
   >(null);
 
+  const { hasGames } = useFilteredGames({ categoryId: selectedCategoryId });
+
   return (
     <>
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
@@ -44,9 +47,11 @@ export function HomePage() {
         <Styled.MainContent>
           <MainCard />
           <GameIcons />
-          <Styled.GamesSection>
-            <GameTabs onCategoryChange={setSelectedCategoryId} />
-          </Styled.GamesSection>
+          {hasGames && (
+            <Styled.GamesSection>
+              <GameTabs onCategoryChange={setSelectedCategoryId} />
+            </Styled.GamesSection>
+          )}
 
           <GameGrid categoryId={selectedCategoryId} />
           <InfoBanner />
