@@ -181,27 +181,40 @@ export function GameGrid({ categoryId }: GameGridProps) {
     return stats;
   }, [gamesWithCheats]);
 
-  // Filter games based on carousel settings first, then category from UI tabs
+  // Filter games based on category selection and carousel settings
   const filteredGames = React.useMemo(() => {
     let filtered = games;
 
-    // Always filter by carousel game IDs if configured (has highest priority)
-    if (
-      settings?.gameIdsForCarousel &&
-      settings.gameIdsForCarousel.length > 0
-    ) {
-      filtered = filtered.filter((game) =>
-        settings.gameIdsForCarousel!.includes(game.id)
-      );
-    }
-
-    // Then filter by category from UI tabs
+    // If a category is selected, filter by category (ignore carousel settings)
     if (categoryId) {
       filtered = filtered.filter((game) => game.categoryId === categoryId);
+    } else {
+      // If no category is selected ("All" games), show carousel games if configured
+      if (
+        settings?.gameIdsForCarousel &&
+        settings.gameIdsForCarousel.length > 0
+      ) {
+        filtered = filtered.filter((game) =>
+          settings.gameIdsForCarousel!.includes(game.id)
+        );
+      }
+      // If no carousel games configured and no category selected, show all games
     }
 
     return filtered;
   }, [games, settings, categoryId]);
+
+  // Debug logging to verify filtering works correctly
+  React.useEffect(() => {
+    console.log("GameGrid filtering debug:", {
+      totalGames: games.length,
+      categoryId,
+      hasCarouselSettings: !!settings?.gameIdsForCarousel?.length,
+      carouselGameIds: settings?.gameIdsForCarousel,
+      filteredGamesCount: filteredGames.length,
+      filteredGameIds: filteredGames.map((g) => g.id),
+    });
+  }, [games, settings, categoryId, filteredGames]);
 
   const gameSlides = React.useMemo(
     () => chunkArray(filteredGames, cardsPerSlide),
@@ -257,13 +270,7 @@ export function GameGrid({ categoryId }: GameGridProps) {
   }
 
   if (filteredGames.length === 0) {
-    return (
-      <Styled.CarouselContainer>
-        <Styled.EmptyState>
-          <Styled.EmptyText>No games available</Styled.EmptyText>
-        </Styled.EmptyState>
-      </Styled.CarouselContainer>
-    );
+    return null;
   }
 
   return (
