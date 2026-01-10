@@ -14,6 +14,7 @@ enum CheatStatus {
   AVAILABLE   @map("available")   // Доступен (зеленый)
   UPDATING    @map("updating")     // Обновляется (синий)
   FROZEN      @map("frozen")       // Заморожен (серый)
+  DRAFT       @map("draft")        // Черновик (скрыт)
 
   @@map("cheat_status")
 }
@@ -46,22 +47,25 @@ model Admin {
 }
 
 model Game {
-  id              String   @id @default(cuid())
-  name            String
-  color           String
-  image           String?
-  backgroundImage String?  @map("background_image")
-  icon            String?
-  categoryId      String?  @map("category_id")
-  deletedAt       DateTime? @map("deleted_at")
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  id                   String   @id @default(cuid())
+  name                 String
+  color                String
+  image                String?
+  backgroundImage      String?  @map("background_image")
+  icon                 String?
+  categoryId           String?  @map("category_id")
+  carouselCategoryId   String?  @map("carousel_category_id")
+  deletedAt            DateTime? @map("deleted_at")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
 
-  cheats    Cheat[]
-  category  Category? @relation(fields: [categoryId], references: [id])
+  cheats             Cheat[]
+  category           Category? @relation(fields: [categoryId], references: [id])
+  carouselCategory   CarouselCategory? @relation(fields: [carouselCategoryId], references: [id])
 
   @@index([name])
   @@index([categoryId])
+  @@index([carouselCategoryId])
   @@index([deletedAt])
   @@map("games")
 }
@@ -94,10 +98,25 @@ model Category {
   @@map("categories")
 }
 
+model CarouselCategory {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  games     Game[]
+
+  @@index([name])
+  @@index([deletedAt])
+  @@map("carousel_categories")
+}
+
 model Cheat {
   id                String   @id @default(cuid())
   gameId            String   @map("game_id")
   brandId           String   @map("brand_id")
+  cheatDigitId      String?  @map("cheat_digit_id")
   name              String
   description       String?
   descriptionMarkdown String? @map("description_markdown")
@@ -141,12 +160,14 @@ model Cheat {
 
 model Settings {
   id                String   @id @default(cuid())
+  sellerId          String?  @map("seller_id")
   howToBuyVideoUrl  String?  @map("how_to_buy_video_url")
   howToBuyVideoThumbnail String? @map("how_to_buy_video_thumbnail")
   gameIdsForIcons   String[] @default([]) @map("game_ids_for_icons")
-  gameIdsForCarousel String[] @default([]) @map("game_ids_for_carousel")
+  gameIdsForCarousel Json @map("game_ids_for_carousel")
   footerLinks       Json?    @map("footer_links")
   supportLink       String?  @map("support_link")
+  supportLinks      Json?    @map("support_links")
   deletedAt         DateTime? @map("deleted_at")
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @updatedAt @map("updated_at")

@@ -5,9 +5,18 @@ export const Container = styled.div(({ theme }) => ({
   width: "100%",
   marginTop: 130,
   paddingTop: theme.spacing.xl,
-  paddingBottom: theme.spacing.xl,
   position: "relative",
   zIndex: 5,
+  "@media (max-width: 768px)": {
+    marginTop: 60,
+    paddingTop: theme.spacing.lg,
+    paddingBottom: theme.spacing.lg,
+  },
+  "@media (max-width: 480px)": {
+    marginTop: 20,
+    paddingTop: theme.spacing.md,
+    paddingBottom: theme.spacing.md,
+  },
 }));
 
 export const ContentWrapper = styled.div(({ theme }) => ({
@@ -39,6 +48,14 @@ export const ContentWrapper = styled.div(({ theme }) => ({
   "@media (max-width: 1024px)": {
     gridTemplateColumns: "1fr",
   },
+  "@media (max-width: 768px)": {
+    padding: theme.spacing.lg,
+    gap: theme.spacing.lg,
+  },
+  "@media (max-width: 480px)": {
+    padding: theme.spacing.md,
+    gap: theme.spacing.md,
+  },
 }));
 
 export const LogoTopRight = styled.div(({ theme }) => ({
@@ -67,6 +84,12 @@ export const TextSection = styled.div({
   gap: "24px",
   zIndex: 2,
   position: "relative",
+  "@media (max-width: 768px)": {
+    gap: "16px",
+  },
+  "@media (max-width: 480px)": {
+    gap: "12px",
+  },
 });
 
 export const Title = styled.h1({
@@ -168,7 +191,7 @@ export const SkeletonWrapper = styled.div(({ theme }) => ({
     position: "absolute",
     width: "750px !important",
     height: "600px !important",
-    bottom: -85,
+    bottom: -80,
     "@media (max-width: 1499px)": {
       width: "720px !important",
       height: "570px !important",
@@ -187,37 +210,36 @@ export const SkeletonWrapper = styled.div(({ theme }) => ({
     "@media (max-width: 1349px)": {
       width: "630px !important",
       height: "480px !important",
-      bottom: -60,
+      bottom: -62,
     },
     "@media (max-width: 1299px)": {
       width: "600px !important",
       height: "450px !important",
-      bottom: -60,
+      bottom: -59,
     },
     "@media (max-width: 1249px)": {
       width: "570px !important",
       height: "420px !important",
-      bottom: -55,
+      bottom: -54,
     },
     "@media (max-width: 1199px)": {
       width: "540px !important",
       height: "390px !important",
-      bottom: -45,
+      bottom: -50,
     },
     "@media (max-width: 1149px)": {
       width: "510px !important",
       height: "360px !important",
-      bottom: -45,
+      bottom: -47,
     },
     "@media (max-width: 1099px)": {
       width: "480px !important",
       height: "330px !important",
-      bottom: -45,
+      bottom: -46,
     },
     "@media (max-width: 1049px)": {
       width: "450px !important",
       height: "300px !important",
-      bottom: -48,
     },
   },
   "@media (max-width: 1048px)": {

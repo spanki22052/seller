@@ -117,10 +117,16 @@ export function CheatPricing({ cheatId }: CheatPricingProps) {
                 </Styled.PriceText>
                 {plan.isAvailable ? (
                   <>
-                    <Styled.Description>
-                      Рекомендуем подписаться на Telegram все статусы и новости
-                      публикуются именно там! Тех помощь в Discord
-                    </Styled.Description>
+                    {plan.description ? (
+                      <Styled.Description>
+                        {plan.description}
+                      </Styled.Description>
+                    ) : (
+                      <Styled.Description>
+                        Рекомендуем подписаться на Telegram все статусы и
+                        новости публикуются именно там! Тех помощь в Discord
+                      </Styled.Description>
+                    )}
                     <Styled.ButtonGroup>
                       <Styled.BuyButton
                         as={motion.button}
@@ -166,10 +172,16 @@ export function CheatPricing({ cheatId }: CheatPricingProps) {
                   </>
                 ) : (
                   <>
-                    <Styled.Description>
-                      В данном блоке будет другой срок покупки но только тогда
-                      когда появится в продажи! Сейчас товар отсутствует.
-                    </Styled.Description>
+                    {plan.description ? (
+                      <Styled.Description>
+                        {plan.description}
+                      </Styled.Description>
+                    ) : (
+                      <Styled.Description>
+                        Рекомендуем подписаться на Telegram все статусы и
+                        новости публикуются именно там! Тех помощь в Discord
+                      </Styled.Description>
+                    )}
                     <Styled.ButtonGroup>
                       <Styled.TelegramButton
                         as={motion.button}

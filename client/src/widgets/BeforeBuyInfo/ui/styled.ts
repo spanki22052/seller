@@ -37,10 +37,8 @@ export const TextSection = styled.div(({ theme }) => ({
   gap: 24,
   zIndex: 2,
   position: "relative",
-  marginTop: theme.spacing.xxl,
   paddingRight: theme.spacing.xxl,
   paddingLeft: theme.spacing.xxl,
-  paddingTop: theme.spacing.xxl,
   justifyContent: "center",
   overflow: "visible",
   "@media (max-width: 1024px)": {
@@ -117,4 +115,3 @@ export const SkeletonImageWrapper = styled.div({
     },
   },
 });
-

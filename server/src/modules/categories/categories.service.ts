@@ -70,7 +70,9 @@ export class CategoriesService {
       });
 
       if (nameConflict) {
-        throw new ConflictException(`Category with name "${updateCategoryDto.name}" already exists`);
+        throw new ConflictException(
+          `Category with name "${updateCategoryDto.name}" already exists`,
+        );
       }
     }
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Upload, Button, message } from "antd";
-import { UploadOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { InboxOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { uploadFile } from "@/entities/file";
@@ -112,27 +112,18 @@ export function CircularImageUpload({ value, onChange }: CircularImageUploadProp
             </Styled.CircularImagePreview>
           </motion.div>
         ) : (
-          <Upload
+          <Upload.Dragger
             beforeUpload={handleFileSelect}
             accept="image/*"
             showUploadList={false}
             disabled={uploading}
           >
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Styled.UploadButton
-                htmlType="button"
-                icon={<UploadOutlined />}
-                loading={uploading}
-                disabled={uploading}
-              >
-                {t("cheats.form.uploadCircularImage")}
-              </Styled.UploadButton>
-            </motion.div>
-          </Upload>
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">{t("cheats.form.uploadCircularImage")}</p>
+            <p className="ant-upload-hint">{t("cheats.form.dragDropHint", "Перетащите файл сюда или нажмите для выбора")}</p>
+          </Upload.Dragger>
         )}
       </Styled.CircularImageUploadWrapper>
 

@@ -9,11 +9,16 @@ interface SupportLinkTabProps {
   isUpdating: boolean;
 }
 
-export function SupportLinkTab({ form, settings, onSubmit, isUpdating }: SupportLinkTabProps) {
+export function SupportLinkTab({
+  form,
+  settings,
+  onSubmit,
+  isUpdating,
+}: SupportLinkTabProps) {
   const { t } = useTranslation();
 
   return (
-    <Card title={t("settings.supportLinkSettings", "Настройки ссылки поддержки")}>
+    <Card title={t("Настройки ссылки поддержки в навигационной панели")}>
       <Form
         form={form}
         layout="vertical"
@@ -29,12 +34,18 @@ export function SupportLinkTab({ form, settings, onSubmit, isUpdating }: Support
             {
               required: false,
               type: "url",
-              message: t("settings.supportLinkInvalid", "Введите корректную ссылку"),
+              message: t(
+                "settings.supportLinkInvalid",
+                "Введите корректную ссылку"
+              ),
             },
           ]}
         >
           <Input
-            placeholder={t("settings.supportLinkPlaceholder", "https://discord.gg/support")}
+            placeholder={t(
+              "settings.supportLinkPlaceholder",
+              "https://discord.gg/support"
+            )}
           />
         </Form.Item>
 

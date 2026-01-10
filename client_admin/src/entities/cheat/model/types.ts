@@ -1,11 +1,12 @@
 import { PricingPlanDto, FunctionCategoryDto } from "../api/cheatApi";
 
-export type CheatStatus = "AVAILABLE" | "UPDATING" | "FROZEN";
+export type CheatStatus = "AVAILABLE" | "UPDATING" | "FROZEN" | "DRAFT";
 
 export interface Cheat {
   id: string;
   name: string;
   brandName?: string;
+  cheatDigitId?: string;
   gameId: string;
   gameName: string;
   price: number | { amount: number | null; currency: string };

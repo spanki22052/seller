@@ -16,13 +16,18 @@ export class DashboardStatsDto {
   @ApiProperty({ description: "Number of frozen cheats" })
   frozenCheats!: number;
 
-  @ApiProperty({ description: "Total sales count (placeholder - can be calculated from orders if exists)" })
+  @ApiProperty({
+    description: "Total sales count (placeholder - can be calculated from orders if exists)",
+  })
   totalSales!: number;
 
-  @ApiProperty({ description: "Total revenue (placeholder - can be calculated from orders if exists)" })
+  @ApiProperty({
+    description: "Total revenue (placeholder - can be calculated from orders if exists)",
+  })
   totalRevenue!: number;
 
-  @ApiProperty({ description: "Active users count (placeholder - can be calculated from users if exists)" })
+  @ApiProperty({
+    description: "Active users count (placeholder - can be calculated from users if exists)",
+  })
   activeUsers!: number;
 }
-

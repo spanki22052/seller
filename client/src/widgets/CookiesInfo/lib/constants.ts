@@ -2,15 +2,10 @@ export const COOKIE_INFO_FADE_IN_DURATION = 0.6;
 export const COOKIE_INFO_FADE_IN_DELAY = 0.2;
 export const COOKIE_INFO_STAGGER_DELAY = 0.1;
 
-// Cookie policy sections
-export const COOKIE_SECTIONS = [
-  "essential",
-  "analytics",
-  "marketing",
-  "preferences"
-] as const;
+// Cookie policy sections - simplified for compact widget
+export const COOKIE_SECTIONS = ["essential"] as const;
 
-export type CookieSection = typeof COOKIE_SECTIONS[number];
+export type CookieSection = (typeof COOKIE_SECTIONS)[number];
 
 // Animation variants for cookie sections
 export const getCookieSectionVariants = (prefersReducedMotion: boolean) => ({
@@ -41,26 +36,14 @@ export const getContainerVariants = (prefersReducedMotion: boolean) => ({
 
 // Cookie translations (following project pattern of hardcoded text)
 export const COOKIE_TRANSLATIONS = {
-  title: "Cookie Policy",
-  description: "We use cookies to enhance your experience on our website. Learn more about how we use cookies and your privacy rights.",
+  title: "Файлы cookie",
+  description:
+    "Мы используем cookie для улучшения работы сайта. Они помогают сделать ваш опыт лучше.",
   essential: {
-    title: "Essential Cookies",
-    description: "These cookies are necessary for the website to function properly and cannot be disabled."
+    title: "Необходимые cookie",
+    description: "Обязательные файлы для работы сайта.",
   },
-  analytics: {
-    title: "Analytics Cookies",
-    description: "These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously."
-  },
-  marketing: {
-    title: "Marketing Cookies",
-    description: "These cookies are used to track visitors across websites to display relevant advertisements."
-  },
-  preferences: {
-    title: "Preference Cookies",
-    description: "These cookies enable the website to remember choices you make and provide enhanced features."
-  },
-  manage: "Manage Cookies",
-  accept: "Accept All",
-  reject: "Reject Non-Essential",
-  learnMore: "Learn More"
+  manage: "Настроить",
+  accept: "Принять",
+  reject: "Отклонить",
 };

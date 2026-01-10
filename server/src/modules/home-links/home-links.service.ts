@@ -25,10 +25,7 @@ export class HomeLinksService {
   async findAll(): Promise<HomeLinkResponseDto[]> {
     const homeLinks = await this.prisma.homeLink.findMany({
       where: { deletedAt: null },
-      orderBy: [
-        { sortOrder: "asc" },
-        { createdAt: "asc" }
-      ],
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
     });
 
     return homeLinks.map((homeLink) => this.mapToResponseDto(homeLink));
@@ -40,10 +37,7 @@ export class HomeLinksService {
         deletedAt: null,
         isActive: true,
       },
-      orderBy: [
-        { sortOrder: "asc" },
-        { createdAt: "asc" }
-      ],
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
     });
 
     return homeLinks.map((homeLink) => this.mapToResponseDto(homeLink));

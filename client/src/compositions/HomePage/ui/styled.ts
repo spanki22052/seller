@@ -21,6 +21,18 @@ export const MainContent = styled.div(({ theme }) => ({
   margin: "0 auto",
   paddingLeft: theme.spacing.xl,
   paddingRight: theme.spacing.xl,
+  "@media (max-width: 768px)": {
+    gap: theme.spacing.lg,
+    paddingBottom: theme.spacing.xl,
+    paddingLeft: theme.spacing.md,
+    paddingRight: theme.spacing.md,
+  },
+  "@media (max-width: 480px)": {
+    gap: theme.spacing.md,
+    paddingBottom: theme.spacing.lg,
+    paddingLeft: theme.spacing.sm,
+    paddingRight: theme.spacing.sm,
+  },
 }));
 
 export const GamesSection = styled.div({

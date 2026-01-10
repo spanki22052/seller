@@ -15,7 +15,8 @@ export class FaqResponseDto {
 
   @ApiProperty({
     description: "FAQ answer",
-    example: "Мы принимаем различные способы оплаты, включая кредитные карты, PayPal и криптовалюту.",
+    example:
+      "Мы принимаем различные способы оплаты, включая кредитные карты, PayPal и криптовалюту.",
   })
   answer!: string;
 

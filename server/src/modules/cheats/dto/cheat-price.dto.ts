@@ -26,4 +26,3 @@ export class CheatPriceDto {
   @IsEnum(PriceCurrency)
   currency!: PriceCurrency;
 }
-

@@ -9,6 +9,7 @@ import { navbarAnimations } from "../lib/animConstants";
 import { SearchBar } from "./SearchBar";
 import { getSettings, settingsKeys } from "@/entities/settings";
 import * as Styled from "./styled";
+import { NavLinkGames } from "./styled";
 
 interface NavLink {
   id: string;
@@ -87,6 +88,10 @@ export function Navbar({ links = defaultLinks, logo }: NavbarProps) {
                 >
                   {link.label}
                 </Styled.NavLinkExternal>
+              ) : link.id === "about" ? (
+                <Styled.NavLinkGames href={link.href}>
+                  {link.label}
+                </Styled.NavLinkGames>
               ) : (
                 <Styled.NavLink href={link.href}>{link.label}</Styled.NavLink>
               )}

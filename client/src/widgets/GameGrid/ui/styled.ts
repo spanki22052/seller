@@ -313,7 +313,6 @@ export const GameTile = styled.div(({ theme }) => ({
   "&:hover": {
     borderColor: theme.colors.accent.purple,
     boxShadow: `0 8px 25px rgba(255, 0, 255, 0.15)`,
-    transform: "translateY(-2px)",
   },
 
   "@media (max-width: 768px)": {
@@ -337,6 +336,7 @@ export const GameImageWrapper = styled.div<{ $backgroundColor: string }>(
     overflow: "hidden",
     backgroundColor: $backgroundColor,
     zIndex: 0,
+    userSelect: "none",
   })
 );
 
@@ -348,6 +348,8 @@ export const GameImage = styled.img({
   height: "100%",
   objectFit: "cover",
   display: "block",
+  pointerEvents: "none",
+  userSelect: "none",
 });
 
 // Gradient overlay for text readability

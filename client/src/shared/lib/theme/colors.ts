@@ -37,6 +37,7 @@ export const colors = {
   gradient: {
     purpleBlue: "linear-gradient(135deg, #ff00ff 0%, #3b82f6 100%)",
     purpleBlueVertical: "linear-gradient(180deg, #ff00ff 0%, #3b82f6 100%)",
+    purpleBlueHorizontal: "linear-gradient(90deg, #ff00ff 0%, #3b82f6 100%)",
     purplePink: "linear-gradient(135deg, #ff00ff 0%, #ec4899 100%)",
     glowPurple:
       "radial-gradient(circle, rgba(255, 0, 255, 0.3) 0%, transparent 70%)",

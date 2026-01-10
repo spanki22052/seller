@@ -26,6 +26,11 @@ export class SettingsService {
             { label: "Discord", href: "#" },
             { label: "Telegram", href: "#" },
           ],
+          supportLinks: [
+            { label: "Техническая поддержка", href: "#" },
+            { label: "Связь с администратором", href: "#" },
+          ],
+          gameIdsForCarousel: [],
         },
       });
     }
@@ -41,6 +46,9 @@ export class SettingsService {
     // Подготовка данных для обновления
     const updateData: any = {};
 
+    if (updateSettingsDto.sellerId !== undefined) {
+      updateData.sellerId = updateSettingsDto.sellerId;
+    }
     if (updateSettingsDto.howToBuyVideoUrl !== undefined) {
       updateData.howToBuyVideoUrl = updateSettingsDto.howToBuyVideoUrl;
     }
@@ -61,17 +69,25 @@ export class SettingsService {
     if (updateSettingsDto.supportLink !== undefined) {
       updateData.supportLink = updateSettingsDto.supportLink;
     }
+    // Явная обработка supportLinks - проверяем на null и undefined
+    if (updateSettingsDto.supportLinks !== undefined && updateSettingsDto.supportLinks !== null) {
+      updateData.supportLinks = updateSettingsDto.supportLinks as unknown as Prisma.InputJsonValue;
+    }
 
     // Если настроек нет, создаем их
     if (!settings) {
       settings = await this.prisma.settings.create({
         data: {
+          sellerId: updateSettingsDto.sellerId,
           howToBuyVideoUrl: updateSettingsDto.howToBuyVideoUrl,
           howToBuyVideoThumbnail: updateSettingsDto.howToBuyVideoThumbnail,
-          gameIdsForIcons: updateSettingsDto.gameIdsForIcons,
-          gameIdsForCarousel: updateSettingsDto.gameIdsForCarousel,
+          gameIdsForIcons: updateSettingsDto.gameIdsForIcons || [],
+          gameIdsForCarousel: updateSettingsDto.gameIdsForCarousel as any,
           footerLinks: updateSettingsDto.footerLinks
             ? (updateSettingsDto.footerLinks as unknown as Prisma.InputJsonValue)
+            : Prisma.JsonNull,
+          supportLinks: updateSettingsDto.supportLinks
+            ? (updateSettingsDto.supportLinks as unknown as Prisma.InputJsonValue)
             : Prisma.JsonNull,
           supportLink: updateSettingsDto.supportLink,
         },
@@ -89,6 +105,7 @@ export class SettingsService {
   private mapToResponseDto(settings: any): SettingsResponseDto {
     return {
       id: settings.id,
+      sellerId: settings.sellerId,
       howToBuyVideoUrl: settings.howToBuyVideoUrl
         ? this.minioService.transformToPublicUrl(settings.howToBuyVideoUrl)
         : undefined,
@@ -98,10 +115,10 @@ export class SettingsService {
       gameIdsForIcons: settings.gameIdsForIcons || [],
       gameIdsForCarousel: settings.gameIdsForCarousel || [],
       footerLinks: settings.footerLinks || [],
+      supportLinks: settings.supportLinks || [],
       supportLink: settings.supportLink,
       createdAt: settings.createdAt,
       updatedAt: settings.updatedAt,
     };
   }
 }
-

@@ -1,5 +1,20 @@
 import { ApiProperty } from "@nestjs/swagger";
 
+class CarouselCategoryGamesResponseDto {
+  @ApiProperty({
+    description: "Carousel category ID",
+    example: "clx1234567890abcdef",
+  })
+  id!: string;
+
+  @ApiProperty({
+    description: "Game IDs for this carousel category",
+    example: ["clx1234567890abcdef", "clx0987654321fedcba"],
+    type: [String],
+  })
+  games!: string[];
+}
+
 class FooterLinkResponseDto {
   @ApiProperty({
     description: "Link label/text",
@@ -14,12 +29,33 @@ class FooterLinkResponseDto {
   href!: string;
 }
 
+class SupportLinkResponseDto {
+  @ApiProperty({
+    description: "Link label/text",
+    example: "Техническая поддержка",
+  })
+  label!: string;
+
+  @ApiProperty({
+    description: "Link URL",
+    example: "https://discord.gg/support",
+  })
+  href!: string;
+}
+
 export class SettingsResponseDto {
   @ApiProperty({
     description: "Settings unique identifier",
     example: "clx1234567890abcdef",
   })
   id!: string;
+
+  @ApiProperty({
+    description: "Seller ID",
+    example: "3331046",
+    required: false,
+  })
+  sellerId?: string;
 
   @ApiProperty({
     description: "How to buy video URL",
@@ -44,19 +80,24 @@ export class SettingsResponseDto {
   gameIdsForIcons?: string[];
 
   @ApiProperty({
-    description: "Game IDs for carousel",
-    example: ["clx1234567890abcdef", "clx0987654321fedcba"],
-    type: [String],
+    description: "Carousel categories with their games",
+    example: [
+      {
+        id: "clx1234567890abcdef",
+        games: ["clx1234567890abcdef", "clx0987654321fedcba"],
+      },
+    ],
+    type: [CarouselCategoryGamesResponseDto],
     required: false,
   })
-  gameIdsForCarousel?: string[];
+  gameIdsForCarousel?: CarouselCategoryGamesResponseDto[];
 
   @ApiProperty({
     description: "Footer links array",
     type: [FooterLinkResponseDto],
     example: [
       { label: "Discord", href: "https://discord.gg/example" },
-      { label: "Telegram", href: "https://t.me/example" }
+      { label: "Telegram", href: "https://t.me/example" },
     ],
     required: false,
   })
@@ -70,6 +111,17 @@ export class SettingsResponseDto {
   supportLink?: string;
 
   @ApiProperty({
+    description: "Support links array",
+    type: [SupportLinkResponseDto],
+    example: [
+      { label: "Техническая поддержка", href: "https://discord.gg/support" },
+      { label: "Связь с администратором", href: "https://t.me/admin" },
+    ],
+    required: false,
+  })
+  supportLinks?: SupportLinkResponseDto[];
+
+  @ApiProperty({
     description: "Creation timestamp",
     example: "2024-01-01T00:00:00.000Z",
   })
@@ -81,4 +133,3 @@ export class SettingsResponseDto {
   })
   updatedAt!: Date;
 }
-

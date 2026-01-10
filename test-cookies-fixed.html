@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookies Test - Fixed</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { margin: 10px; padding: 10px 20px; }
+        .status { margin: 20px 0; padding: 10px; background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>Cookies Test - Fixed Version</h1>
+    <div class="status" id="status">Checking...</div>
+    <button id="accept">Accept Cookies</button>
+    <button id="reject">Reject Cookies</button>
+    <button id="reset">Reset Consent</button>
+    <button id="refresh">Refresh Status</button>
+
+    <script>
+        const COOKIE_CONSENT_KEY = "cookie_consent";
+
+        function updateStatus() {
+            try {
+                const stored = localStorage.getItem(COOKIE_CONSENT_KEY);
+                const shouldShowWidget = stored !== "accepted" && stored !== "rejected";
+                document.getElementById('status').innerHTML = `
+                    <strong>Current localStorage value:</strong> "${stored}"<br>
+                    <strong>Should show widget:</strong> ${shouldShowWidget}<br>
+                    <strong>Widget visible:</strong> ${shouldShowWidget ? 'YES' : 'NO'}
+                `;
+            } catch (error) {
+                document.getElementById('status').textContent = 'Error: ' + error.message;
+            }
+        }
+
+        document.getElementById('accept').addEventListener('click', () => {
+            localStorage.setItem(COOKIE_CONSENT_KEY, "accepted");
+            updateStatus();
+        });
+
+        document.getElementById('reject').addEventListener('click', () => {
+            localStorage.setItem(COOKIE_CONSENT_KEY, "rejected");
+            updateStatus();
+        });
+
+        document.getElementById('reset').addEventListener('click', () => {
+            localStorage.removeItem(COOKIE_CONSENT_KEY);
+            updateStatus();
+        });
+
+        document.getElementById('refresh').addEventListener('click', updateStatus);
+
+        // Initial status
+        updateStatus();
+    </script>
+</body>
+</html>

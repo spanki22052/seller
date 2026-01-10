@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Upload, message } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, InboxOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import type { UploadFile, UploadProps } from "antd";
@@ -90,7 +90,7 @@ export function ScreenshotsUpload({ value = [], onChange }: ScreenshotsUploadPro
 
   return (
     <Styled.ScreenshotsUploadWrapper>
-      <Upload {...uploadProps}>
+      <Upload.Dragger {...uploadProps}>
         {fileList.length < 20 && (
           <motion.div
             whileHover={{ scale: 1.05 }}
@@ -98,14 +98,17 @@ export function ScreenshotsUpload({ value = [], onChange }: ScreenshotsUploadPro
             transition={{ duration: 0.2 }}
           >
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", padding: "20px 0" }}>
-              <PlusOutlined style={{ fontSize: 24, color: "#999" }} />
-              <div style={{ marginTop: 8, color: "#999" }}>
+              <InboxOutlined style={{ fontSize: 24, color: "#999" }} />
+              <div style={{ marginTop: 8, color: "#666", fontWeight: 500 }}>
                 {t("cheats.form.addScreenshot")}
+              </div>
+              <div style={{ marginTop: 4, color: "#999", fontSize: "14px" }}>
+                {t("cheats.form.dragDropHint", "Перетащите файлы сюда или нажмите для выбора")}
               </div>
             </div>
           </motion.div>
         )}
-      </Upload>
+      </Upload.Dragger>
     </Styled.ScreenshotsUploadWrapper>
   );
 }

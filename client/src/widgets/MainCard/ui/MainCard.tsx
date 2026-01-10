@@ -6,11 +6,35 @@ import { motion } from "framer-motion";
 import { SkeletonIcon } from "@/shared/assets/icons";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import cheatarenaLogo from "@/shared/assets/images/cheatarena.png";
-import { SearchBar } from "@/widgets/SearchBar";
+import { useSettings } from "@/entities/settings";
+import { MainCardProps } from "../model/types";
+import { MAIN_CARD_LINKS } from "../model/constants";
 import * as Styled from "./styled";
 
-export function MainCard() {
+export function MainCard({ links = MAIN_CARD_LINKS }: MainCardProps) {
   const prefersReducedMotion = useReducedMotion();
+  const { data: settings } = useSettings();
+
+  // Get support links from settings, fallback to default links
+  const supportLinks = settings?.supportLinks || [];
+  const techSupportLink =
+    supportLinks.find(
+      (link: { label: string; href: string }) =>
+        link.label === "Техническая поддержка"
+    )?.href || links.supportUrl;
+  const adminLink =
+    supportLinks.find(
+      (link: { label: string; href: string }) =>
+        link.label === "Связь с администратором"
+    )?.href || links.adminUrl;
+
+  const handleSupportClick = () => {
+    window.open(techSupportLink, "_blank", "noopener,noreferrer");
+  };
+
+  const handleAdminClick = () => {
+    window.open(adminLink, "_blank", "noopener,noreferrer");
+  };
 
   const textVariants = {
     hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 },
@@ -58,7 +82,7 @@ export function MainCard() {
           <Styled.Title>
             <Image
               src="/images/cheats.png"
-              alt="Приватные читы"
+              alt="Приватные DLC"
               width={400}
               height={120}
               priority
@@ -70,10 +94,14 @@ export function MainCard() {
             времени решить все юридические вопросы. Оставайтесь с нами!
           </Styled.Description>
           <Styled.ButtonGroup>
-            <Styled.PrimaryButton type="primary" size="large">
+            <Styled.PrimaryButton
+              type="primary"
+              size="large"
+              onClick={handleSupportClick}
+            >
               Тех поддержка
             </Styled.PrimaryButton>
-            <Styled.SecondaryButton size="large">
+            <Styled.SecondaryButton size="large" onClick={handleAdminClick}>
               Связь с админом
             </Styled.SecondaryButton>
           </Styled.ButtonGroup>

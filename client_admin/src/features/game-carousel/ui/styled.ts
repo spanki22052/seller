@@ -72,15 +72,19 @@ export const CategoryContainer = styled.div`
 `;
 
 export const CategoryButtons = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  margin-bottom: 16px;
 `;
 
 export const CategoryButtonGroup = styled.div`
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
+  align-items: center;
+
+  .ant-btn {
+    margin-bottom: 4px;
+    white-space: nowrap;
+  }
 `;
 
 export const BulkActions = styled.div`

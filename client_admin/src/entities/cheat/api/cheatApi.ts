@@ -29,12 +29,14 @@ export interface PricingPlanDto {
   image: string;
   isAvailable: boolean;
   redirectUrl?: string;
+  description?: string;
 }
 
 export interface CreateCheatDto {
   gameId: string;
   name?: string;
   brandId: string;
+  cheatDigitId?: string;
   description?: string;
   descriptionMarkdown?: string;
   circularText?: string;
@@ -64,6 +66,11 @@ export interface UpdateCheatDto extends Partial<CreateCheatDto> {
   status?: CheatStatus;
 }
 
+export interface BulkUpdateCheatStatusDto {
+  ids: string[];
+  status: CheatStatus;
+}
+
 export async function getCheats(): Promise<Cheat[]> {
   const response = await getApiClient().get<Cheat[]>("/cheats");
   return response.data;
@@ -89,5 +96,15 @@ export async function updateCheat(
 
 export async function deleteCheat(id: string): Promise<void> {
   await getApiClient().delete(`/cheats/${id}`);
+}
+
+export async function duplicateCheat(id: string): Promise<Cheat> {
+  const response = await getApiClient().post<Cheat>(`/cheats/duplicate/${id}`);
+  return response.data;
+}
+
+export async function bulkUpdateCheatStatus(dto: BulkUpdateCheatStatusDto): Promise<Cheat[]> {
+  const response = await getApiClient().put<Cheat[]>("/cheats/bulk-status", dto);
+  return response.data;
 }
 

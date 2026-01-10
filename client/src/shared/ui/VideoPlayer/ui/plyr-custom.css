@@ -71,13 +71,17 @@
   box-shadow: 0 4px 20px rgba(255, 0, 255, 0.5) !important;
   transition: all 0.3s ease !important;
   border: 2px solid #ff00ff !important;
+  transform: none !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  margin: -35px 0 0 -35px !important; /* Center the button (assuming 70px width) */
 }
 
 .plyr__control--overlaid:hover {
-  background-color: #ff66ff !important;
-  box-shadow: 0 6px 30px rgba(255, 0, 255, 0.7) !important;
-  transform: scale(1.1) !important;
-  border-color: #ff66ff !important;
+  background-color: #ff00ff !important;
+  box-shadow: 0 4px 20px rgba(255, 0, 255, 0.5) !important;
+  border-color: #ff00ff !important;
 }
 
 .plyr__control--overlaid svg {

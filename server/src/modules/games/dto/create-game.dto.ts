@@ -54,4 +54,3 @@ export class CreateGameDto {
   @IsOptional()
   icon?: string;
 }
-

@@ -144,8 +144,8 @@ export function GameHero({ gameData }: GameHeroProps) {
         <Styled.Title>CHEAT FOR {gameData.name.toUpperCase()}</Styled.Title>
         <Styled.Description>
           Врывайтесь в игру заряженным по полной. Перед покупкой внимательно
-          читайте требования к читу, следите за нашим сайтов чтоб быть одним из
-          первых играя с новыми приватными читами!
+          читайте требования к DLC, следите за нашим сайтов чтоб быть одним из
+          первых играя с новыми приватными DLC!
         </Styled.Description>
         <Styled.ButtonGroup>
           <Styled.SocialButton>DS</Styled.SocialButton>
@@ -154,7 +154,7 @@ export function GameHero({ gameData }: GameHeroProps) {
         </Styled.ButtonGroup>
         <Styled.AdditionalText>
           Подписывайтесь на <Styled.TelegramLink>Telegram</Styled.TelegramLink>{" "}
-          это важно потому что все статусы и новости о читах именно там
+          это важно потому что все статусы и новости о DLC именно там
         </Styled.AdditionalText>
       </Styled.LeftSection>
       <Styled.RightSection

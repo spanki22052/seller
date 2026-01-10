@@ -12,3 +12,12 @@ export const PlayerWrapper = styled.div(({ theme }) => ({
     borderRadius: theme.borderRadius.md,
   },
 }));
+
+export const KinescopeIframe = styled.iframe(({ theme }) => ({
+  width: "100%",
+  height: "100%",
+  minHeight: 400,
+  border: "none",
+  borderRadius: theme.borderRadius.md,
+  display: "block",
+}));

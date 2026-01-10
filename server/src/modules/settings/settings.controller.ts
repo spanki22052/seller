@@ -1,10 +1,4 @@
-import {
-  Controller,
-  Get,
-  Put,
-  Body,
-  UseGuards,
-} from "@nestjs/common";
+import { Controller, Get, Put, Body, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from "@nestjs/swagger";
 import { SettingsService } from "./settings.service";
 import { UpdateSettingsDto } from "./dto/update-settings.dto";
@@ -38,10 +32,7 @@ export class SettingsController {
     description: "Settings updated successfully",
     type: SettingsResponseDto,
   })
-  async updateSettings(
-    @Body() updateSettingsDto: UpdateSettingsDto,
-  ): Promise<SettingsResponseDto> {
+  async updateSettings(@Body() updateSettingsDto: UpdateSettingsDto): Promise<SettingsResponseDto> {
     return this.settingsService.updateSettings(updateSettingsDto);
   }
 }
-

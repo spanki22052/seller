@@ -1,5 +1,5 @@
 import { NestFactory } from "@nestjs/core";
-import { ValidationPipe } from "@nestjs/common";
+import { ValidationPipe, BadRequestException } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
 import { ConfigService } from "@nestjs/config";
@@ -8,7 +8,7 @@ import { Request, Response, NextFunction } from "express";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bodyParser: true,
-    rawBody: false,
+    rawBody: true,
   });
 
   const configService = app.get(ConfigService);

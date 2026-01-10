@@ -5,11 +5,17 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { message } from "antd";
 import { getGames, gameKeys, Game } from "@/entities/game";
-import { getCategories, categoryKeys } from "@/entities/category";
+import {
+  getCarouselCategories,
+  carouselCategoryKeys,
+} from "@/entities/carousel-category";
+import { CarouselCategoryGames } from "@/entities/settings/api/settingsApi";
 
 interface UseGameCarouselTabProps {
   value?: string[];
   onChange?: (gameIds: string[]) => void;
+  carouselData?: CarouselCategoryGames[];
+  onCarouselDataChange?: (data: CarouselCategoryGames[]) => void;
 }
 
 export function useGameCarouselTab({
@@ -39,21 +45,23 @@ export function useGameCarouselTab({
     typeof currentGameIds
   );
 
-  const { data: categories = [], isLoading: isCategoriesLoading } = useQuery({
-    queryKey: categoryKeys.lists(),
-    queryFn: getCategories,
+  const {
+    data: carouselCategories = [],
+    isLoading: isCarouselCategoriesLoading,
+  } = useQuery({
+    queryKey: carouselCategoryKeys.lists(),
+    queryFn: getCarouselCategories,
   });
+
+  // Set default category to first available category when categories load
+  React.useEffect(() => {
+    if (carouselCategories.length > 0 && selectedCategoryId === null) {
+      setSelectedCategoryId(carouselCategories[0].id);
+    }
+  }, [carouselCategories, selectedCategoryId]);
 
   // Filter games by category and exclude already selected games
   const availableGames = React.useMemo(() => {
-    // Debug logging
-    console.log("availableGames calculation:", {
-      gamesLength: games?.length || 0,
-      currentGameIds,
-      currentGameIdsType: typeof currentGameIds,
-      selectedCategoryId,
-    });
-
     // Ensure we have valid games array
     if (!Array.isArray(games) || games.length === 0) {
       console.log("No games available");
@@ -88,16 +96,7 @@ export function useGameCarouselTab({
 
     console.log("After filtering already selected games:", filtered.length);
 
-    // Filter by category if one is selected
-    if (selectedCategoryId && typeof selectedCategoryId === "string") {
-      filtered = filtered.filter((game) => {
-        const matches =
-          game && game.categoryId && game.categoryId === selectedCategoryId;
-        console.log(`Game ${game?.name}: category match = ${matches}`);
-        return matches;
-      });
-      console.log("After category filtering:", filtered.length);
-    }
+    // Always filter by carousel category - require category selection
 
     console.log(
       "Final available games:",
@@ -122,20 +121,11 @@ export function useGameCarouselTab({
       ? currentGameIds.map((id) => String(id))
       : [];
 
-    let filteredGames = games.filter((game) => {
+    return games.filter((game) => {
       const gameId = String(game.id);
       return normalizedGameIds.includes(gameId);
     });
-
-    // Filter by category if one is selected
-    if (selectedCategoryId) {
-      filteredGames = filteredGames.filter(
-        (game) => game.categoryId === selectedCategoryId
-      );
-    }
-
-    return filteredGames;
-  }, [games, currentGameIds, selectedCategoryId]);
+  }, [games, currentGameIds]);
 
   const handleAddGame = () => {
     if (!selectedGameId) {
@@ -183,14 +173,14 @@ export function useGameCarouselTab({
 
     // Data
     games,
-    categories,
+    carouselCategories,
     availableGames,
     selectedGames,
     currentGameIds,
 
     // Loading states
     isGamesLoading,
-    isCategoriesLoading,
+    isCarouselCategoriesLoading,
 
     // Handlers
     handleAddGame,

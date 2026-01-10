@@ -9,4 +9,3 @@ export class GameWithCheatsResponseDto extends GameResponseDto {
   })
   cheats!: CheatResponseDto[];
 }
-

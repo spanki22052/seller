@@ -6,4 +6,3 @@ import { MinioService } from "./minio.service";
   exports: [MinioService],
 })
 export class MinioModule {}
-

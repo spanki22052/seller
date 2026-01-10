@@ -1,6 +1,6 @@
 export type PriceCurrency = "RUB" | "USD";
 
-export type CheatStatus = "AVAILABLE" | "UPDATING" | "FROZEN";
+export type CheatStatus = "AVAILABLE" | "UPDATING" | "FROZEN" | "DRAFT";
 
 export interface CheatPrice {
   amount: number | null;
@@ -28,6 +28,7 @@ export interface PricingPlan {
   image?: string;
   isAvailable: boolean;
   redirectUrl?: string;
+  description?: string;
 }
 
 export interface Cheat {
@@ -58,6 +59,7 @@ export interface Cheat {
   isNew?: boolean;
   isComingSoon?: boolean;
   status: CheatStatus;
+  cheatDigitId?: string;
   createdAt: string;
   updatedAt: string;
 }

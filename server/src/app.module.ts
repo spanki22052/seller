@@ -6,6 +6,7 @@ import { AuthModule } from "./modules/auth/auth.module";
 import { GamesModule } from "./modules/games/games.module";
 import { BrandsModule } from "./modules/brands/brands.module";
 import { CategoriesModule } from "./modules/categories/categories.module";
+import { CarouselCategoriesModule } from "./modules/carousel-categories/carousel-categories.module";
 import { CheatsModule } from "./modules/cheats/cheats.module";
 import { FilesModule } from "./modules/files/files.module";
 import { DashboardModule } from "./modules/dashboard/dashboard.module";
@@ -26,6 +27,7 @@ import { HealthModule } from "./modules/health/health.module";
     GamesModule,
     BrandsModule,
     CategoriesModule,
+    CarouselCategoriesModule,
     CheatsModule,
     FilesModule,
     DashboardModule,
@@ -36,4 +38,3 @@ import { HealthModule } from "./modules/health/health.module";
   ],
 })
 export class AppModule {}
-

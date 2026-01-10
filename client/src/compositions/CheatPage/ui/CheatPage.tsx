@@ -6,6 +6,8 @@ import { Sidebar } from "@/widgets/Sidebar";
 import { useSidebar } from "@/shared/contexts/SidebarContext";
 import { Footer } from "@/widgets/Footer";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
+import { useSettings } from "@/entities/settings/api/useSettings";
+import { useCheat } from "@/entities/cheat/api";
 import * as Styled from "./styled";
 
 const CheatHero = dynamic(
@@ -59,17 +61,6 @@ const CheatPricing = dynamic(
   }
 );
 
-const CheatPurchaseSelector = dynamic(
-  () =>
-    import("@/widgets/CheatPurchaseSelector").then((mod) => ({
-      default: mod.CheatPurchaseSelector,
-    })),
-  {
-    ssr: false,
-    loading: () => <Styled.LoadingPlaceholder $minHeight={300} />,
-  }
-);
-
 const CheatDetails = dynamic(
   () =>
     import("@/widgets/CheatDetails").then((mod) => ({
@@ -78,6 +69,17 @@ const CheatDetails = dynamic(
   {
     ssr: false,
     loading: () => <Styled.LoadingPlaceholder $minHeight={500} />,
+  }
+);
+
+const CheatTestimonials = dynamic(
+  () =>
+    import("@/widgets/CheatTestimonials").then((mod) => ({
+      default: mod.CheatTestimonials,
+    })),
+  {
+    ssr: false,
+    loading: () => <Styled.LoadingPlaceholder $minHeight={400} />,
   }
 );
 
@@ -101,6 +103,10 @@ export function CheatPage({ gameId, cheatId }: CheatPageProps) {
   const videoRef = useRef<HTMLDivElement>(null);
   const accountsRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
+
+  // Получаем данные о settings и cheat
+  const { data: settings } = useSettings();
+  const { data: cheat } = useCheat(cheatId);
 
   /**
    * Scrolls to the pricing section smoothly, respecting user's reduced motion preference.
@@ -192,6 +198,10 @@ export function CheatPage({ gameId, cheatId }: CheatPageProps) {
           <div ref={screenshotsRef}>
             <CheatScreenshots cheatId={cheatId} />
           </div>
+          <CheatTestimonials
+            sellerId={(settings as any)?.sellerId}
+            cheatDigitId={(cheat as any)?.cheatDigitId}
+          />
           <div ref={functionsRef}>
             <CheatFunctions cheatId={cheatId} />
           </div>

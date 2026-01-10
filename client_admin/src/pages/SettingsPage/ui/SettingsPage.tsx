@@ -8,6 +8,7 @@ import {
   updateSettings,
   settingsKeys,
   FooterLink,
+  SupportLink,
 } from "@/entities/settings";
 import {
   TutorialTab,
@@ -15,6 +16,8 @@ import {
   GameCarouselTab,
   FooterLinksTab,
   SupportLinkTab,
+  SupportLinksTab,
+  AdminSettingsTab,
 } from "./tabs";
 import * as Styled from "./styled";
 
@@ -35,14 +38,20 @@ export function SettingsPage() {
   const footerLinksFormRef = React.useRef<{
     getValue: () => FooterLink[];
   } | null>(null);
+  const [supportLinksValue, setSupportLinksValue] = React.useState<
+    SupportLink[]
+  >([]);
+  const supportLinksFormRef = React.useRef<{
+    getValue: () => SupportLink[];
+  } | null>(null);
   const [supportLinkForm] = Form.useForm();
+  const [adminSettingsForm] = Form.useForm();
   const queryClient = useQueryClient();
 
   const { data: settings, isLoading } = useQuery({
     queryKey: settingsKeys.detail(),
     queryFn: getSettings,
   });
-
 
   // Update gameIconsForm when settings are loaded
   React.useEffect(() => {
@@ -69,6 +78,13 @@ export function SettingsPage() {
     }
   }, [settings]);
 
+  // Update supportLinksValue when settings are loaded
+  React.useEffect(() => {
+    if (settings?.supportLinks) {
+      setSupportLinksValue(settings.supportLinks);
+    }
+  }, [settings]);
+
   // Update supportLinkForm when settings are loaded
   React.useEffect(() => {
     if (settings?.supportLink) {
@@ -77,6 +93,15 @@ export function SettingsPage() {
       });
     }
   }, [settings, supportLinkForm]);
+
+  // Update adminSettingsForm when settings are loaded
+  React.useEffect(() => {
+    if (settings?.sellerId) {
+      adminSettingsForm.setFieldsValue({
+        sellerId: settings.sellerId,
+      });
+    }
+  }, [settings, adminSettingsForm]);
 
   const updateMutation = useMutation({
     mutationFn: updateSettings,
@@ -157,11 +182,36 @@ export function SettingsPage() {
       ),
     },
     {
-      key: "supportLink",
-      label: t("settings.supportLinkTab", "Ссылка поддержки"),
+      key: "supportSettings",
+      label: "Настройки ссылки поддержки",
       children: (
-        <SupportLinkTab
-          form={supportLinkForm}
+        <div>
+          <div style={{ marginBottom: 24 }}>
+            <SupportLinkTab
+              form={supportLinkForm}
+              settings={settings}
+              onSubmit={handleSubmit}
+              isUpdating={updateMutation.isPending}
+            />
+          </div>
+          <div>
+            <SupportLinksTab
+              supportLinksValue={supportLinksValue}
+              onSupportLinksChange={setSupportLinksValue}
+              onSubmit={handleSubmit}
+              isUpdating={updateMutation.isPending}
+              supportLinksFormRef={supportLinksFormRef}
+            />
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "adminSettings",
+      label: t("settings.adminSettingsTab", "Настройки админа"),
+      children: (
+        <AdminSettingsTab
+          form={adminSettingsForm}
           settings={settings}
           onSubmit={handleSubmit}
           isUpdating={updateMutation.isPending}

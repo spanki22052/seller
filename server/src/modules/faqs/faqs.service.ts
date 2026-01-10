@@ -24,10 +24,7 @@ export class FaqsService {
   async findAll(): Promise<FaqResponseDto[]> {
     const faqs = await this.prisma.faq.findMany({
       where: { deletedAt: null },
-      orderBy: [
-        { sortOrder: "asc" },
-        { createdAt: "asc" }
-      ],
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
     });
 
     return faqs.map((faq) => this.mapToResponseDto(faq));
@@ -39,10 +36,7 @@ export class FaqsService {
         deletedAt: null,
         isActive: true,
       },
-      orderBy: [
-        { sortOrder: "asc" },
-        { createdAt: "asc" }
-      ],
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
     });
 
     return faqs.map((faq) => this.mapToResponseDto(faq));

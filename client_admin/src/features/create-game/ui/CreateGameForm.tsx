@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Form, Input, Button, Upload, message, ColorPicker, Select } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { UploadOutlined, InboxOutlined } from "@ant-design/icons";
 import type { UploadFile, UploadProps } from "antd";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
@@ -164,7 +164,7 @@ export function CreateGameForm({ onSuccess }: { onSuccess?: () => void }) {
           label={t("games.form.image")}
           tooltip={t("games.form.imageTooltip")}
         >
-          <Upload
+          <Upload.Dragger
             {...uploadProps}
             fileList={imageFile ? [imageFile] : []}
             onChange={(info) => {
@@ -179,15 +179,19 @@ export function CreateGameForm({ onSuccess }: { onSuccess?: () => void }) {
               return true;
             }}
           >
-            <Button icon={<UploadOutlined />}>{t("games.form.selectImage")}</Button>
-          </Upload>
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">{t("games.form.selectImage")}</p>
+            <p className="ant-upload-hint">{t("games.form.dragDropHint", "Перетащите файл сюда или нажмите для выбора")}</p>
+          </Upload.Dragger>
         </Form.Item>
 
         <Form.Item
           label={t("games.form.backgroundImage")}
           tooltip={t("games.form.backgroundImageTooltip")}
         >
-          <Upload
+          <Upload.Dragger
             {...uploadProps}
             fileList={backgroundImageFile ? [backgroundImageFile] : []}
             onChange={(info) => {
@@ -202,15 +206,19 @@ export function CreateGameForm({ onSuccess }: { onSuccess?: () => void }) {
               return true;
             }}
           >
-            <Button icon={<UploadOutlined />}>{t("games.form.selectBackgroundImage")}</Button>
-          </Upload>
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">{t("games.form.selectBackgroundImage")}</p>
+            <p className="ant-upload-hint">{t("games.form.dragDropHint", "Перетащите файл сюда или нажмите для выбора")}</p>
+          </Upload.Dragger>
         </Form.Item>
 
         <Form.Item
           label={t("games.form.icon")}
           tooltip={t("games.form.iconTooltip")}
         >
-          <Upload
+          <Upload.Dragger
             {...iconUploadProps}
             fileList={iconFile ? [iconFile] : []}
             onRemove={() => {
@@ -218,8 +226,12 @@ export function CreateGameForm({ onSuccess }: { onSuccess?: () => void }) {
               return true;
             }}
           >
-            <Button icon={<UploadOutlined />}>{t("games.form.selectIcon")}</Button>
-          </Upload>
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">{t("games.form.selectIcon")}</p>
+            <p className="ant-upload-hint">{t("games.form.dragDropHint", "Перетащите файл сюда или нажмите для выбора")}</p>
+          </Upload.Dragger>
         </Form.Item>
 
         <Form.Item>

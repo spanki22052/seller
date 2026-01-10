@@ -132,6 +132,70 @@ export const NavLink = styled(Link)(({ theme }) => ({
   },
 }));
 
+export const NavLinkGames = styled(Link)(({ theme }) => ({
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: `12px 24px`,
+  minHeight: 40,
+  color: "#ffffff",
+  fontSize: 16,
+  fontWeight: 600,
+  letterSpacing: 0.5,
+  textDecoration: "none",
+  position: "relative",
+  transition: "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+  cursor: "pointer",
+  transform: "translateZ(0)",
+  willChange: "transform",
+  borderRadius: theme.borderRadius.md,
+  backdropFilter: "blur(10px)",
+  background: "linear-gradient(135deg, #a259ff 0%, #6a33ff 50%, #cd84ff 100%)",
+  boxShadow: "0 4px 15px rgba(162, 89, 255, 0.3)",
+  border: "1px solid rgba(255, 255, 255, 0.2)",
+
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background:
+      "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(162,89,255,0.10) 50%, rgba(205,132,255,0.10) 100%)",
+    borderRadius: theme.borderRadius.md,
+    opacity: 0.8,
+    zIndex: -1,
+  },
+
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    top: -2,
+    left: -2,
+    right: -2,
+    bottom: -2,
+    background: "linear-gradient(135deg, #ff6b35, #f7931e, #ff4757)",
+    borderRadius: theme.borderRadius.lg,
+    zIndex: -2,
+    opacity: 0,
+    transition: "opacity 0.3s ease",
+  },
+
+  "&:active": {
+    transform: "translateY(0) scale(1.02)",
+  },
+
+  "&:focus": {
+    outline: "none",
+    boxShadow: `0 0 0 3px rgba(255, 107, 53, 0.5)`,
+  },
+
+  "&:focus:not(:focus-visible)": {
+    boxShadow: "0 4px 15px rgba(255, 107, 53, 0.3)",
+  },
+}));
+
 export const NavLinkExternal = styled.a(({ theme }) => ({
   display: "inline-flex",
   alignItems: "center",
@@ -484,8 +548,8 @@ export const SearchInput = styled.input(({ theme }) => ({
   },
 
   "&:focus": {
-    borderColor: theme.colors.accent.purple,
-    boxShadow: `0 0 0 3px ${theme.colors.accent.purple}20`,
+    borderColor: theme.colors.border.primary,
+    boxShadow: `0 0 0 3px ${theme.colors.border.primary}20`,
   },
 
   "&:focus:not(:focus-visible)": {

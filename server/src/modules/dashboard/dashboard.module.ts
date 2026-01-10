@@ -10,4 +10,3 @@ import { PrismaModule } from "../../shared/prisma/prisma.module";
   exports: [DashboardService],
 })
 export class DashboardModule {}
-

@@ -37,6 +37,13 @@ export class CheatResponseDto {
   brandName!: string;
 
   @ApiProperty({
+    description: "Cheat ID in Digitseller",
+    example: "123456",
+    required: false,
+  })
+  cheatDigitId?: string;
+
+  @ApiProperty({
     description: "Cheat description",
     example: "Ознакомьтесь подробней и приступайте к оплате",
     required: false,
@@ -205,4 +212,3 @@ export class CheatResponseDto {
   })
   updatedAt!: Date;
 }
-

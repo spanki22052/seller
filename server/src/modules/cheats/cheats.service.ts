@@ -3,6 +3,7 @@ import { PrismaService } from "../../shared/prisma/prisma.service";
 import { MinioService } from "../../shared/minio/minio.service";
 import { CreateCheatDto } from "./dto/create-cheat.dto";
 import { UpdateCheatDto } from "./dto/update-cheat.dto";
+import { BulkUpdateCheatStatusDto } from "./dto/bulk-update-cheat-status.dto";
 import { CheatResponseDto } from "./dto/cheat-response.dto";
 
 @Injectable()
@@ -38,22 +39,66 @@ export class CheatsService {
       data: {
         gameId: createCheatDto.gameId,
         brandId: createCheatDto.brandId,
+        cheatDigitId:
+          createCheatDto.cheatDigitId && createCheatDto.cheatDigitId.trim() !== ""
+            ? createCheatDto.cheatDigitId
+            : null,
         name: cheatName,
-        description: createCheatDto.description && createCheatDto.description.trim() !== "" ? createCheatDto.description : null,
-        descriptionMarkdown: createCheatDto.descriptionMarkdown && createCheatDto.descriptionMarkdown.trim() !== "" ? createCheatDto.descriptionMarkdown : null,
-        circularText: createCheatDto.circularText && createCheatDto.circularText.trim() !== "" ? createCheatDto.circularText : null,
-        image: createCheatDto.image && createCheatDto.image.trim() !== "" ? createCheatDto.image : null,
-        circularImage: createCheatDto.circularImage && createCheatDto.circularImage.trim() !== "" ? createCheatDto.circularImage : null,
-        backgroundImage: createCheatDto.backgroundImage && createCheatDto.backgroundImage.trim() !== "" ? createCheatDto.backgroundImage : null,
+        description:
+          createCheatDto.description && createCheatDto.description.trim() !== ""
+            ? createCheatDto.description
+            : null,
+        descriptionMarkdown:
+          createCheatDto.descriptionMarkdown && createCheatDto.descriptionMarkdown.trim() !== ""
+            ? createCheatDto.descriptionMarkdown
+            : null,
+        circularText:
+          createCheatDto.circularText && createCheatDto.circularText.trim() !== ""
+            ? createCheatDto.circularText
+            : null,
+        image:
+          createCheatDto.image && createCheatDto.image.trim() !== "" ? createCheatDto.image : null,
+        circularImage:
+          createCheatDto.circularImage && createCheatDto.circularImage.trim() !== ""
+            ? createCheatDto.circularImage
+            : null,
+        backgroundImage:
+          createCheatDto.backgroundImage && createCheatDto.backgroundImage.trim() !== ""
+            ? createCheatDto.backgroundImage
+            : null,
         productName: createCheatDto.productName,
-        windowsVersion: createCheatDto.windowsVersion && createCheatDto.windowsVersion.trim() !== "" ? createCheatDto.windowsVersion : null,
-        gameVersion: createCheatDto.gameVersion && createCheatDto.gameVersion.trim() !== "" ? createCheatDto.gameVersion : null,
-        gameMode: createCheatDto.gameMode && createCheatDto.gameMode.trim() !== "" ? createCheatDto.gameMode : null,
-        processors: createCheatDto.processors && createCheatDto.processors.trim() !== "" ? createCheatDto.processors : null,
-        supportedSystems: createCheatDto.supportedSystems && createCheatDto.supportedSystems.length > 0 ? createCheatDto.supportedSystems : [],
-        buttonText: createCheatDto.buttonText && createCheatDto.buttonText.trim() !== "" ? createCheatDto.buttonText : null,
-        videoUrl: createCheatDto.videoUrl && createCheatDto.videoUrl.trim() !== "" ? createCheatDto.videoUrl : null,
-        videoThumbnail: createCheatDto.videoThumbnail && createCheatDto.videoThumbnail.trim() !== "" ? createCheatDto.videoThumbnail : null,
+        windowsVersion:
+          createCheatDto.windowsVersion && createCheatDto.windowsVersion.trim() !== ""
+            ? createCheatDto.windowsVersion
+            : null,
+        gameVersion:
+          createCheatDto.gameVersion && createCheatDto.gameVersion.trim() !== ""
+            ? createCheatDto.gameVersion
+            : null,
+        gameMode:
+          createCheatDto.gameMode && createCheatDto.gameMode.trim() !== ""
+            ? createCheatDto.gameMode
+            : null,
+        processors:
+          createCheatDto.processors && createCheatDto.processors.trim() !== ""
+            ? createCheatDto.processors
+            : null,
+        supportedSystems:
+          createCheatDto.supportedSystems && createCheatDto.supportedSystems.length > 0
+            ? createCheatDto.supportedSystems
+            : [],
+        buttonText:
+          createCheatDto.buttonText && createCheatDto.buttonText.trim() !== ""
+            ? createCheatDto.buttonText
+            : null,
+        videoUrl:
+          createCheatDto.videoUrl && createCheatDto.videoUrl.trim() !== ""
+            ? createCheatDto.videoUrl
+            : null,
+        videoThumbnail:
+          createCheatDto.videoThumbnail && createCheatDto.videoThumbnail.trim() !== ""
+            ? createCheatDto.videoThumbnail
+            : null,
         screenshots: createCheatDto.screenshots,
         price: createCheatDto.price as any,
         breadcrumbs: createCheatDto.breadcrumbs as any,
@@ -82,6 +127,7 @@ export class CheatsService {
 
   async findAll(): Promise<CheatResponseDto[]> {
     const cheats = await this.prisma.cheat.findMany({
+      where: {},
       orderBy: { createdAt: "desc" },
       include: {
         game: {
@@ -159,16 +205,29 @@ export class CheatsService {
 
     if (updateCheatDto.gameId) updateData.gameId = updateCheatDto.gameId;
     if (updateCheatDto.brandId) updateData.brandId = updateCheatDto.brandId;
+    if (updateCheatDto.cheatDigitId !== undefined) {
+      updateData.cheatDigitId =
+        updateCheatDto.cheatDigitId && updateCheatDto.cheatDigitId.trim() !== ""
+          ? updateCheatDto.cheatDigitId
+          : null;
+    }
     if (updateCheatDto.name) updateData.name = updateCheatDto.name;
     if (updateCheatDto.description !== undefined) {
-      updateData.description = updateCheatDto.description && updateCheatDto.description.trim() !== "" ? updateCheatDto.description : null;
+      updateData.description =
+        updateCheatDto.description && updateCheatDto.description.trim() !== ""
+          ? updateCheatDto.description
+          : null;
     }
     if (updateCheatDto.descriptionMarkdown !== undefined) {
-      updateData.descriptionMarkdown = updateCheatDto.descriptionMarkdown && updateCheatDto.descriptionMarkdown.trim() !== "" ? updateCheatDto.descriptionMarkdown : null;
+      updateData.descriptionMarkdown =
+        updateCheatDto.descriptionMarkdown && updateCheatDto.descriptionMarkdown.trim() !== ""
+          ? updateCheatDto.descriptionMarkdown
+          : null;
     }
     if (updateCheatDto.circularText) updateData.circularText = updateCheatDto.circularText;
     if (updateCheatDto.image !== undefined) {
-      updateData.image = updateCheatDto.image && updateCheatDto.image.trim() !== "" ? updateCheatDto.image : null;
+      updateData.image =
+        updateCheatDto.image && updateCheatDto.image.trim() !== "" ? updateCheatDto.image : null;
     }
     if (updateCheatDto.circularImage !== undefined) {
       updateData.circularImage = updateCheatDto.circularImage ?? null;
@@ -182,11 +241,15 @@ export class CheatsService {
     if (updateCheatDto.gameMode) updateData.gameMode = updateCheatDto.gameMode;
     if (updateCheatDto.processors) updateData.processors = updateCheatDto.processors;
     if (updateCheatDto.supportedSystems !== undefined) {
-      updateData.supportedSystems = updateCheatDto.supportedSystems && updateCheatDto.supportedSystems.length > 0 ? updateCheatDto.supportedSystems : [];
+      updateData.supportedSystems =
+        updateCheatDto.supportedSystems && updateCheatDto.supportedSystems.length > 0
+          ? updateCheatDto.supportedSystems
+          : [];
     }
     if (updateCheatDto.buttonText) updateData.buttonText = updateCheatDto.buttonText;
     if (updateCheatDto.videoUrl !== undefined) updateData.videoUrl = updateCheatDto.videoUrl;
-    if (updateCheatDto.videoThumbnail !== undefined) updateData.videoThumbnail = updateCheatDto.videoThumbnail;
+    if (updateCheatDto.videoThumbnail !== undefined)
+      updateData.videoThumbnail = updateCheatDto.videoThumbnail;
     if (updateCheatDto.screenshots !== undefined) {
       updateData.screenshots = updateCheatDto.screenshots;
     }
@@ -199,7 +262,8 @@ export class CheatsService {
       updateData.pricingPlans = updateCheatDto.pricingPlans as any;
     }
     if (updateCheatDto.isNew !== undefined) updateData.isNew = updateCheatDto.isNew;
-    if (updateCheatDto.isComingSoon !== undefined) updateData.isComingSoon = updateCheatDto.isComingSoon;
+    if (updateCheatDto.isComingSoon !== undefined)
+      updateData.isComingSoon = updateCheatDto.isComingSoon;
     if (updateCheatDto.status !== undefined) updateData.status = updateCheatDto.status;
 
     const cheat = await this.prisma.cheat.update({
@@ -222,6 +286,135 @@ export class CheatsService {
     return this.mapToResponseDto(cheat);
   }
 
+  async remove(id: string): Promise<void> {
+    const existingCheat = await this.prisma.cheat.findFirst({
+      where: { id, deletedAt: null },
+    });
+
+    if (!existingCheat) {
+      throw new NotFoundException(`Cheat with ID ${id} not found`);
+    }
+
+    // Soft delete the cheat
+    await this.prisma.cheat.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+  }
+
+  async duplicate(id: string): Promise<CheatResponseDto> {
+    const existingCheat = await this.prisma.cheat.findFirst({
+      where: { id, deletedAt: null },
+    });
+
+    if (!existingCheat) {
+      throw new NotFoundException(`Cheat with ID ${id} not found`);
+    }
+
+    // Create a duplicate with new ID and DRAFT status
+    const duplicatedCheat = await this.prisma.cheat.create({
+      data: {
+        gameId: existingCheat.gameId,
+        brandId: existingCheat.brandId,
+        name: `${existingCheat.name} (Copy)`,
+        description: existingCheat.description,
+        descriptionMarkdown: existingCheat.descriptionMarkdown,
+        circularText: existingCheat.circularText,
+        image: existingCheat.image,
+        circularImage: existingCheat.circularImage,
+        backgroundImage: existingCheat.backgroundImage,
+        productName: existingCheat.productName,
+        windowsVersion: existingCheat.windowsVersion,
+        gameVersion: existingCheat.gameVersion,
+        gameMode: existingCheat.gameMode,
+        processors: existingCheat.processors,
+        supportedSystems: existingCheat.supportedSystems,
+        buttonText: existingCheat.buttonText,
+        videoUrl: existingCheat.videoUrl,
+        videoThumbnail: existingCheat.videoThumbnail,
+        screenshots: existingCheat.screenshots as any,
+        price: existingCheat.price as any,
+        breadcrumbs: existingCheat.breadcrumbs as any,
+        functions: existingCheat.functions as any,
+        pricingPlans: existingCheat.pricingPlans as any,
+        isNew: existingCheat.isNew,
+        isComingSoon: existingCheat.isComingSoon,
+        status: "DRAFT", // Always create as draft
+      },
+      include: {
+        game: {
+          select: {
+            name: true,
+          },
+        },
+        brand: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return this.mapToResponseDto(duplicatedCheat);
+  }
+
+  async bulkUpdateStatus(bulkUpdateDto: BulkUpdateCheatStatusDto): Promise<CheatResponseDto[]> {
+    // First, verify all cheats exist
+    const existingCheats = await this.prisma.cheat.findMany({
+      where: {
+        id: { in: bulkUpdateDto.ids },
+        deletedAt: null,
+      },
+      select: { id: true },
+    });
+
+    const existingCheatIds = existingCheats.map((cheat) => cheat.id);
+    const missingIds = bulkUpdateDto.ids.filter((id) => !existingCheatIds.includes(id));
+
+    if (missingIds.length > 0) {
+      throw new NotFoundException(`Cheats with IDs ${missingIds.join(", ")} not found`);
+    }
+
+    // Use a transaction to update all cheats atomically
+    const updatedCheats = await this.prisma.$transaction(async (tx) => {
+      // Update all cheats with the new status
+      await tx.cheat.updateMany({
+        where: {
+          id: { in: bulkUpdateDto.ids },
+          deletedAt: null,
+        },
+        data: {
+          status: bulkUpdateDto.status,
+          updatedAt: new Date(),
+        },
+      });
+
+      // Fetch the updated cheats with relations for response mapping
+      const cheats = await tx.cheat.findMany({
+        where: {
+          id: { in: bulkUpdateDto.ids },
+          deletedAt: null,
+        },
+        include: {
+          game: {
+            select: {
+              name: true,
+            },
+          },
+          brand: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+      return cheats;
+    });
+
+    return updatedCheats.map((cheat) => this.mapToResponseDto(cheat));
+  }
+
   private mapToResponseDto(cheat: any): CheatResponseDto {
     return {
       id: cheat.id,
@@ -229,6 +422,7 @@ export class CheatsService {
       gameName: cheat.game?.name ?? "",
       name: cheat.name,
       brandName: cheat.brand?.name ?? "",
+      cheatDigitId: cheat.cheatDigitId,
       description: cheat.description,
       descriptionMarkdown: cheat.descriptionMarkdown ?? undefined,
       circularText: cheat.circularText,
@@ -257,4 +451,3 @@ export class CheatsService {
     };
   }
 }
-

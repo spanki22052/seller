@@ -6,6 +6,7 @@ export interface Game {
   backgroundImage?: string;
   icon?: string;
   categoryId?: string;
+  carouselCategoryId?: string;
   categoryName?: string;
   description?: string;
   genre?: string;

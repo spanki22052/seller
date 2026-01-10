@@ -14,4 +14,3 @@ export class LoginResponseDto {
   })
   login!: string;
 }
-

@@ -27,4 +27,3 @@ export class FunctionCategoryDto {
   @IsString({ each: true })
   features!: string[];
 }
-

@@ -53,24 +53,23 @@ export function GamesPage() {
     const stats: Record<string, { minPrice: number; offersCount: number }> = {};
 
     gamesWithCheats.forEach((game) => {
-      const availableCheats = game.cheats.filter(
-        (cheat) =>
-          cheat.status === "AVAILABLE" &&
-          cheat.price.amount !== null &&
-          cheat.price.amount > 0
+      // Count all cheats without filtering by status
+      const allCheats = game.cheats;
+      const cheatsWithValidPrice = game.cheats.filter(
+        (cheat) => cheat.price.amount !== null && cheat.price.amount > 0
       );
 
-      if (availableCheats.length > 0) {
-        const prices = availableCheats.map((cheat) => cheat.price.amount!);
+      if (cheatsWithValidPrice.length > 0) {
+        const prices = cheatsWithValidPrice.map((cheat) => cheat.price.amount!);
         const minPrice = Math.min(...prices);
         stats[game.id] = {
           minPrice,
-          offersCount: availableCheats.length,
+          offersCount: allCheats.length,
         };
       } else {
         stats[game.id] = {
           minPrice: 0,
-          offersCount: 0,
+          offersCount: allCheats.length,
         };
       }
     });
@@ -149,7 +148,7 @@ export function GamesPage() {
             <Styled.HeaderSection>
               <Styled.PageTitle>Игры</Styled.PageTitle>
               <Styled.PageSubtitle>
-                Ищите и находите лучшие читы для ваших любимых игр
+                Ищите и находите лучшие DLC для ваших любимых игр
               </Styled.PageSubtitle>
             </Styled.HeaderSection>
 
@@ -181,7 +180,7 @@ export function GamesPage() {
           <Styled.HeaderSection>
             <Styled.PageTitle>Игры</Styled.PageTitle>
             <Styled.PageSubtitle>
-              Ищите и находите лучшие читы для ваших любимых игр. У нас более{" "}
+              Ищите и находите лучшие DLC для ваших любимых игр. У нас более{" "}
               {totalStats.totalGames} игр с {totalStats.totalOffers}{" "}
               предложениями
             </Styled.PageSubtitle>
@@ -199,7 +198,7 @@ export function GamesPage() {
             </Styled.StatCard>
             <Styled.StatCard>
               <Styled.StatValue>{totalStats.gamesWithOffers}</Styled.StatValue>
-              <Styled.StatLabel>С читами</Styled.StatLabel>
+              <Styled.StatLabel>С DLC</Styled.StatLabel>
             </Styled.StatCard>
           </Styled.StatsSection>
 

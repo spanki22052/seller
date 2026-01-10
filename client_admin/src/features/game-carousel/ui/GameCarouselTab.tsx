@@ -4,51 +4,88 @@ import React from "react";
 import { Select, Button, List, Avatar, Popconfirm, Spin } from "antd";
 import { DeleteOutlined, PlusOutlined, EditOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
-import { Category } from "@/entities/category";
+import { CarouselCategory } from "@/entities/carousel-category";
+import { CarouselCategoryGames } from "@/entities/settings/api/settingsApi";
 import { EditGameModal } from "@/features/edit-game";
 import { useGameCarouselTab } from "../hooks/useGameCarouselTab";
 import * as Styled from "./styled";
 
 interface GameCarouselTabProps {
-  value?: string[];
-  onChange?: (gameIds: string[]) => void;
+  value?: CarouselCategoryGames[];
+  onChange?: (carouselData: CarouselCategoryGames[]) => void;
 }
 
 export function GameCarouselTab({
   value = [],
   onChange,
 }: GameCarouselTabProps) {
-  // Ensure value is an array of strings
+  // Ensure value is an array of CarouselCategoryGames
   const normalizedValue = React.useMemo(() => {
     console.log("GameCarouselTab: received value", value, typeof value);
     if (!Array.isArray(value)) {
       console.warn("GameCarouselTab: value is not an array", value);
       return [];
     }
-    const normalized = value.map((id) => String(id));
-    console.log("GameCarouselTab: normalized value", normalized);
-    return normalized;
+    return value as CarouselCategoryGames[];
   }, [value]);
+
+  const [selectedCategoryId, setSelectedCategoryId] = React.useState<
+    string | null
+  >(null);
+
+  // Get current category's game IDs
+  const currentCategoryData = React.useMemo(() => {
+    return normalizedValue.find((cat) => cat.id === selectedCategoryId);
+  }, [normalizedValue, selectedCategoryId]);
+
+  const currentGameIds = currentCategoryData?.games || [];
+
+  // Set default category when categories load
+  const { carouselCategories, isCarouselCategoriesLoading } =
+    useGameCarouselTab({ value: [], onChange: () => {} });
+
+  React.useEffect(() => {
+    if (carouselCategories.length > 0 && selectedCategoryId === null) {
+      setSelectedCategoryId(carouselCategories[0].id);
+    }
+  }, [carouselCategories, selectedCategoryId]);
 
   const {
     selectedGameId,
     setSelectedGameId,
     isEditModalOpen,
     selectedGame,
-    selectedCategoryId,
-    setSelectedCategoryId,
-    categories,
     availableGames,
     selectedGames,
-    currentGameIds,
     isGamesLoading,
-    isCategoriesLoading,
     handleAddGame,
     handleDelete,
     handleEdit,
     handleCloseEditModal,
     t,
-  } = useGameCarouselTab({ value: normalizedValue, onChange });
+  } = useGameCarouselTab({
+    value: currentGameIds,
+    onChange: (gameIds: string[]) => {
+      if (!selectedCategoryId) return;
+
+      // Update the carousel data with new game IDs for the selected category
+      const updatedValue = [...normalizedValue];
+      const existingIndex = updatedValue.findIndex(
+        (cat) => cat.id === selectedCategoryId
+      );
+
+      if (existingIndex >= 0) {
+        updatedValue[existingIndex] = {
+          ...updatedValue[existingIndex],
+          games: gameIds,
+        };
+      } else {
+        updatedValue.push({ id: selectedCategoryId, games: gameIds });
+      }
+
+      onChange?.(updatedValue);
+    },
+  });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -69,7 +106,7 @@ export function GameCarouselTab({
     },
   };
 
-  if (isGamesLoading || isCategoriesLoading) {
+  if (isGamesLoading || isCarouselCategoriesLoading) {
     return (
       <Styled.Container>
         <div style={{ textAlign: "center", padding: "50px 0" }}>
@@ -90,25 +127,28 @@ export function GameCarouselTab({
         animate="visible"
       >
         <Styled.AddGameSection>
-          {/* Category Filter Select */}
-          <Styled.CategorySelectWrapper>
-            <Select
-              placeholder={t("settings.selectCategory") || "Выберите категорию"}
-              value={selectedCategoryId}
-              onChange={setSelectedCategoryId}
-              style={{ width: "100%", marginBottom: 16 }}
-              allowClear
-            >
-              <Select.Option value={null}>
-                {t("settings.allCategories") || "Все категории"}
-              </Select.Option>
-              {categories.map((category: Category) => (
-                <Select.Option key={category.id} value={category.id}>
-                  {category.name}
-                </Select.Option>
+          {/* Category Filter Buttons */}
+          <Styled.CategoryButtons>
+            <Styled.SectionTitle>
+              {t("settings.selectCategory") || "Выберите категорию"}:
+            </Styled.SectionTitle>
+            <Styled.CategoryButtonGroup>
+              {carouselCategories.map((carouselCategory: CarouselCategory) => (
+                <Button
+                  key={carouselCategory.id}
+                  type={
+                    selectedCategoryId === carouselCategory.id
+                      ? "primary"
+                      : "default"
+                  }
+                  onClick={() => setSelectedCategoryId(carouselCategory.id)}
+                  size="small"
+                >
+                  {carouselCategory.name}
+                </Button>
               ))}
-            </Select>
-          </Styled.CategorySelectWrapper>
+            </Styled.CategoryButtonGroup>
+          </Styled.CategoryButtons>
 
           <Styled.SelectWrapper>
             <Select
@@ -142,7 +182,7 @@ export function GameCarouselTab({
           </Styled.SelectWrapper>
         </Styled.AddGameSection>
 
-        {currentGameIds.length > 0 && (
+        {selectedGames.length > 0 && (
           <motion.div variants={itemVariants}>
             <Styled.GamesList>
               <List
@@ -193,24 +233,11 @@ export function GameCarouselTab({
                   </List.Item>
                 )}
               />
-              {selectedGames.length === 0 && selectedCategoryId && (
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "20px",
-                    color: "#8c8c8c",
-                    fontSize: "14px",
-                  }}
-                >
-                  {t("settings.noGamesInCategory") ||
-                    "В выбранной категории нет добавленных игр"}
-                </div>
-              )}
             </Styled.GamesList>
           </motion.div>
         )}
 
-        {currentGameIds.length === 0 && (
+        {selectedGames.length === 0 && (
           <motion.div variants={itemVariants}>
             <Styled.EmptyState>
               <div

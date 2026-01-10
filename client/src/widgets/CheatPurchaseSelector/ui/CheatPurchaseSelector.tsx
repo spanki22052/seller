@@ -8,7 +8,8 @@ import { useCheatPurchaseSelector } from "../hooks/useCheatPurchaseSelector";
 import { CheatPurchaseSelectorProps } from "../model/types";
 import {
   SELECTOR_ANIMATION,
-  SELECTOR_ANIMATION_REDUCED
+  SELECTOR_ANIMATION_REDUCED,
+  getDaysText,
 } from "../model/constants";
 import * as Styled from "./styled";
 
@@ -60,16 +61,37 @@ export function CheatPurchaseSelector({ cheatId }: CheatPurchaseSelectorProps) {
             <Styled.StyledSelect
               value={selectedPlan?.id}
               onChange={(value) => {
-                const plan = availablePlans.find(p => p.id === value);
+                const plan = availablePlans.find((p) => p.id === value);
                 setSelectedPlan(plan || null);
               }}
               placeholder="Выберите план"
               suffixIcon={<Styled.DropdownIcon>▼</Styled.DropdownIcon>}
+              optionLabelProp="label"
             >
               {availablePlans.map((plan) => (
-                <Select.Option key={plan.id} value={plan.id}>
+                <Select.Option
+                  key={plan.id}
+                  value={plan.id}
+                  label={
+                    <Styled.OptionContent>
+                      <Styled.OptionLeft>
+                        <Styled.OptionTitle>{plan.duration}</Styled.OptionTitle>
+                      </Styled.OptionLeft>
+                      <Styled.OptionPrice>
+                        {plan.price.toLocaleString()} {plan.currency}
+                      </Styled.OptionPrice>
+                    </Styled.OptionContent>
+                  }
+                >
                   <Styled.OptionContent>
-                    <Styled.OptionTitle>{plan.duration}</Styled.OptionTitle>
+                    <Styled.OptionLeft>
+                      <Styled.OptionTitle>{plan.duration}</Styled.OptionTitle>
+                      {plan.description && (
+                        <Styled.OptionDescription>
+                          {plan.description}
+                        </Styled.OptionDescription>
+                      )}
+                    </Styled.OptionLeft>
                     <Styled.OptionPrice>
                       {plan.price.toLocaleString()} {plan.currency}
                     </Styled.OptionPrice>
@@ -82,15 +104,19 @@ export function CheatPurchaseSelector({ cheatId }: CheatPurchaseSelectorProps) {
           {selectedPlan && (
             <Styled.PlanInfo>
               <Styled.PlanDetails>
-                <Styled.PlanDuration>{selectedPlan.duration}</Styled.PlanDuration>
                 <Styled.PlanPrice>
                   {selectedPlan.price.toLocaleString()} {selectedPlan.currency}
                 </Styled.PlanPrice>
+                {selectedPlan.description && (
+                  <Styled.PlanDescription>
+                    {selectedPlan.description}
+                  </Styled.PlanDescription>
+                )}
               </Styled.PlanDetails>
 
               {selectedPlan.durationDays && (
                 <Styled.PlanDays>
-                  {selectedPlan.durationDays} дней доступа
+                  {getDaysText(selectedPlan.durationDays)} доступа
                 </Styled.PlanDays>
               )}
             </Styled.PlanInfo>
@@ -100,16 +126,14 @@ export function CheatPurchaseSelector({ cheatId }: CheatPurchaseSelectorProps) {
             onClick={handlePurchase}
             disabled={!selectedPlan}
           >
-            <Styled.ButtonText>
-              Купить сейчас
-            </Styled.ButtonText>
+            <Styled.ButtonText>Купить сейчас</Styled.ButtonText>
             <Styled.ButtonGlow />
           </Styled.PurchaseButton>
         </Styled.Content>
 
         <Styled.Footer>
           <Styled.FooterText>
-            После оплаты чит будет доступен в вашем личном кабинете
+            После оплаты ссылки и инструкция будут в личном кабинете
           </Styled.FooterText>
         </Styled.Footer>
       </Styled.Card>

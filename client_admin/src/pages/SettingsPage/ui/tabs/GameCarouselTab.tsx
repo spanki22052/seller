@@ -2,11 +2,12 @@ import { Card, Form, Button } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { GameCarouselTab as GameCarouselFeature } from "@/features/game-carousel";
+import { CarouselCategoryGames } from "@/entities/settings";
 
 interface GameCarouselTabProps {
   form: any;
   settings: any;
-  onSubmit: (values: { gameIdsForCarousel?: string[] }) => void;
+  onSubmit: (values: { gameIdsForCarousel?: CarouselCategoryGames[] }) => void;
   isUpdating: boolean;
 }
 

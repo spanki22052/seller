@@ -67,6 +67,9 @@ export class GamesService {
         cheats: {
           where: {
             deletedAt: null,
+            status: {
+              not: "DRAFT",
+            },
           },
           include: {
             brand: true,
@@ -99,6 +102,9 @@ export class GamesService {
         cheats: {
           where: {
             deletedAt: null,
+            status: {
+              not: "DRAFT",
+            },
           },
           include: {
             brand: true,
@@ -150,6 +156,9 @@ export class GamesService {
             cheats: {
               some: {
                 deletedAt: null,
+                status: {
+                  not: "DRAFT",
+                },
                 OR: [
                   {
                     name: {
@@ -176,6 +185,9 @@ export class GamesService {
         cheats: {
           where: {
             deletedAt: null,
+            status: {
+              not: "DRAFT",
+            },
           },
           include: {
             brand: true,

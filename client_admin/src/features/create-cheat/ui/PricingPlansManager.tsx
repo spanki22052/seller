@@ -13,6 +13,7 @@ export interface PricingPlan {
   durationDays: number;
   currency: "RUB" | "USD";
   redirectUrl: string;
+  description?: string;
 }
 
 interface PricingPlansManagerProps {
@@ -36,6 +37,7 @@ export function PricingPlansManager({ value = [], onChange }: PricingPlansManage
       durationDays: 1,
       currency: "RUB",
       redirectUrl: "",
+      description: "",
     };
     const updated = [...plans, newPlan];
     setPlans(updated);
@@ -96,6 +98,18 @@ export function PricingPlansManager({ value = [], onChange }: PricingPlansManage
                 }
               >
                 <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+                  <Space direction="vertical" size="small" style={{ width: "100%" }}>
+                    <Text strong style={{ fontSize: 12 }}>
+                      {t("cheats.form.planDescription")}
+                    </Text>
+                    <Input.TextArea
+                      placeholder={t("cheats.form.planDescriptionPlaceholder")}
+                      value={plan.description || ""}
+                      onChange={(e) => handleUpdatePlan(plan.id, "description", e.target.value)}
+                      rows={2}
+                      style={{ width: "100%" }}
+                    />
+                  </Space>
                   <Space style={{ width: "100%" }}>
                     <Styled.PriceInputWrapper>
                       <InputNumber

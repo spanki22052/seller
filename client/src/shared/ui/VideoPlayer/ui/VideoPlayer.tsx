@@ -23,6 +23,26 @@ export function VideoPlayer({
   controls = true,
   className,
 }: VideoPlayerProps) {
+  // Check if it's a Kinescope embed URL
+  const isKinescopeEmbed = src.includes('kinescope.io/embed/') || src.includes('kinescope.io/') && src.split('/').length === 4;
+
+  // If it's a Kinescope video, use iframe embed instead of Plyr
+  if (isKinescopeEmbed) {
+    // Convert public kinescope.io URL to embed URL if needed
+    const embedUrl = src.includes('/embed/') ? src : `https://kinescope.io/embed/${src.split('/').pop()}`;
+
+    return (
+      <Styled.PlayerWrapper className={className}>
+        <Styled.KinescopeIframe
+          src={embedUrl}
+          allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+          allowFullScreen
+          title={title}
+        />
+      </Styled.PlayerWrapper>
+    );
+  }
+
   const options = {
     controls: [
       "play-large",

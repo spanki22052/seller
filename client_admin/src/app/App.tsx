@@ -9,6 +9,7 @@ import { GamesPage } from "@/pages/GamesPage";
 import { CheatsPage } from "@/pages/CheatsPage";
 import { BrandsPage } from "@/pages/BrandsPage";
 import { CategoriesPage } from "@/pages/CategoriesPage";
+import { CarouselCategoriesPage } from "@/pages/CarouselCategoriesPage";
 import { CheatFormPage } from "@/pages/CheatFormPage";
 import { SettingsPage } from "@/pages/SettingsPage";
 import { HomePage } from "@/pages/HomePage";
@@ -66,6 +67,14 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <CategoriesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/carousel-categories"
+              element={
+                <ProtectedRoute>
+                  <CarouselCategoriesPage />
                 </ProtectedRoute>
               }
             />

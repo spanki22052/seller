@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookies Test</title>
+</head>
+<body>
+    <h1>Cookies Test</h1>
+    <button id="accept">Accept Cookies</button>
+    <button id="reject">Reject Cookies</button>
+    <button id="reset">Reset Consent</button>
+    <button id="check">Check localStorage</button>
+    <div id="status"></div>
+
+    <script>
+        const COOKIE_CONSENT_KEY = "cookie_consent";
+
+        function updateStatus() {
+            const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
+            document.getElementById('status').textContent = `Current consent: ${consent || 'null'}`;
+        }
+
+        document.getElementById('accept').addEventListener('click', () => {
+            localStorage.setItem(COOKIE_CONSENT_KEY, "accepted");
+            updateStatus();
+        });
+
+        document.getElementById('reject').addEventListener('click', () => {
+            localStorage.setItem(COOKIE_CONSENT_KEY, "rejected");
+            updateStatus();
+        });
+
+        document.getElementById('reset').addEventListener('click', () => {
+            localStorage.removeItem(COOKIE_CONSENT_KEY);
+            updateStatus();
+        });
+
+        document.getElementById('check').addEventListener('click', updateStatus);
+
+        // Initial status
+        updateStatus();
+    </script>
+</body>
+</html>

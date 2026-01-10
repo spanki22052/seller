@@ -123,7 +123,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
     const newOpenDropdowns = new Set<string>();
 
-    // При поиске открываем все игры с читами (backend уже отфильтровал)
+    // При поиске открываем все игры с DLC (backend уже отфильтровал)
     filteredAndSortedItems.forEach((item) => {
       if (item.cheats && item.cheats.length > 0) {
         newOpenDropdowns.add(item.id);
@@ -150,13 +150,13 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     });
   };
 
-  // Функция для получения читов (backend уже отфильтровал их)
+  // Функция для получения DLC (backend уже отфильтровал их)
   const getFilteredCheats = (cheats: MenuItem["cheats"]) => {
     if (!cheats) {
       return [];
     }
 
-    // Backend уже отфильтровал читы, просто возвращаем их
+    // Backend уже отфильтровал DLC, просто возвращаем их
     return cheats;
   };
 
@@ -169,7 +169,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     return homeLinks;
   };
 
-  // Функция для навигации к странице чита
+  // Функция для навигации к странице DLC
   const handleCheatClick = (
     gameId: string,
     cheatId: string,
@@ -207,7 +207,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     router.push("/");
   };
 
-  // Обработчик клика по элементу меню с читами (только переключает dropdown)
+  // Обработчик клика по элементу меню с DLC (только переключает dropdown)
   const handleMenuItemWithCheatsClick = (
     item: MenuItem,
     e: React.MouseEvent
@@ -452,7 +452,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                                   handleCategoryClick(item.href, e);
                                 } else {
                                   e.preventDefault();
-                                  // Игры без читов не кликабельны
+                                  // Игры без DLC не кликабельны
                                 }
                               }}
                             >

@@ -65,4 +65,13 @@ export class PricingPlanDto {
   @IsString()
   @IsOptional()
   redirectUrl?: string;
+
+  @ApiProperty({
+    description: "Plan description",
+    example: "Best value for long-term use",
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  description?: string;
 }

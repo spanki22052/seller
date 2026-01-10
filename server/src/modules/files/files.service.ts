@@ -9,7 +9,7 @@ export class FilesService {
 
   async uploadPublicFile(file: Express.Multer.File): Promise<{ url: string; key: string }> {
     const bucket = this.minioService.getPublicBucket();
-    
+
     // Generate object key: games/YYYY/MM/DD/uuid.ext
     const now = new Date();
     const year = now.getFullYear();
@@ -20,15 +20,10 @@ export class FilesService {
     const objectKey = `games/${year}/${month}/${day}/${uuid}${ext}`;
 
     // Upload to MinIO
-    await this.minioService.uploadFile(
-      bucket,
-      objectKey,
-      file.buffer,
-      {
-        "Content-Type": file.mimetype,
-        "Original-Name": file.originalname,
-      },
-    );
+    await this.minioService.uploadFile(bucket, objectKey, file.buffer, {
+      "Content-Type": file.mimetype,
+      "Original-Name": file.originalname,
+    });
 
     // Use MinioService to get public URL (external-facing)
     const url = this.minioService.getPublicUrl(objectKey);
@@ -41,7 +36,7 @@ export class FilesService {
 
   async uploadCheatImage(file: Express.Multer.File): Promise<{ url: string; key: string }> {
     const bucket = this.minioService.getPublicBucket();
-    
+
     // Generate object key: cheats/YYYY/MM/DD/uuid.ext
     const now = new Date();
     const year = now.getFullYear();
@@ -52,15 +47,10 @@ export class FilesService {
     const objectKey = `cheats/${year}/${month}/${day}/${uuid}${ext}`;
 
     // Upload to MinIO
-    await this.minioService.uploadFile(
-      bucket,
-      objectKey,
-      file.buffer,
-      {
-        "Content-Type": file.mimetype,
-        "Original-Name": file.originalname,
-      },
-    );
+    await this.minioService.uploadFile(bucket, objectKey, file.buffer, {
+      "Content-Type": file.mimetype,
+      "Original-Name": file.originalname,
+    });
 
     // Use MinioService to get public URL (external-facing)
     const url = this.minioService.getPublicUrl(objectKey);
@@ -71,4 +61,3 @@ export class FilesService {
     };
   }
 }
-

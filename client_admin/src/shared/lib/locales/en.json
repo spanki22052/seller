@@ -16,6 +16,7 @@
     "cheats": "Cheats",
     "brands": "Brands",
     "categories": "Categories",
+    "carouselCategories": "Carousel Categories",
     "settings": "Settings",
     "logout": "Logout"
   },
@@ -100,6 +101,8 @@
     "editCheat": "Edit Cheat",
     "updateCheat": "Update Cheat",
     "edit": "Edit",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
     "hideForm": "Hide Form",
     "name": "Name",
     "game": "Game",
@@ -117,6 +120,34 @@
     "available": "Available",
     "updating": "Updating",
     "frozen": "Frozen",
+    "draft": "Draft",
+    "confirmDelete": "Confirm Delete",
+    "confirmDeleteDescription": "Are you sure you want to delete \"{{name}}\"?",
+    "changeStatus": {
+      "title": "Change Status - {{name}}",
+      "selectStatus": "Select Status",
+      "selectStatusPlaceholder": "Choose new status"
+    },
+    "bulkMode": {
+      "enter": "Bulk Edit",
+      "exit": "Exit Bulk Edit",
+      "changeStatus": "Change Status"
+    },
+    "bulkChange": {
+      "title": "Bulk Change Status",
+      "warningTitle": "Warning",
+      "warningDescription": "You are about to change the status of {{count}} cheat(s). This action cannot be undone.",
+      "confirmButton": "Change Status"
+    },
+    "notifications": {
+      "statusUpdatedSuccess": "Status updated successfully",
+      "statusUpdatedDescription": "The cheat status has been changed",
+      "statusUpdateFailed": "Failed to update status",
+      "bulkStatusUpdatedSuccess": "Bulk status update completed",
+      "bulkStatusUpdatedDescription": "{{count}} cheats have been updated",
+      "bulkStatusUpdateFailed": "Failed to update cheat statuses",
+      "unexpectedError": "An unexpected error occurred"
+    },
     "form": {
       "game": "Game",
       "gamePlaceholder": "Select a game",
@@ -124,6 +155,9 @@
       "brandName": "Brand Name",
       "brandNamePlaceholder": "Enter brand name",
       "brandNameRequired": "Please enter brand name",
+      "selectedBrandNotFound": "Selected brand not found",
+      "cheatDigitId": "Cheat ID in Digitseller",
+      "cheatDigitIdPlaceholder": "Enter cheat ID from Digitseller",
       "title": "Title",
       "titlePlaceholder": "Enter cheat title",
       "titleRequired": "Please enter title",
@@ -206,6 +240,8 @@
       "redirectUrlRequired": "Redirect URL is required",
       "redirectUrlRequiredForAllPlans": "All pricing plans must have a redirect URL",
       "noPricingPlans": "No pricing plans. Add the first plan.",
+      "planDescription": "Plan Description",
+      "planDescriptionPlaceholder": "Enter plan description",
       "cheatImage": "Cheat Image",
       "uploadImage": "Upload cheat image",
       "imageUploaded": "Image uploaded successfully",
@@ -227,6 +263,15 @@
       "updatedSuccess": "Cheat updated successfully",
       "updatedDescription": "{{name}} has been updated.",
       "updateFailed": "Failed to update cheat",
+      "statusUpdatedSuccess": "Status updated successfully",
+      "statusUpdatedDescription": "Cheat status has been updated.",
+      "statusUpdateFailed": "Failed to update status",
+      "duplicatedSuccess": "Cheat duplicated successfully",
+      "duplicatedDescription": "{{name}} has been duplicated.",
+      "duplicateFailed": "Failed to duplicate cheat",
+      "deletedSuccess": "Cheat deleted successfully",
+      "deletedDescription": "Cheat has been deleted.",
+      "deleteFailed": "Failed to delete cheat",
       "unexpectedError": "An unexpected error occurred"
     }
   },
@@ -281,6 +326,34 @@
       "unexpectedError": "An unexpected error occurred"
     }
   },
+  "carouselCategories": {
+    "title": "Carousel Categories",
+    "subtitle": "Manage carousel categories",
+    "name": "Category Name",
+    "createCategory": "Create Category",
+    "updateCategory": "Update Category",
+    "editCategory": "Edit Category",
+    "searchPlaceholder": "Search by category name...",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "confirmDelete": "Delete Carousel Category",
+    "confirmDeleteMessage": "Are you sure you want to delete \"{{name}}\"?",
+    "form": {
+      "categoryName": "Category Name",
+      "categoryNamePlaceholder": "Enter category name",
+      "categoryNameRequired": "Please enter category name"
+    },
+    "notifications": {
+      "createdSuccess": "Category created successfully",
+      "createdDescription": "{{name}} has been added.",
+      "updatedSuccess": "Category updated successfully",
+      "updatedDescription": "{{name}} has been updated.",
+      "createFailed": "Failed to create category",
+      "updateFailed": "Failed to update category",
+      "deleteFailed": "Failed to delete category",
+      "unexpectedError": "An unexpected error occurred"
+    }
+  },
   "sidebar": {
     "adminPanel": "Admin Panel",
     "home": "Home",
@@ -306,6 +379,8 @@
   "common": {
     "back": "Back",
     "cancel": "Cancel",
+    "save": "Save",
+    "requiredField": "This field is required",
     "total": "Total",
     "showing": "Showing {{from}}-{{to}} of {{total}}",
     "itemsPerPage": "items per page",
@@ -371,6 +446,8 @@
     "supportLink": "Support Link",
     "supportLinkPlaceholder": "https://discord.gg/support",
     "supportLinkInvalid": "Please enter a valid URL",
+    "techSupport": "Technical Support",
+    "contactAdmin": "Contact Admin",
     "footerLinksTab": "Footer Links",
     "footerLinksSettings": "Footer Links Settings"
   },

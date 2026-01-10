@@ -1,97 +1,90 @@
 import styled from "styled-components";
 
 export const Container = styled.div(({ theme }) => ({
-  position: "relative",
+  position: "fixed",
+  bottom: 0,
+  left: 0,
+  right: 0,
+  zIndex: 1000,
   display: "flex",
-  flexDirection: "column",
-  gap: theme.spacing.xl,
-  padding: theme.spacing.xl,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: theme.spacing.lg,
+  padding: `${theme.spacing.lg} ${theme.spacing.xl}`,
   backgroundColor: theme.colors.bg.secondary,
-  borderRadius: theme.borderRadius.lg,
-  border: `1px solid ${theme.colors.border.primary}`,
-  overflow: "hidden",
+  borderTop: `1px solid ${theme.colors.border.primary}`,
+  boxShadow: theme.shadows.lg,
+  width: "100%",
   "@media (max-width: 768px)": {
-    padding: theme.spacing.lg,
-    gap: theme.spacing.lg,
+    flexDirection: "column",
+    alignItems: "stretch",
+    gap: theme.spacing.md,
+    padding: theme.spacing.md,
   },
 }));
 
 export const Header = styled.div(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  gap: theme.spacing.md,
-  textAlign: "center",
+  gap: theme.spacing.sm,
+  flex: 1,
+  textAlign: "left",
   "@media (max-width: 768px)": {
-    textAlign: "left",
+    textAlign: "center",
+    alignItems: "center",
   },
 }));
 
 export const Title = styled.h2(({ theme }) => ({
-  fontSize: 32,
-  fontWeight: 700,
-  lineHeight: 1.2,
+  fontSize: 20,
+  fontWeight: 600,
+  lineHeight: 1.3,
   color: theme.colors.text.primary,
   margin: 0,
-  background: theme.colors.gradient.purpleBlue,
-  backgroundClip: "text",
-  WebkitBackgroundClip: "text",
-  WebkitTextFillColor: "transparent",
   "@media (max-width: 768px)": {
-    fontSize: 28,
-  },
-  "@media (max-width: 480px)": {
-    fontSize: 24,
+    fontSize: 18,
+    textAlign: "center",
   },
 }));
 
 export const Description = styled.p(({ theme }) => ({
   fontSize: 16,
-  lineHeight: 1.6,
+  lineHeight: 1.5,
   color: theme.colors.text.secondary,
   margin: 0,
-  maxWidth: 600,
-  marginLeft: "auto",
-  marginRight: "auto",
   "@media (max-width: 768px)": {
-    marginLeft: 0,
-    marginRight: 0,
+    fontSize: 14,
+    textAlign: "center",
   },
 }));
 
 export const CookieSections = styled.div(({ theme }) => ({
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-  gap: theme.spacing.lg,
-  "@media (max-width: 768px)": {
-    gridTemplateColumns: "1fr",
-  },
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing.sm,
 }));
 
 export const CookieSection = styled.div(({ theme }) => ({
   display: "flex",
-  flexDirection: "column",
-  gap: theme.spacing.md,
-  padding: theme.spacing.lg,
+  alignItems: "center",
+  gap: theme.spacing.sm,
+  padding: theme.spacing.sm,
   backgroundColor: theme.colors.bg.tertiary,
-  borderRadius: theme.borderRadius.md,
+  borderRadius: theme.borderRadius.sm,
   border: `1px solid ${theme.colors.border.secondary}`,
-  transition: `all ${theme.transitions.fast}`,
-  "&:hover": {
-    borderColor: theme.colors.border.accent,
-    boxShadow: theme.shadows.sm,
-  },
 }));
 
 export const SectionIcon = styled.div(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  width: 48,
-  height: 48,
-  borderRadius: theme.borderRadius.full,
+  width: 24,
+  height: 24,
+  borderRadius: theme.borderRadius.sm,
   backgroundColor: theme.colors.accent.purple,
   color: theme.colors.text.primary,
-  fontSize: 20,
+  fontSize: 12,
   fontWeight: 600,
   flexShrink: 0,
 }));
@@ -103,7 +96,7 @@ export const SectionContent = styled.div({
 });
 
 export const SectionTitle = styled.h3(({ theme }) => ({
-  fontSize: 18,
+  fontSize: 14,
   fontWeight: 600,
   lineHeight: 1.3,
   color: theme.colors.text.primary,
@@ -111,71 +104,59 @@ export const SectionTitle = styled.h3(({ theme }) => ({
 }));
 
 export const SectionDescription = styled.p(({ theme }) => ({
-  fontSize: 14,
-  lineHeight: 1.5,
+  fontSize: 12,
+  lineHeight: 1.4,
   color: theme.colors.text.secondary,
   margin: 0,
 }));
 
 export const Actions = styled.div(({ theme }) => ({
   display: "flex",
-  gap: theme.spacing.md,
-  justifyContent: "center",
-  flexWrap: "wrap",
+  gap: theme.spacing.sm,
+  flexShrink: 0,
+  "@media (max-width: 768px)": {
+    justifyContent: "center",
+    width: "100%",
+  },
   "@media (max-width: 480px)": {
     flexDirection: "column",
-    alignItems: "stretch",
+    gap: theme.spacing.xs,
   },
 }));
 
-export const ActionButton = styled.button<{ variant?: "primary" | "secondary" }>(({ theme, variant = "primary" }) => ({
+export const ActionButton = styled.button<{
+  variant?: "primary" | "secondary";
+}>(({ theme, variant = "primary" }) => ({
   padding: `${theme.spacing.sm} ${theme.spacing.lg}`,
-  borderRadius: theme.borderRadius.md,
+  borderRadius: theme.borderRadius.sm,
   fontSize: 14,
   fontWeight: 500,
   cursor: "pointer",
   transition: `all ${theme.transitions.fast}`,
   border: "none",
-  minWidth: 120,
+  minWidth: 100,
   ...(variant === "primary" && {
     backgroundColor: theme.colors.accent.purple,
     color: theme.colors.text.primary,
     "&:hover": {
       backgroundColor: theme.colors.accent.purpleLight,
-      transform: "translateY(-1px)",
-      boxShadow: theme.shadows.sm,
+      opacity: 0.9,
     },
   }),
   ...(variant === "secondary" && {
     backgroundColor: "transparent",
-    color: theme.colors.text.primary,
-    border: `1px solid ${theme.colors.border.primary}`,
+    color: theme.colors.text.secondary,
+    border: `1px solid ${theme.colors.border.secondary}`,
     "&:hover": {
       backgroundColor: theme.colors.bg.hover,
-      borderColor: theme.colors.border.accent,
+      borderColor: theme.colors.border.primary,
     },
   }),
   "&:active": {
-    transform: "translateY(0)",
+    opacity: 0.8,
   },
   "&:disabled": {
-    opacity: 0.6,
+    opacity: 0.5,
     cursor: "not-allowed",
-    transform: "none",
-  },
-}));
-
-export const CookieIcon = styled.div(({ theme }) => ({
-  position: "absolute",
-  top: theme.spacing.lg,
-  right: theme.spacing.lg,
-  width: 24,
-  height: 24,
-  opacity: 0.1,
-  color: theme.colors.accent.purple,
-  fontSize: 24,
-  pointerEvents: "none",
-  "@media (max-width: 768px)": {
-    display: "none",
   },
 }));

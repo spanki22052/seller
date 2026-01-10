@@ -123,12 +123,12 @@ export function CheatHero({ gameId, cheatId, onBuyNowClick }: CheatHeroProps) {
                 : buttonAnimations.tap
             }
           >
-            Статусы читов
+            Статусы DLC
           </Styled.SecondaryButton>
         </Styled.ButtonGroup>
         <Styled.TelegramText>
           Подписывайтесь на <Styled.TelegramLink>Telegram</Styled.TelegramLink>{" "}
-          это важно потому что все статусы и новости о читах именно там
+          это важно потому что все статусы и новости о DLC именно там
         </Styled.TelegramText>
       </Styled.LeftSection>
 

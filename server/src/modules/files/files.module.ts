@@ -10,4 +10,3 @@ import { MinioModule } from "../../shared/minio/minio.module";
   exports: [FilesService],
 })
 export class FilesModule {}
-

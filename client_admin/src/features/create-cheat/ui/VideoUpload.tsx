@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Upload, Button, message } from "antd";
-import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
+import { InboxOutlined, DeleteOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { uploadFile } from "@/entities/file";
@@ -109,27 +109,18 @@ export function VideoUpload({ value, onChange }: VideoUploadProps) {
           </Styled.VideoPreview>
         </motion.div>
       ) : (
-        <Upload
+        <Upload.Dragger
           beforeUpload={handleUpload}
           accept="video/mp4,video/mpeg,.mp4,.mpeg"
           showUploadList={false}
           disabled={uploading}
         >
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Styled.UploadButton
-              htmlType="button"
-              icon={<UploadOutlined />}
-              loading={uploading}
-              disabled={uploading}
-            >
-              {t("cheats.form.uploadVideo") || "Upload Video (MP4/MPEG)"}
-            </Styled.UploadButton>
-          </motion.div>
-        </Upload>
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">{t("cheats.form.uploadVideo") || "Upload Video (MP4/MPEG)"}</p>
+          <p className="ant-upload-hint">{t("cheats.form.dragDropHint", "Перетащите файл сюда или нажмите для выбора")}</p>
+        </Upload.Dragger>
       )}
     </Styled.VideoUploadWrapper>
   );

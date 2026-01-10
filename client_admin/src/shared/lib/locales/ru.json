@@ -17,6 +17,7 @@
     "cheats": "Читы",
     "brands": "Бренды",
     "categories": "Категории",
+    "carouselCategories": "Категории карусели",
     "settings": "Настройки",
     "logout": "Выйти"
   },
@@ -112,6 +113,8 @@
     "editCheat": "Редактировать чит",
     "updateCheat": "Обновить чит",
     "edit": "Редактировать",
+    "duplicate": "Дублировать",
+    "delete": "Удалить",
     "hideForm": "Скрыть форму",
     "name": "Название",
     "game": "Игра",
@@ -130,6 +133,34 @@
     "available": "Доступен",
     "updating": "Обновляется",
     "frozen": "Заморожен",
+    "draft": "Черновик",
+    "confirmDelete": "Подтверждение удаления",
+    "confirmDeleteDescription": "Вы уверены, что хотите удалить \"{{name}}\"?",
+    "changeStatus": {
+      "title": "Изменить статус - {{name}}",
+      "selectStatus": "Выбрать статус",
+      "selectStatusPlaceholder": "Выберите новый статус"
+    },
+    "bulkMode": {
+      "enter": "Массовое изменение",
+      "exit": "Выйти из массового режима",
+      "changeStatus": "Изменить статус"
+    },
+    "bulkChange": {
+      "title": "Массовое изменение статуса",
+      "warningTitle": "Предупреждение",
+      "warningDescription": "Вы собираетесь изменить статус {{count}} читов(а). Это действие нельзя отменить.",
+      "confirmButton": "Изменить статус"
+    },
+    "notifications": {
+      "statusUpdatedSuccess": "Статус успешно обновлен",
+      "statusUpdatedDescription": "Статус чита был изменен",
+      "statusUpdateFailed": "Не удалось обновить статус",
+      "bulkStatusUpdatedSuccess": "Массовое обновление статуса завершено",
+      "bulkStatusUpdatedDescription": "Обновлено {{count}} читов",
+      "bulkStatusUpdateFailed": "Не удалось обновить статусы читов",
+      "unexpectedError": "Произошла непредвиденная ошибка"
+    },
     "form": {
       "game": "Игра",
       "gamePlaceholder": "Выберите игру",
@@ -137,6 +168,9 @@
       "brandName": "Название бренда",
       "brandNamePlaceholder": "Введите название бренда",
       "brandNameRequired": "Пожалуйста, введите название бренда",
+      "selectedBrandNotFound": "Выбранный бренд не найден",
+      "cheatDigitId": "ИД чита в Digitseller",
+      "cheatDigitIdPlaceholder": "Введите ИД чита из Digitseller",
       "title": "Заголовок",
       "titlePlaceholder": "Введите заголовок чита",
       "titleRequired": "Пожалуйста, введите заголовок",
@@ -219,6 +253,8 @@
       "redirectUrlRequired": "Ссылка для редиректа обязательна",
       "redirectUrlRequiredForAllPlans": "Все тарифные планы должны иметь ссылку для редиректа",
       "noPricingPlans": "Нет тарифных планов. Добавьте первый план.",
+      "planDescription": "Описание плана",
+      "planDescriptionPlaceholder": "Введите описание плана",
       "cheatImage": "Изображение чита",
       "uploadImage": "Загрузить изображение чита",
       "imageUploaded": "Изображение успешно загружено",
@@ -240,6 +276,15 @@
       "updatedSuccess": "Чит успешно обновлен",
       "updatedDescription": "{{name}} был обновлен.",
       "updateFailed": "Не удалось обновить чит",
+      "statusUpdatedSuccess": "Статус успешно обновлен",
+      "statusUpdatedDescription": "Статус чита был обновлен.",
+      "statusUpdateFailed": "Не удалось обновить статус",
+      "duplicatedSuccess": "Чит успешно дублирован",
+      "duplicatedDescription": "{{name}} был дублирован.",
+      "duplicateFailed": "Не удалось дублировать чит",
+      "deletedSuccess": "Чит успешно удален",
+      "deletedDescription": "Чит был удален.",
+      "deleteFailed": "Не удалось удалить чит",
       "unexpectedError": "Произошла непредвиденная ошибка"
     }
   },
@@ -294,9 +339,39 @@
       "unexpectedError": "Произошла непредвиденная ошибка"
     }
   },
+  "carouselCategories": {
+    "title": "Категории карусели",
+    "subtitle": "Управление категориями карусели",
+    "name": "Название категории",
+    "createCategory": "Создать категорию",
+    "updateCategory": "Обновить категорию",
+    "editCategory": "Редактировать категорию",
+    "searchPlaceholder": "Поиск по названию категории...",
+    "createdAt": "Дата создания",
+    "updatedAt": "Дата обновления",
+    "confirmDelete": "Удалить категорию карусели",
+    "confirmDeleteMessage": "Вы уверены, что хотите удалить категорию \"{{name}}\"?",
+    "form": {
+      "categoryName": "Название категории",
+      "categoryNamePlaceholder": "Введите название категории",
+      "categoryNameRequired": "Пожалуйста, введите название категории"
+    },
+    "notifications": {
+      "createdSuccess": "Категория успешно создана",
+      "createdDescription": "{{name}} была добавлена.",
+      "updatedSuccess": "Категория успешно обновлена",
+      "updatedDescription": "{{name}} была изменена.",
+      "createFailed": "Не удалось создать категорию",
+      "updateFailed": "Не удалось обновить категорию",
+      "deleteFailed": "Не удалось удалить категорию",
+      "unexpectedError": "Произошла непредвиденная ошибка"
+    }
+  },
   "common": {
     "back": "Назад",
     "cancel": "Отмена",
+    "save": "Сохранить",
+    "requiredField": "Это поле обязательно для заполнения",
     "total": "Всего",
     "showing": "Показаны {{from}}-{{to}} из {{total}}",
     "itemsPerPage": "записей на странице",
@@ -362,6 +437,8 @@
     "supportLink": "Ссылка поддержки",
     "supportLinkPlaceholder": "https://discord.gg/support",
     "supportLinkInvalid": "Введите корректную ссылку",
+    "techSupport": "Техническая поддержка",
+    "contactAdmin": "Связь с администратором",
     "footerLinksTab": "Ссылки футера",
     "footerLinksSettings": "Настройки ссылок футера"
   },

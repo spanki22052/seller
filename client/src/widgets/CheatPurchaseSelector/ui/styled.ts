@@ -133,9 +133,15 @@ export const DropdownIcon = styled.span(({ theme }) => ({
 export const OptionContent = styled.div({
   display: "flex",
   justifyContent: "space-between",
-  alignItems: "center",
+  alignItems: "flex-start",
   width: "100%",
   padding: "8px 0",
+});
+
+export const OptionLeft = styled.div({
+  display: "flex",
+  flexDirection: "column",
+  gap: 0,
 });
 
 export const OptionTitle = styled.span(({ theme }) => ({
@@ -144,22 +150,29 @@ export const OptionTitle = styled.span(({ theme }) => ({
   color: theme.colors.text.primary,
 }));
 
+export const OptionDescription = styled.span(({ theme }) => ({
+  fontSize: 12,
+  fontWeight: 400,
+  color: theme.colors.text.secondary,
+
+  opacity: 0.7,
+}));
+
 export const OptionPrice = styled.span(({ theme }) => ({
   fontSize: 16,
   fontWeight: 700,
-  color: theme.colors.accent.purple,
+  color: "white",
 }));
 
 // Plan Info
 export const PlanInfo = styled.div(({ theme }) => ({
-  background: "rgba(255, 0, 255, 0.05)",
-  border: `1px solid ${theme.colors.accent.purple}33`,
+  background: "transparent",
+  border: "none",
   borderRadius: theme.borderRadius.md,
   padding: theme.spacing.lg,
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  backdropFilter: "blur(10px)",
 
   "@media (max-width: 768px)": {
     flexDirection: "column",
@@ -185,7 +198,17 @@ export const PlanDuration = styled.div(({ theme }) => ({
 export const PlanPrice = styled.div(({ theme }) => ({
   fontSize: 24,
   fontWeight: 800,
-  color: theme.colors.accent.purple,
+  color: "white",
+}));
+
+export const PlanDescription = styled.div(({ theme }) => ({
+  fontSize: 14,
+  fontWeight: 400,
+  color: theme.colors.text.secondary,
+  opacity: 0.8,
+  marginTop: 8,
+  lineHeight: 1.4,
+  textAlign: "center",
 }));
 
 export const PlanDays = styled.div(({ theme }) => ({

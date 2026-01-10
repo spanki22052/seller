@@ -94,7 +94,6 @@ interface GameGridProps {
 export function GameGrid({ categoryId }: GameGridProps) {
   const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const [cardsPerSlide, setCardsPerSlide] = useState(4); // Default for SSR
 
   const { data: gamesWithCheats = [] } = useQuery({
@@ -195,21 +194,10 @@ export function GameGrid({ categoryId }: GameGridProps) {
     setCurrentSlide(current);
   };
 
-  const handleMouseEnter = () => {
-    setIsPaused(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsPaused(false);
-  };
-
   // Keyboard navigation handler
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    // Space or Enter to pause/play
-    if (event.key === " " || event.key === "Enter") {
-      event.preventDefault();
-      setIsPaused(!isPaused);
-    }
+    // Space or Enter to pause/play (Note: pauseOnHover handles mouse interactions)
+    // This keyboard handler could be enhanced to control autoplay if needed
   };
 
   if (isGamesLoading) {
@@ -241,8 +229,6 @@ export function GameGrid({ categoryId }: GameGridProps) {
 
   return (
     <Styled.CarouselContainer
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
       onKeyDown={handleKeyDown}
       tabIndex={0}
       role="region"
@@ -258,10 +244,13 @@ export function GameGrid({ categoryId }: GameGridProps) {
         dots={{ className: "carousel-dots" }}
         // Behavior
         infinite={gameSlides.length > 1}
-        autoplay={false} // Respect user preference, don't auto-play
-        draggable={true} // Enable touch/swipe support
-        swipeToSlide={true} // Allow swiping to any slide
-        touchThreshold={100} // Touch sensitivity
+        autoplay={{
+          dotDuration: true,
+          delay: 5000, // 5 seconds between slides
+        }}
+        pauseOnHover={true} // Pause on mouse hover
+        draggable={false} // Disable touch/swipe support
+        swipeToSlide={false} // Disable swiping to any slide
         // Animation
         speed={500} // Smooth but not too slow
         easing="cubic-bezier(0.4, 0, 0.2, 1)" // Material Design easing
@@ -333,12 +322,15 @@ export function GameGrid({ categoryId }: GameGridProps) {
                   >
                     <Styled.GameImageWrapper
                       $backgroundColor={game.color || "#1a1a1a"}
+                      onContextMenu={(e) => e.preventDefault()} // Prevent right-click on wrapper
                     >
                       {game.image && (
                         <Styled.GameImage
                           src={game.image}
                           alt={`${game.name} game cover`}
                           loading="lazy"
+                          onContextMenu={(e) => e.preventDefault()} // Prevent right-click context menu
+                          onDragStart={(e) => e.preventDefault()} // Prevent dragging
                           onError={(e) => {
                             const target = e.currentTarget;
                             target.style.display = "none";

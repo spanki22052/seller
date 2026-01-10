@@ -18,6 +18,7 @@ export enum CheatStatus {
   AVAILABLE = "AVAILABLE",
   UPDATING = "UPDATING",
   FROZEN = "FROZEN",
+  DRAFT = "DRAFT",
 }
 
 export class CreateCheatDto {
@@ -45,6 +46,15 @@ export class CreateCheatDto {
   @IsString()
   @IsNotEmpty()
   brandId!: string;
+
+  @ApiProperty({
+    description: "Cheat ID in Digitseller",
+    example: "123456",
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  cheatDigitId?: string;
 
   @ApiProperty({
     description: "Cheat description",
@@ -260,4 +270,3 @@ export class CreateCheatDto {
   @IsOptional()
   status?: CheatStatus;
 }
-

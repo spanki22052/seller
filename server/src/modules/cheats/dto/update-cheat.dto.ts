@@ -1,12 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import {
-  IsString,
-  IsOptional,
-  IsBoolean,
-  IsArray,
-  ValidateNested,
-  IsEnum,
-} from "class-validator";
+import { IsString, IsOptional, IsBoolean, IsArray, ValidateNested, IsEnum } from "class-validator";
 import { Type } from "class-transformer";
 import { CheatPriceDto } from "./cheat-price.dto";
 import { BreadcrumbItemDto } from "./breadcrumb-item.dto";
@@ -41,6 +34,15 @@ export class UpdateCheatDto {
   @IsString()
   @IsOptional()
   brandId?: string;
+
+  @ApiProperty({
+    description: "Cheat ID in Digitseller",
+    example: "123456",
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  cheatDigitId?: string;
 
   @ApiProperty({
     description: "Cheat description",
@@ -261,4 +263,3 @@ export class UpdateCheatDto {
   @IsOptional()
   status?: CheatStatus;
 }
-

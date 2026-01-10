@@ -130,7 +130,9 @@ export const WarningCard = styled.div<{
   overflow: hidden;
   transition: all ${({ theme }) => theme.transitions.normal};
   cursor: pointer;
-  animation: ${css`${float} 6s ease-in-out infinite`};
+  animation: ${css`
+    ${float} 6s ease-in-out infinite
+  `};
 
   ${({ type, theme }) => {
     const colors = {
@@ -243,32 +245,53 @@ export const FAQItem = styled.div(({ theme }) => ({
   border: `1px solid ${theme.colors.border.primary}`,
   transition: `all ${theme.transitions.normal}`,
 
-  "&:hover": {
-    borderColor: theme.colors.border.accent,
-    boxShadow: theme.shadows.glow,
-    transform: "translateY(-2px)",
-  },
-
   "@media (max-width: 768px)": {
     padding: theme.spacing.lg,
   },
 }));
 
-export const FAQQuestion = styled.h3(({ theme }) => ({
-  fontSize: "1.25rem",
-  fontWeight: 600,
-  color: theme.colors.text.primary,
-  marginBottom: theme.spacing.md,
-  lineHeight: 1.4,
-  background: theme.colors.gradient.purpleBlue,
-  backgroundClip: "text",
-  WebkitBackgroundClip: "text",
-  WebkitTextFillColor: "transparent",
-}));
+export const FAQQuestion = styled.h3<{ $isExpanded?: boolean }>(
+  ({ theme, $isExpanded }) => ({
+    fontSize: "1.25rem",
+    fontWeight: 600,
+    color: theme.colors.text.primary,
+    marginBottom: $isExpanded ? theme.spacing.md : 0,
+    lineHeight: 1.4,
+    background: theme.colors.gradient.purpleBlue,
+    backgroundClip: "text",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    transition: `all ${theme.transitions.normal}`,
+
+    "&:hover": {
+      opacity: 0.8,
+    },
+  })
+);
+
+export const ExpandIcon = styled.span<{ $isExpanded?: boolean }>(
+  ({ theme, $isExpanded }) => ({
+    fontSize: "0.8rem",
+    color: theme.colors.text.primary,
+    WebkitTextFillColor: theme.colors.text.primary,
+    transition: "transform 0.3s ease",
+    transform: $isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+    marginLeft: "auto",
+    flexShrink: 0,
+    position: "relative",
+    zIndex: 1,
+  })
+);
 
 export const FAQAnswer = styled.p(({ theme }) => ({
   fontSize: "1rem",
   color: theme.colors.text.secondary,
   lineHeight: 1.7,
   margin: 0,
+  paddingTop: theme.spacing.sm,
+  borderTop: `1px solid ${theme.colors.border.secondary}`,
 }));

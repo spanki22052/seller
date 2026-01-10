@@ -5,6 +5,11 @@ export interface FooterLink {
   href: string;
 }
 
+export interface SupportLink {
+  label: string;
+  href: string;
+}
+
 export interface Settings {
   id: string;
   howToBuyVideoUrl?: string;
@@ -13,7 +18,7 @@ export interface Settings {
   gameIdsForCarousel?: string[];
   categoryIdForCarousel?: string;
   footerLinks?: FooterLink[];
-  supportLink?: string;
+  supportLinks?: SupportLink[];
   createdAt: string;
   updatedAt: string;
 }

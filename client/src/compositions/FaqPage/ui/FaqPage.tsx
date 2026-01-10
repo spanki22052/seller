@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import { Sidebar } from "@/widgets/Sidebar";
@@ -41,6 +41,21 @@ export function FaqPage() {
     queryFn: getActiveFaqs,
   });
 
+  // State for tracking expanded FAQ items, first item is expanded by default
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(() => {
+    return faqs.length > 0 ? new Set([faqs[0].id.toString()]) : new Set();
+  });
+
+  const toggleExpand = (faqId: string) => {
+    const newExpanded = new Set(expandedItems);
+    if (newExpanded.has(faqId)) {
+      newExpanded.delete(faqId);
+    } else {
+      newExpanded.add(faqId);
+    }
+    setExpandedItems(newExpanded);
+  };
+
   const containerVariants = {
     hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 },
     visible: {
@@ -76,25 +91,62 @@ export function FaqPage() {
         animate="visible"
       >
         <Styled.MainContent>
-          <motion.div variants={itemVariants}>
-            <InfoBanner />
-          </motion.div>
-
           <Styled.FAQSection>
             {isLoading ? (
               <div>Загрузка...</div>
             ) : (
-              faqs.map((faq) => (
-                <motion.div key={faq.id} variants={itemVariants}>
-                  <Styled.FAQItem>
-                    <Styled.FAQQuestion>{faq.question}</Styled.FAQQuestion>
-                    <Styled.FAQAnswer>{faq.answer}</Styled.FAQAnswer>
+              faqs.map((faq) => {
+                const faqId = faq.id.toString();
+                const isExpanded = expandedItems.has(faqId);
+
+                return (
+                  <Styled.FAQItem key={faq.id}>
+                    <Styled.FAQQuestion
+                      onClick={() => toggleExpand(faqId)}
+                      $isExpanded={isExpanded}
+                    >
+                      {faq.question}
+                      <Styled.ExpandIcon $isExpanded={isExpanded}>
+                        ▼
+                      </Styled.ExpandIcon>
+                    </Styled.FAQQuestion>
+                    <AnimatePresence>
+                      {isExpanded && (
+                        <motion.div
+                          initial={
+                            prefersReducedMotion
+                              ? { opacity: 0 }
+                              : { opacity: 0, height: 0 }
+                          }
+                          animate={
+                            prefersReducedMotion
+                              ? { opacity: 1 }
+                              : { opacity: 1, height: "auto" }
+                          }
+                          exit={
+                            prefersReducedMotion
+                              ? { opacity: 0 }
+                              : { opacity: 0, height: 0 }
+                          }
+                          transition={{
+                            duration: prefersReducedMotion ? 0 : 0.3,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
+                          style={{ overflow: "hidden" }}
+                        >
+                          <Styled.FAQAnswer>{faq.answer}</Styled.FAQAnswer>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </Styled.FAQItem>
-                </motion.div>
-              ))
+                );
+              })
             )}
           </Styled.FAQSection>
 
+          <motion.div variants={itemVariants}>
+            <InfoBanner />
+          </motion.div>
           <Footer />
         </Styled.MainContent>
       </Styled.Container>

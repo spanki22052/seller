@@ -7,7 +7,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SearchOutlined, LoadingOutlined } from "@ant-design/icons";
 import { useDebounce } from "@/shared/lib/hooks/useDebounce";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
-import { searchGames, gameKeys, type GameWithCheats, type Cheat } from "@/entities/game";
+import {
+  searchGames,
+  gameKeys,
+  type GameWithCheats,
+  type Cheat,
+} from "@/entities/game";
 import * as Styled from "./styled";
 
 export function SearchBar() {
@@ -28,7 +33,11 @@ export function SearchBar() {
 
   // Flatten results: games first, then cheats
   const flatResults = React.useMemo(() => {
-    const results: Array<{ type: "game" | "cheat"; data: GameWithCheats | Cheat; gameId?: string }> = [];
+    const results: Array<{
+      type: "game" | "cheat";
+      data: GameWithCheats | Cheat;
+      gameId?: string;
+    }> = [];
 
     searchResults.forEach((game: GameWithCheats) => {
       // Add game
@@ -82,12 +91,17 @@ export function SearchBar() {
     });
   }, [debouncedSearchQuery, flatResults, searchResults]);
 
-  useEffect(() => {
-    setIsDropdownOpen(filteredResults.length > 0 && debouncedSearchQuery.trim().length > 0);
-    setFocusedIndex(-1);
-  }, [filteredResults.length, debouncedSearchQuery]);
+  React.useEffect(() => {
+    // Only open the dropdown if there are results and the query isn't empty
+    const shouldOpen =
+      filteredResults.length > 0 && debouncedSearchQuery.trim().length > 0;
+    setIsDropdownOpen(shouldOpen);
 
-  useEffect(() => {
+    // Focus the first result if dropdown is open, otherwise reset
+    setFocusedIndex(shouldOpen ? 0 : -1);
+  }, [filteredResults, debouncedSearchQuery]);
+
+  React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
@@ -120,7 +134,7 @@ export function SearchBar() {
     setSearchQuery(e.target.value);
   };
 
-  const handleItemClick = (item: typeof filteredResults[0]) => {
+  const handleItemClick = (item: (typeof filteredResults)[0]) => {
     if (item.type === "game") {
       const game = item.data as GameWithCheats;
       router.push(`/game/${game.id}`);
@@ -194,7 +208,7 @@ export function SearchBar() {
         <Styled.SearchInput
           ref={searchInputRef}
           type="text"
-          placeholder="Поиск игр и читов..."
+          placeholder="Поиск игр и DLC..."
           value={searchQuery}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
@@ -222,9 +236,7 @@ export function SearchBar() {
               const cheat = !isGame ? (item.data as Cheat) : null;
 
               // Get actual cheat count from the game data
-              const cheatsCount = isGame
-                ? game!.cheats.length
-                : 0;
+              const cheatsCount = isGame ? game!.cheats.length : 0;
 
               return (
                 <Styled.DropdownItem
@@ -243,7 +255,7 @@ export function SearchBar() {
                       <Styled.ItemContent>
                         <Styled.ItemTitle>{game!.name}</Styled.ItemTitle>
                         <Styled.ItemSubtitle>
-                          {cheatsCount} {cheatsCount === 1 ? "чит" : "читов"}
+                          {cheatsCount} {cheatsCount === 1 ? "DLC" : "DLC"}
                         </Styled.ItemSubtitle>
                       </Styled.ItemContent>
                     </>
@@ -265,4 +277,3 @@ export function SearchBar() {
     </Styled.SearchBarContainer>
   );
 }
-

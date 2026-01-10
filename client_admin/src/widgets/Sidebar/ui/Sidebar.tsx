@@ -13,6 +13,7 @@ import {
   TagOutlined,
   HomeOutlined,
   QuestionCircleOutlined,
+  PictureOutlined,
 } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { useSidebar } from "../contexts/SidebarContext";
@@ -63,6 +64,11 @@ export function Sidebar() {
       key: "/categories",
       icon: <TagOutlined />,
       label: t("sidebar.categories"),
+    },
+    {
+      key: "/carousel-categories",
+      icon: <PictureOutlined />,
+      label: t("sidebar.carouselCategories"),
     },
     {
       key: "/settings",
