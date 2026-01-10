@@ -1,4 +1,4 @@
-.PHONY: help install dev build up down logs clean migrate generate seed dev-up prod-up prod-down deploy-prod env-dev env-prod
+.PHONY: help install dev build up down logs clean migrate generate seed backup backup-postgres backup-minio dev-up prod-up prod-down deploy-prod env-dev env-prod
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -23,6 +23,12 @@ help: ## Show this help message
 	@echo '  generate         Generate Prisma Client'
 	@echo '  seed             Seed database'
 	@echo '  studio           Open Prisma Studio'
+	@echo ''
+	@echo 'Backup:'
+	@echo '  backup           Create full backup (PostgreSQL + MinIO)'
+	@echo '  backup-postgres  Backup only PostgreSQL database'
+	@echo '  backup-minio     Backup only MinIO storage'
+	@echo '  backup-dry-run   Show what backup would do without creating files'
 	@echo ''
 	@echo 'Docker:'
 	@echo '  up               Start all services'
@@ -116,6 +122,23 @@ seed: ## Seed database (if seed script exists)
 
 studio: ## Open Prisma Studio
 	npm run prisma:studio
+
+# Backup commands
+backup: ## Create full backup (PostgreSQL + MinIO)
+	@echo "Creating full backup..."
+	./backup.sh
+
+backup-postgres: ## Backup only PostgreSQL database
+	@echo "Creating PostgreSQL backup..."
+	./backup.sh --postgres-only
+
+backup-minio: ## Backup only MinIO storage
+	@echo "Creating MinIO backup..."
+	./backup.sh --minio-only
+
+backup-dry-run: ## Show what backup would do without actually creating backups
+	@echo "Dry run backup..."
+	./backup.sh --dry-run
 
 # Aliases
 dc-up: up
