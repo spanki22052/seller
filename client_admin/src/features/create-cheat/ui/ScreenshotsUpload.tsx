@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Upload, message } from "antd";
-import { PlusOutlined, InboxOutlined } from "@ant-design/icons";
+import { InboxOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import type { UploadFile, UploadProps } from "antd";

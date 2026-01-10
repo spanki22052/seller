@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Form, Input, Button, Upload, message, ColorPicker, Select } from "antd";
-import { UploadOutlined, InboxOutlined } from "@ant-design/icons";
+import { InboxOutlined } from "@ant-design/icons";
 import type { UploadFile, UploadProps } from "antd";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
