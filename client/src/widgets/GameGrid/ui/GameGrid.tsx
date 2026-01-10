@@ -246,8 +246,8 @@ export function GameGrid({ categoryId }: GameGridProps) {
         infinite={gameSlides.length > 1}
         autoplay={{
           dotDuration: true,
-          delay: 5000, // 5 seconds between slides
         }}
+        autoplaySpeed={5000} // 5 seconds between slides
         pauseOnHover={true} // Pause on mouse hover
         draggable={false} // Disable touch/swipe support
         swipeToSlide={false} // Disable swiping to any slide

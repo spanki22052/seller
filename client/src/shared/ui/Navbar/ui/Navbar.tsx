@@ -47,12 +47,12 @@ export function Navbar({ links = defaultLinks, logo }: NavbarProps) {
       if (link.id === "cheats") {
         return {
           ...link,
-          href: settings?.supportLink || "/support",
+          href: settings?.supportLinks?.[0]?.href || "/support",
         };
       }
       return link;
     });
-  }, [settings?.supportLink]);
+  }, [settings?.supportLinks]);
 
   const finalLinks = links.map((link) => {
     if (link.id === "cheats") {

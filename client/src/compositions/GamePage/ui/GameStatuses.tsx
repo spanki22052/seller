@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { CheckCircleOutlined, SyncOutlined, StopOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, SyncOutlined, StopOutlined, EditOutlined } from "@ant-design/icons";
 import { CheatStatus } from "@/entities/cheat";
 import { Cheat } from "@/entities/game";
 import * as Styled from "./styled";
@@ -35,6 +35,14 @@ const statusConfig = {
     borderColor: "#6b7280",
     glowColor: "rgba(107, 114, 128, 0.3)",
   },
+  DRAFT: {
+    label: "Черновик",
+    icon: EditOutlined,
+    color: "#f59e0b",
+    bgColor: "linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%)",
+    borderColor: "#f59e0b",
+    glowColor: "rgba(245, 158, 11, 0.3)",
+  },
 } as const;
 
 export function GameStatuses({ cheats }: GameStatusesProps) {
@@ -43,6 +51,7 @@ export function GameStatuses({ cheats }: GameStatusesProps) {
       AVAILABLE: 0,
       UPDATING: 0,
       FROZEN: 0,
+      DRAFT: 0,
     };
 
     cheats.forEach((cheat) => {

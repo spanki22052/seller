@@ -25,10 +25,9 @@ export function useFilteredGames({ categoryId }: UseFilteredGamesProps) {
 
     // First, filter by carousel games if configured
     if (settings?.gameIdsForCarousel) {
-      // Extract all game IDs from carousel categories
-      const carouselGameIds = settings.gameIdsForCarousel.flatMap(category => category.games);
+      // Filter games that are configured for carousel
       filtered = filtered.filter((game) =>
-        carouselGameIds.includes(game.id)
+        settings.gameIdsForCarousel!.includes(game.id)
       );
     }
 
