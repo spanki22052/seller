@@ -5,3 +5,5 @@ export { FooterLinksTab } from "./FooterLinksTab";
 export { SupportLinkTab } from "./SupportLinkTab";
 export { SupportLinksTab } from "./SupportLinksTab";
 export { AdminSettingsTab } from "./AdminSettingsTab";
+export { IconTab } from "./IconTab";
+export { MainPageTab } from "./MainPageTab";

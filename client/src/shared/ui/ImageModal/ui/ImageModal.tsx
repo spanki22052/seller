@@ -94,6 +94,7 @@ export function ImageModal({
               <img
                 src={imageSrc}
                 alt={imageAlt}
+                onContextMenu={(e) => e.preventDefault()}
                 style={{
                   width: "100%",
                   height: "100%",

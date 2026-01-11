@@ -2,6 +2,11 @@ export type PriceCurrency = "RUB" | "USD";
 
 export type CheatStatus = "AVAILABLE" | "UPDATING" | "FROZEN" | "DRAFT";
 
+export interface ReviewDigitalSeller {
+  sellerId: string;
+  productId: string;
+}
+
 export interface CheatPrice {
   amount: number | null;
   currency: PriceCurrency;
@@ -39,6 +44,7 @@ export interface Cheat {
   title: string;
   description?: string;
   descriptionMarkdown?: string;
+  seoText?: string;
   circularText?: string;
   circularImage?: string;
   image?: string;
@@ -60,6 +66,7 @@ export interface Cheat {
   isComingSoon?: boolean;
   status: CheatStatus;
   cheatDigitId?: string;
+  reviewDigitalSeller?: ReviewDigitalSeller[];
   createdAt: string;
   updatedAt: string;
 }

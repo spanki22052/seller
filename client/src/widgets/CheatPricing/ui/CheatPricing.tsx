@@ -101,6 +101,7 @@ export function CheatPricing({ cheatId }: CheatPricingProps) {
                   <img
                     src={plan.image || cheat.image}
                     alt={plan.duration}
+                    onContextMenu={(e) => e.preventDefault()}
                     style={{
                       width: "100%",
                       height: "100%",

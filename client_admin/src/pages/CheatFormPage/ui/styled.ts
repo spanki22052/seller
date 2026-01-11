@@ -5,7 +5,7 @@ import { MEDIA_QUERIES, SPACING, CONTAINER_WIDTHS } from "@/shared/lib/responsiv
 export const Container = styled.div({
   padding: SPACING.lg,
   paddingBottom: 120, // Space for sticky footer
-  maxWidth: CONTAINER_WIDTHS.xl,
+  maxWidth: 1400,
   margin: "0 auto",
   minHeight: "100vh",
   position: "relative",
@@ -13,7 +13,7 @@ export const Container = styled.div({
   [MEDIA_QUERIES.md]: {
     padding: SPACING.md,
     paddingBottom: 100,
-    maxWidth: "100%",
+    maxWidth: 1400,
   },
   [MEDIA_QUERIES.xs]: {
     padding: SPACING.sm,

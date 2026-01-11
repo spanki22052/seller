@@ -9,13 +9,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import { useDebounce } from "@/shared/lib/hooks/useDebounce";
-import { useImageModalState } from "@/shared/contexts/ImageModalContext";
 import {
   searchGames,
   gameKeys,
   type GameWithCheats,
   type Cheat,
 } from "@/entities/game";
+import { useSettings } from "@/entities/settings";
+import { SettingsIcon } from "@/shared/assets/icons";
 import chitarenaLogo from "@/shared/assets/images/chitarena-full-logo.png";
 import { SIDEBAR_WIDTH_OPEN } from "../lib/constants";
 import { MenuItem } from "../model/types";
@@ -34,8 +35,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [openDropdowns, setOpenDropdowns] = useState<Set<string>>(new Set());
   const prefersReducedMotion = useReducedMotion();
-  const { isImageModalOpen } = useImageModalState();
   const { menuItems: allMenuItems, isLoading: isLoadingAll } = useSidebarData();
+  const { data: settings } = useSettings();
 
   // Backend search query
   const { data: searchResults = [], isLoading: isLoadingSearch } = useQuery({
@@ -358,13 +359,24 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     whileHover={prefersReducedMotion ? {} : { scale: 1.02 }}
                     whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
                   >
-                    <Image
-                      src={chitarenaLogo}
-                      alt="CHITARENA"
-                      width={100}
-                      height={30}
-                      priority
-                    />
+                    {settings?.iconUrl ? (
+                      <img
+                        src={settings.iconUrl}
+                        alt="Settings Icon"
+                        onContextMenu={(e) => e.preventDefault()}
+                      />
+                    ) : (
+                      <>
+                        <Image
+                          src={chitarenaLogo}
+                          alt="CHITARENA"
+                          width={100}
+                          height={30}
+                          priority
+                          onContextMenu={(e) => e.preventDefault()}
+                        />
+                      </>
+                    )}
                   </Styled.LogoWrapper>
                 </motion.div>
 

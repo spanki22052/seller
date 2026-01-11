@@ -101,6 +101,7 @@ export function AccountBanner() {
             alt="Red lines"
             width={800}
             height={600}
+            onContextMenu={(e) => e.preventDefault()}
             style={{
               width: "100%",
               height: "100%",
@@ -116,6 +117,7 @@ export function AccountBanner() {
                 alt={platform.name}
                 width={60}
                 height={60}
+                onContextMenu={(e) => e.preventDefault()}
                 style={{
                   width: "100%",
                   height: "100%",
@@ -151,7 +153,7 @@ export function AccountBanner() {
         animate="visible"
       >
         <Styled.SkeletonImageWrapper>
-          <Image src={skeletonImage} alt="Skeleton" priority />
+          <Image src={skeletonImage} alt="Skeleton" priority onContextMenu={(e) => e.preventDefault()} />
         </Styled.SkeletonImageWrapper>
       </Styled.RightSection>
     </Styled.Container>

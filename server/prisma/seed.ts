@@ -64,6 +64,56 @@ async function main() {
     });
     console.log(`FAQ created: ${createdFaq.question}`);
   }
+
+  // Create sample SEO pages
+  const seoPages = [
+    {
+      pageType: "HOME" as const,
+      keywords: [
+        "купить читы",
+        "лучшие читы для игр",
+        "анти-чит система",
+        "гейминговые читы",
+        "читы онлайн",
+      ],
+    },
+    {
+      pageType: "GAMES" as const,
+      keywords: [
+        "читы для игр",
+        "купить читы онлайн",
+        "лучшие игровые читы",
+        "анти-чит читы",
+        "читы для популярных игр",
+      ],
+    },
+    {
+      pageType: "FAQ" as const,
+      keywords: [
+        "вопросы и ответы",
+        "FAQ по читам",
+        "помощь покупателям",
+        "техническая поддержка",
+        "условия возврата",
+      ],
+    },
+  ];
+
+  for (const seoPage of seoPages) {
+    const createdSeoPage = await prisma.seoPage.upsert({
+      where: {
+        pageType: seoPage.pageType as any,
+      },
+      update: {
+        keywords: seoPage.keywords,
+      },
+      create: {
+        pageType: seoPage.pageType as any,
+        keywords: seoPage.keywords,
+      },
+    });
+    console.log(`SEO page created/updated: ${createdSeoPage.pageType}`);
+  }
 }
 
 main()

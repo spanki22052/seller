@@ -7,6 +7,7 @@ export interface Game {
   icon?: string;
   categoryId?: string;
   categoryName?: string;
+  seoText?: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -13,6 +13,7 @@ import { DashboardModule } from "./modules/dashboard/dashboard.module";
 import { SettingsModule } from "./modules/settings/settings.module";
 import { HomeLinksModule } from "./modules/home-links/home-links.module";
 import { FaqsModule } from "./modules/faqs/faqs.module";
+import { SeoPagesModule } from "./modules/seo-pages/seo-pages.module";
 import { HealthModule } from "./modules/health/health.module";
 
 @Module({
@@ -34,6 +35,7 @@ import { HealthModule } from "./modules/health/health.module";
     SettingsModule,
     HomeLinksModule,
     FaqsModule,
+    SeoPagesModule,
     HealthModule,
   ],
 })

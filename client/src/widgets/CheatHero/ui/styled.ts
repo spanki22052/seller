@@ -19,7 +19,7 @@ export const Container = styled.div(({ theme }) => ({
   gap: theme.spacing.xl,
   width: "100%",
   minHeight: 600,
-  padding: `${theme.spacing.xl} 0`,
+  paddingTop: theme.spacing.xl,
 
   "@media (max-width: 1024px)": {
     gridTemplateColumns: "1fr",
@@ -136,7 +136,7 @@ export const Title = styled.h1(({ theme }) => ({
 }));
 
 export const Description = styled.p(({ theme }) => ({
-  fontSize: 32,
+  fontSize: 24,
   fontWeight: 400,
   color: theme.colors.text.primary,
   lineHeight: 1.6,
@@ -367,6 +367,192 @@ export const TelegramLink = styled.span(({ theme }) => ({
 
   "&:hover": {
     color: theme.colors.accent.purpleLight,
+  },
+}));
+
+export const ScreenshotsGrid = styled.div(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "repeat(3, 1fr)",
+  gap: theme.spacing.sm,
+  width: "100%",
+  marginBottom: theme.spacing.lg,
+
+  "@media (max-width: 768px)": {
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: theme.spacing.xs,
+  },
+}));
+
+export const ScreenshotWrapper = styled.div({
+  position: "relative",
+  cursor: "pointer",
+  overflow: "hidden",
+  borderRadius: "16px",
+
+  "@media (max-width: 768px)": {
+    borderRadius: "12px",
+  },
+});
+
+export const ImageContainer = styled.div(({ theme }) => ({
+  position: "relative",
+  width: "100%",
+  paddingBottom: "56.25%", // 16:9 aspect ratio for smaller screenshots
+  overflow: "hidden",
+  backgroundColor: "#1a1a1a",
+  borderRadius: "16px",
+
+  "@media (max-width: 768px)": {
+    borderRadius: "12px",
+  },
+
+  "& img": {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+  },
+}));
+
+export const Watermark = styled.div(({ theme }) => ({
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  fontSize: 32,
+  fontWeight: 800,
+  color: "rgba(139, 92, 246, 0.2)",
+  textTransform: "uppercase",
+  letterSpacing: 2,
+  pointerEvents: "none",
+  zIndex: 1,
+  userSelect: "none",
+
+  "@media (max-width: 768px)": {
+    fontSize: 24,
+  },
+}));
+
+export const VideoWrapper = styled.div({
+  position: "relative",
+  cursor: "pointer",
+  overflow: "hidden",
+  borderRadius: "16px",
+
+  "@media (max-width: 768px)": {
+    borderRadius: "12px",
+  },
+});
+
+export const VideoContainer = styled.div(({ theme }) => ({
+  position: "relative",
+  width: "100%",
+  paddingBottom: "56.25%", // 16:9 aspect ratio
+  overflow: "hidden",
+  backgroundColor: "#1a1a1a",
+  borderRadius: "16px",
+
+  "@media (max-width: 768px)": {
+    borderRadius: "12px",
+  },
+
+  "& img": {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+  },
+}));
+
+export const VideoIcon = styled.div({
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  zIndex: 2,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: 60,
+  height: 60,
+  borderRadius: "50%",
+  backgroundColor: "rgba(255, 0, 255, 0.8)",
+  boxShadow: "0 0 20px rgba(255, 0, 255, 0.5)",
+  transition: "all 0.3s ease",
+
+  "&:hover": {
+    backgroundColor: "rgba(255, 0, 255, 0.9)",
+    boxShadow: "0 0 30px rgba(255, 0, 255, 0.7)",
+    transform: "translate(-50%, -50%) scale(1.1)",
+  },
+});
+
+export const PlayIcon = styled.span({
+  color: "white",
+  fontSize: 24,
+  fontWeight: "bold",
+  marginLeft: 4, // Center the play symbol
+});
+
+export const VideoWatermark = styled.div(({ theme }) => ({
+  position: "absolute",
+  top: "10px",
+  right: "10px",
+  fontSize: 12,
+  fontWeight: 800,
+  color: "rgba(255, 255, 255, 0.8)",
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  padding: "4px 8px",
+  borderRadius: "4px",
+  textTransform: "uppercase",
+  letterSpacing: 1,
+  pointerEvents: "none",
+  zIndex: 1,
+  userSelect: "none",
+}));
+
+export const VideoModalOverlay = styled.div({
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  backgroundColor: "rgba(0, 0, 0, 0.8)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 1000,
+  padding: "20px",
+});
+
+export const VideoModalContent = styled.div(({ theme }) => ({
+  position: "relative",
+  maxWidth: "90vw",
+  maxHeight: "90vh",
+  width: "800px",
+  backgroundColor: "#000",
+  borderRadius: theme.borderRadius.lg,
+  overflow: "hidden",
+  boxShadow: "0 20px 60px rgba(0, 0, 0, 0.5)",
+}));
+
+export const VideoModalClose = styled.button(({ theme }) => ({
+  position: "absolute",
+  top: "-50px",
+  right: 0,
+  background: "none",
+  border: "none",
+  color: "white",
+  fontSize: 24,
+  cursor: "pointer",
+  padding: "8px",
+  borderRadius: theme.borderRadius.md,
+  transition: "background-color 0.3s ease",
+
+  "&:hover": {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
   },
 }));
 

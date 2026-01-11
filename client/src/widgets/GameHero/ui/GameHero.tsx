@@ -2,22 +2,11 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
-import dynamic from "next/dynamic";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import { GameWithCheats } from "@/entities/game";
 import cheatarenaLogo from "@/shared/assets/images/cheatarena.png";
 import * as Styled from "./styled";
-
-const GradientSmoke = dynamic(
-  () =>
-    import("@/shared/ui/GradientSmoke").then((mod) => ({
-      default: mod.GradientSmoke,
-    })),
-  {
-    ssr: false,
-  }
-);
 
 interface GameHeroProps {
   gameData: GameWithCheats;
@@ -28,8 +17,6 @@ export function GameHero({ gameData }: GameHeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, { stiffness: 150, damping: 15 });
-  const springY = useSpring(mouseY, { stiffness: 150, damping: 15 });
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   // Detect touch device to disable mouse tracking
@@ -134,6 +121,7 @@ export function GameHero({ gameData }: GameHeroProps) {
             width={180}
             priority
             sizes="(max-width: 480px) 140px, (max-width: 768px) 160px, 180px"
+            onContextMenu={(e) => e.preventDefault()}
             style={{
               width: "100%",
               height: "auto",
@@ -144,7 +132,7 @@ export function GameHero({ gameData }: GameHeroProps) {
         <Styled.Title>CHEAT FOR {gameData.name.toUpperCase()}</Styled.Title>
         <Styled.Description>
           Врывайтесь в игру заряженным по полной. Перед покупкой внимательно
-          читайте требования к DLC, следите за нашим сайтов чтоб быть одним из
+          изучайте требования к DLC, следите за нашим сайтов чтоб быть одним из
           первых играя с новыми приватными DLC!
         </Styled.Description>
         <Styled.ButtonGroup>
@@ -170,6 +158,7 @@ export function GameHero({ gameData }: GameHeroProps) {
               <img
                 src={gameData.backgroundImage}
                 alt={`${gameData.name} Background`}
+                onContextMenu={(e) => e.preventDefault()}
                 style={{
                   width: "100%",
                   height: "100%",
@@ -180,11 +169,6 @@ export function GameHero({ gameData }: GameHeroProps) {
             </Styled.ImageWrapper>
           ) : null}
         </Styled.CharacterWrapper>
-        <GradientSmoke
-          mouseX={springX}
-          mouseY={springY}
-          prefersReducedMotion={prefersReducedMotion}
-        />
       </Styled.RightSection>
     </Styled.Container>
   );

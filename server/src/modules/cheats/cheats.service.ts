@@ -39,10 +39,7 @@ export class CheatsService {
       data: {
         gameId: createCheatDto.gameId,
         brandId: createCheatDto.brandId,
-        cheatDigitId:
-          createCheatDto.cheatDigitId && createCheatDto.cheatDigitId.trim() !== ""
-            ? createCheatDto.cheatDigitId
-            : null,
+        reviewDigitalSeller: createCheatDto.reviewDigitalSeller as any,
         name: cheatName,
         description:
           createCheatDto.description && createCheatDto.description.trim() !== ""
@@ -128,7 +125,10 @@ export class CheatsService {
   async findAll(): Promise<CheatResponseDto[]> {
     const cheats = await this.prisma.cheat.findMany({
       where: {},
-      orderBy: { createdAt: "desc" },
+      orderBy: [
+        { orderId: "asc" },
+        { createdAt: "desc" }
+      ],
       include: {
         game: {
           select: {
@@ -205,11 +205,8 @@ export class CheatsService {
 
     if (updateCheatDto.gameId) updateData.gameId = updateCheatDto.gameId;
     if (updateCheatDto.brandId) updateData.brandId = updateCheatDto.brandId;
-    if (updateCheatDto.cheatDigitId !== undefined) {
-      updateData.cheatDigitId =
-        updateCheatDto.cheatDigitId && updateCheatDto.cheatDigitId.trim() !== ""
-          ? updateCheatDto.cheatDigitId
-          : null;
+    if (updateCheatDto.reviewDigitalSeller !== undefined) {
+      updateData.reviewDigitalSeller = updateCheatDto.reviewDigitalSeller as any;
     }
     if (updateCheatDto.name) updateData.name = updateCheatDto.name;
     if (updateCheatDto.description !== undefined) {
@@ -222,6 +219,12 @@ export class CheatsService {
       updateData.descriptionMarkdown =
         updateCheatDto.descriptionMarkdown && updateCheatDto.descriptionMarkdown.trim() !== ""
           ? updateCheatDto.descriptionMarkdown
+          : null;
+    }
+    if (updateCheatDto.seoText !== undefined) {
+      updateData.seoText =
+        updateCheatDto.seoText && updateCheatDto.seoText.trim() !== ""
+          ? updateCheatDto.seoText
           : null;
     }
     if (updateCheatDto.circularText) updateData.circularText = updateCheatDto.circularText;
@@ -319,6 +322,7 @@ export class CheatsService {
         name: `${existingCheat.name} (Copy)`,
         description: existingCheat.description,
         descriptionMarkdown: existingCheat.descriptionMarkdown,
+        seoText: existingCheat.seoText,
         circularText: existingCheat.circularText,
         image: existingCheat.image,
         circularImage: existingCheat.circularImage,
@@ -415,6 +419,65 @@ export class CheatsService {
     return updatedCheats.map((cheat) => this.mapToResponseDto(cheat));
   }
 
+  async reorderCheats(cheatIds: string[]): Promise<CheatResponseDto[]> {
+    // First, verify all cheats exist
+    const existingCheats = await this.prisma.cheat.findMany({
+      where: {
+        id: { in: cheatIds },
+        deletedAt: null,
+      },
+      select: { id: true },
+    });
+
+    const existingCheatIds = existingCheats.map((cheat) => cheat.id);
+    const missingIds = cheatIds.filter((id) => !existingCheatIds.includes(id));
+
+    if (missingIds.length > 0) {
+      throw new NotFoundException(`Cheats with IDs ${missingIds.join(", ")} not found`);
+    }
+
+    // Use a transaction to update all cheats order atomically
+    const updatedCheats = await this.prisma.$transaction(async (tx) => {
+      // Update each cheat with its new orderId
+      const updatePromises = cheatIds.map((cheatId, index) =>
+        tx.cheat.update({
+          where: { id: cheatId },
+          data: {
+            orderId: index,
+            updatedAt: new Date(),
+          },
+        })
+      );
+
+      await Promise.all(updatePromises);
+
+      // Fetch the updated cheats with relations for response mapping
+      const cheats = await tx.cheat.findMany({
+        where: {
+          id: { in: cheatIds },
+          deletedAt: null,
+        },
+        orderBy: { orderId: "asc" },
+        include: {
+          game: {
+            select: {
+              name: true,
+            },
+          },
+          brand: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+      return cheats;
+    });
+
+    return updatedCheats.map((cheat) => this.mapToResponseDto(cheat));
+  }
+
   private mapToResponseDto(cheat: any): CheatResponseDto {
     return {
       id: cheat.id,
@@ -422,9 +485,10 @@ export class CheatsService {
       gameName: cheat.game?.name ?? "",
       name: cheat.name,
       brandName: cheat.brand?.name ?? "",
-      cheatDigitId: cheat.cheatDigitId,
+      reviewDigitalSeller: cheat.reviewDigitalSeller ? (cheat.reviewDigitalSeller as any) : undefined,
       description: cheat.description,
       descriptionMarkdown: cheat.descriptionMarkdown ?? undefined,
+      seoText: cheat.seoText ?? undefined,
       circularText: cheat.circularText,
       image: this.minioService.transformToPublicUrl(cheat.image),
       circularImage: this.minioService.transformToPublicUrl(cheat.circularImage),

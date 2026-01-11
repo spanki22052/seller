@@ -18,6 +18,8 @@ import {
   SupportLinkTab,
   SupportLinksTab,
   AdminSettingsTab,
+  IconTab,
+  MainPageTab,
 } from "./tabs";
 import * as Styled from "./styled";
 
@@ -32,6 +34,7 @@ export function SettingsPage() {
   const [form] = Form.useForm();
   const [gameIconsForm] = Form.useForm();
   const [gameCarouselForm] = Form.useForm();
+  const [iconForm] = Form.useForm();
   const [footerLinksValue, setFooterLinksValue] = React.useState<FooterLink[]>(
     []
   );
@@ -46,6 +49,7 @@ export function SettingsPage() {
   } | null>(null);
   const [supportLinkForm] = Form.useForm();
   const [adminSettingsForm] = Form.useForm();
+  const [mainPageForm] = Form.useForm();
   const queryClient = useQueryClient();
 
   const { data: settings, isLoading } = useQuery({
@@ -103,6 +107,25 @@ export function SettingsPage() {
     }
   }, [settings, adminSettingsForm]);
 
+  // Update iconForm when settings are loaded
+  React.useEffect(() => {
+    if (settings?.iconUrl) {
+      iconForm.setFieldsValue({
+        iconUrl: settings.iconUrl,
+      });
+    }
+  }, [settings, iconForm]);
+
+  // Update mainPageForm when settings are loaded
+  React.useEffect(() => {
+    if (settings?.mainPageTitle || settings?.mainPageDescription) {
+      mainPageForm.setFieldsValue({
+        mainPageTitle: settings.mainPageTitle,
+        mainPageDescription: settings.mainPageDescription,
+      });
+    }
+  }, [settings, mainPageForm]);
+
   const updateMutation = useMutation({
     mutationFn: updateSettings,
     onSuccess: () => {
@@ -138,6 +161,30 @@ export function SettingsPage() {
       children: (
         <TutorialTab
           form={form}
+          settings={settings}
+          onSubmit={handleSubmit}
+          isUpdating={updateMutation.isPending}
+        />
+      ),
+    },
+    {
+      key: "mainPage",
+      label: t("settings.mainPageTab", "Главная страница"),
+      children: (
+        <MainPageTab
+          form={mainPageForm}
+          settings={settings}
+          onSubmit={handleSubmit}
+          isUpdating={updateMutation.isPending}
+        />
+      ),
+    },
+    {
+      key: "icon",
+      label: t("settings.iconTab", "Иконка"),
+      children: (
+        <IconTab
+          form={iconForm}
           settings={settings}
           onSubmit={handleSubmit}
           isUpdating={updateMutation.isPending}

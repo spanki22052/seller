@@ -25,6 +25,7 @@ import {
   useEditCheat,
   FunctionCategoryDto,
   PricingPlanDto,
+  ReviewDigitalSellerDto,
 } from "@/entities/cheat";
 import {
   FunctionListsManager,
@@ -39,6 +40,7 @@ import { CircularImageUpload } from "@/features/create-cheat/ui/CircularImageUpl
 import { CheatImageUpload } from "@/features/create-cheat/ui/CheatImageUpload";
 import { VideoUpload } from "@/features/create-cheat/ui/VideoUpload";
 import { MarkdownEditor } from "@/features/create-cheat/ui/MarkdownEditor";
+import { ReviewDigitalSellerManager } from "@/features/create-cheat/ui/ReviewDigitalSellerManager";
 import { DEFAULT_MARKDOWN_DESCRIPTION } from "@/features/create-cheat/lib/constants";
 import * as Styled from "./styled";
 
@@ -64,6 +66,7 @@ export function CheatFormPage() {
   const editCheat = useEditCheat();
   const [functionLists, setFunctionLists] = useState<FunctionList[]>([]);
   const [pricingPlans, setPricingPlans] = useState<PricingPlan[]>([]);
+  const [reviewDigitalSeller, setReviewDigitalSeller] = useState<ReviewDigitalSellerDto[]>([]);
   const [screenshots, setScreenshots] = useState<string[]>([]);
   const [circularImage, setCircularImage] = useState<string | undefined>(
     undefined
@@ -73,6 +76,7 @@ export function CheatFormPage() {
   const [descriptionMarkdown, setDescriptionMarkdown] = useState<string>(
     DEFAULT_MARKDOWN_DESCRIPTION
   );
+  const [seoText, setSeoText] = useState<string>("");
 
   // Состояния режима загрузки
   const [screenshotsMode, setScreenshotsMode] = useState<'file' | 'url'>('file');
@@ -138,13 +142,13 @@ export function CheatFormPage() {
       form.setFieldsValue({
         gameId: cheat.gameId,
         brandId: selectedBrand?.id || "",
-        cheatDigitId: cheat.cheatDigitId || "",
         description: cheat.description || "",
         status: cheat.status || "AVAILABLE",
       });
 
       setFunctionLists(convertedFunctions);
       setPricingPlans(convertedPlans);
+      setReviewDigitalSeller(cheat.reviewDigitalSeller || []);
 
       // Инициализировать скриншоты
       const screenshots = cheat.screenshots || [];
@@ -179,16 +183,19 @@ export function CheatFormPage() {
       }
 
       setDescriptionMarkdown(cheat.descriptionMarkdown || "");
+      setSeoText(cheat.seoText || "");
     } else if (!isEditMode) {
       // Сбросить форму для режима создания
       form.resetFields();
       setFunctionLists([]);
       setPricingPlans([]);
+      setReviewDigitalSeller([]);
       setScreenshots([]);
       setCircularImage(undefined);
       setCheatImage(undefined);
       setVideoUrl(undefined);
       setDescriptionMarkdown(DEFAULT_MARKDOWN_DESCRIPTION);
+      setSeoText("");
 
       // Сбросить режимы загрузки
       setScreenshotsMode('file');
@@ -264,14 +271,14 @@ export function CheatFormPage() {
       // Найти выбранный бренд
       const selectedBrand = brands.find((brand) => brand.id === values.brandId);
       if (!selectedBrand) {
-        throw new Error("Выбранный бренд не найден");
+        throw new Error(t("cheats.form.selectedBrandNotFound"));
       }
 
       const dto: CreateCheatDto = {
         gameId: values.gameId,
         name: selectedBrand.name, // Сгенерировать имя из названия бренда
         brandId: values.brandId,
-        cheatDigitId: values.cheatDigitId || undefined,
+        reviewDigitalSeller: reviewDigitalSeller.length > 0 ? reviewDigitalSeller : undefined,
         description: values.description || "",
         descriptionMarkdown: descriptionMarkdown || undefined,
         circularText: "",
@@ -296,6 +303,7 @@ export function CheatFormPage() {
         isNew: false,
         isComingSoon: false,
         status: values.status || "AVAILABLE",
+        seoText: seoText || undefined,
       };
 
       if (isEditMode && id) {
@@ -317,7 +325,7 @@ export function CheatFormPage() {
   };
 
   if (isEditMode && cheatLoading) {
-    return <div>Загрузка...</div>;
+    return <div>{t("cheats.form.loading")}</div>;
   }
 
   return (
@@ -415,15 +423,6 @@ export function CheatFormPage() {
                     </Select>
                   </Form.Item>
 
-                  <Form.Item
-                    name="cheatDigitId"
-                    label={t("cheats.form.cheatDigitId")}
-                  >
-                    <Input
-                      placeholder={t("cheats.form.cheatDigitIdPlaceholder")}
-                      size="large"
-                    />
-                  </Form.Item>
 
                   <Form.Item
                     name="description"
@@ -516,7 +515,7 @@ export function CheatFormPage() {
                   ) : (
                     <Form.Item>
                       <Input
-                        placeholder="Введите URL изображения"
+                        placeholder={t("cheats.form.enterImageUrl")}
                         value={cheatImageUrl}
                         onChange={(e) => {
                           setCheatImageUrl(e.target.value);
@@ -561,7 +560,7 @@ export function CheatFormPage() {
                   ) : (
                     <Form.Item>
                       <Input.TextArea
-                        placeholder="Введите URL скриншотов (по одному на строку)"
+                        placeholder={t("cheats.form.enterScreenshotsUrls")}
                         value={screenshotsUrls.join('\n')}
                         onChange={(e) => {
                           const urls = e.target.value.split('\n').filter(url => url.trim());
@@ -608,7 +607,7 @@ export function CheatFormPage() {
                   ) : (
                     <Form.Item>
                       <Input
-                        placeholder="Введите URL круглого изображения"
+                        placeholder={t("cheats.form.enterCircularImageUrl")}
                         value={circularImageUrl}
                         onChange={(e) => {
                           setCircularImageUrl(e.target.value);
@@ -650,7 +649,7 @@ export function CheatFormPage() {
                   ) : (
                     <Form.Item>
                       <Input
-                        placeholder="Введите URL видео"
+                        placeholder={t("cheats.form.enterVideoUrl")}
                         value={videoUrlInput}
                         onChange={(e) => {
                           setVideoUrlInput(e.target.value);
@@ -693,6 +692,49 @@ export function CheatFormPage() {
                     onChange={setPricingPlans}
                   />
                 </Form.Item>
+              </motion.div>
+
+              <Divider />
+
+              {/* Раздел 5: Digital Seller информация */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.45 }}
+              >
+                <Form.Item>
+                  <ReviewDigitalSellerManager
+                    value={reviewDigitalSeller}
+                    onChange={setReviewDigitalSeller}
+                  />
+                </Form.Item>
+              </motion.div>
+
+              <Divider />
+
+              {/* Раздел 6: SEO настройки */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <Styled.SectionTitle>
+                  {t("cheats.form.seoSettings") || "SEO настройки"}
+                </Styled.SectionTitle>
+                <Space direction="vertical" style={{ width: "100%" }}>
+                  <Form.Item
+                    label={t("cheats.form.seoText") || "SEO ключевые слова"}
+                    tooltip={t("cheats.form.seoTextTooltip") || "Ключевые слова для поисковых систем, разделенные запятыми"}
+                  >
+                    <Input.TextArea
+                      placeholder={t("cheats.form.seoTextPlaceholder") || "aimbot, wallhack, esp, battlefield 2042 cheat"}
+                      value={seoText}
+                      onChange={(e) => setSeoText(e.target.value)}
+                      rows={3}
+                      size="large"
+                    />
+                  </Form.Item>
+                </Space>
               </motion.div>
             </Form>
           </Card>

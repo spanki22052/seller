@@ -23,6 +23,7 @@ export function SkeletonIcon({ width = 400, height = 500, className }: SkeletonI
         alt="Skeleton"
         width={width}
         height={height}
+        onContextMenu={(e) => e.preventDefault()}
         style={{ width: "100%", height: "100%", objectFit: "contain" }}
       />
     </motion.div>

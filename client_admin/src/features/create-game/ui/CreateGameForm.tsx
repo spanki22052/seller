@@ -21,6 +21,7 @@ export function CreateGameForm({ onSuccess }: { onSuccess?: () => void }) {
   const [iconFile, setIconFile] = useState<UploadFile | null>(null);
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [iconPreviewSrc, setIconPreviewSrc] = useState<string>("");
+  const [seoText, setSeoText] = useState<string>("");
 
   const { data: categories = [] } = useQuery({
     queryKey: categoryKeys.lists(),
@@ -37,13 +38,14 @@ export function CreateGameForm({ onSuccess }: { onSuccess?: () => void }) {
     }
   };
 
-  const handleSubmit = async (values: { name: string; color: string; categoryId?: string }) => {
+  const handleSubmit = async (values: { name: string; color: string; categoryId?: string; seoText?: string }) => {
     setUploading(true);
     try {
       const dto: CreateGameDto = {
         name: values.name,
         color: values.color,
         categoryId: values.categoryId,
+        seoText: seoText || undefined,
       };
 
       // Upload files if they exist
@@ -232,6 +234,19 @@ export function CreateGameForm({ onSuccess }: { onSuccess?: () => void }) {
             <p className="ant-upload-text">{t("games.form.selectIcon")}</p>
             <p className="ant-upload-hint">{t("games.form.dragDropHint", "Перетащите файл сюда или нажмите для выбора")}</p>
           </Upload.Dragger>
+        </Form.Item>
+
+        <Form.Item
+          name="seoText"
+          label={t("games.form.seoText") || "SEO ключевые слова"}
+          tooltip={t("games.form.seoTextTooltip") || "Ключевые слова для поисковых систем, разделенные запятыми"}
+        >
+          <Input.TextArea
+            placeholder={t("games.form.seoTextPlaceholder") || "battlefield 2042 cheats, battlefield 2042 hacks, battlefield 2042 aimbot"}
+            value={seoText}
+            onChange={(e) => setSeoText(e.target.value)}
+            rows={3}
+          />
         </Form.Item>
 
         <Form.Item>

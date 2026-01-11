@@ -13,8 +13,12 @@ export const Container = styled.div(({ theme }) => ({
   position: "relative",
   zIndex: 1,
   gap: 74,
-  paddingLeft: theme.spacing.xl,
-  paddingRight: theme.spacing.xl,
+
+  "@media (max-width: 1400px)": {
+    gap: theme.spacing.xxl,
+    paddingLeft: theme.spacing.lg,
+    paddingRight: theme.spacing.lg,
+  },
 
   "@media (max-width: 1024px)": {
     gap: theme.spacing.xxl,

@@ -19,8 +19,12 @@ export const MainContent = styled.div(({ theme }) => ({
   width: "100%",
   maxWidth: 1400,
   margin: "0 auto",
-  paddingLeft: theme.spacing.xl,
-  paddingRight: theme.spacing.xl,
+  "@media (max-width: 1400px)": {
+    gap: theme.spacing.lg,
+    paddingBottom: theme.spacing.xl,
+    paddingLeft: theme.spacing.md,
+    paddingRight: theme.spacing.md,
+  },
   "@media (max-width: 768px)": {
     gap: theme.spacing.lg,
     paddingBottom: theme.spacing.xl,

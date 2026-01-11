@@ -4,6 +4,8 @@ export const Container = styled.div({
   padding: "24px",
   background: "#f0f2f5",
   minHeight: "100vh",
+  maxWidth: 1400,
+  margin: "0 auto",
 });
 
 export const Header = styled.div({

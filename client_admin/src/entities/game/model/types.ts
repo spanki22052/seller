@@ -5,6 +5,7 @@ export interface Game {
   image?: string;
   backgroundImage?: string;
   icon?: string;
+  seoText?: string;
   categoryId?: string;
   carouselCategoryId?: string;
   categoryName?: string;

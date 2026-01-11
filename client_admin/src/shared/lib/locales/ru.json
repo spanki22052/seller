@@ -79,7 +79,10 @@
       "iconCropFailed": "Не удалось обрезать иконку",
       "uploadFailed": "Не удалось загрузить файл",
       "onlyImagesAllowed": "Разрешены только изображения",
-      "fileSizeLimit": "Размер файла не должен превышать 4MB"
+      "fileSizeLimit": "Размер файла не должен превышать 4MB",
+      "seoText": "SEO ключевые слова",
+      "seoTextTooltip": "Ключевые слова для поисковых систем, разделенные запятыми",
+      "seoTextPlaceholder": "battlefield 2042 cheats, battlefield 2042 hacks, battlefield 2042 aimbot"
     },
     "filters": {
       "searchGame": "Поиск игры",
@@ -267,7 +270,20 @@
       "circularImageUploaded": "Круговое изображение успешно загружено",
       "imageCroppedSuccess": "Изображение успешно обрезано",
       "imageCropFailed": "Не удалось обрезать изображение",
-      "applyCrop": "Применить"
+      "applyCrop": "Применить",
+      "loading": "Загрузка...",
+      "enterImageUrl": "Введите URL изображения",
+      "enterScreenshotsUrls": "Введите URL скриншотов (по одному на строку)",
+      "enterCircularImageUrl": "Введите URL круглого изображения",
+      "enterVideoUrl": "Введите URL видео",
+      "reviewDigitalSeller": "Информация о Digital Seller",
+      "sellerId": "ID продавца",
+      "productId": "ID продукта",
+      "addSeller": "Добавить продавца",
+      "seoSettings": "SEO настройки",
+      "seoText": "SEO ключевые слова",
+      "seoTextTooltip": "Ключевые слова для поисковых систем, разделенные запятыми",
+      "seoTextPlaceholder": "aimbot, wallhack, esp, battlefield 2042 cheat"
     },
     "notifications": {
       "createdSuccess": "Чит успешно создан",

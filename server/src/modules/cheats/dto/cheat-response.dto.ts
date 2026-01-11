@@ -3,6 +3,7 @@ import { CheatPriceDto } from "./cheat-price.dto";
 import { BreadcrumbItemDto } from "./breadcrumb-item.dto";
 import { FunctionCategoryDto } from "./function-category.dto";
 import { PricingPlanDto } from "./pricing-plan.dto";
+import { ReviewDigitalSellerDto } from "./review-digital-seller.dto";
 import { CheatStatus } from "./create-cheat.dto";
 
 export class CheatResponseDto {
@@ -37,11 +38,12 @@ export class CheatResponseDto {
   brandName!: string;
 
   @ApiProperty({
-    description: "Cheat ID in Digitseller",
-    example: "123456",
+    description: "Digital Seller review information",
+    type: [ReviewDigitalSellerDto],
+    example: [{ sellerId: "123456", productId: "789012" }],
     required: false,
   })
-  cheatDigitId?: string;
+  reviewDigitalSeller?: ReviewDigitalSellerDto[];
 
   @ApiProperty({
     description: "Cheat description",
@@ -56,6 +58,13 @@ export class CheatResponseDto {
     required: false,
   })
   descriptionMarkdown?: string;
+
+  @ApiProperty({
+    description: "SEO keywords text for search engines",
+    example: "aimbot, wallhack, esp, battlefield 2042 cheat",
+    required: false,
+  })
+  seoText?: string;
 
   @ApiProperty({
     description: "Circular text for hero section",

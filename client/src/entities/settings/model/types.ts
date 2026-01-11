@@ -11,10 +11,13 @@ export interface SupportLink {
 export interface Settings {
   id: string;
   sellerId?: string;
+  iconUrl?: string;
   howToBuyVideoUrl?: string;
   howToBuyVideoThumbnail?: string;
   footerLinks?: FooterLink[];
   supportLinks?: SupportLink[];
+  mainPageTitle?: string;
+  mainPageDescription?: string;
   createdAt: string;
   updatedAt: string;
 }

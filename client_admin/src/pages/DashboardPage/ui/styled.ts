@@ -6,7 +6,7 @@ export const Container = styled.div({
   backgroundColor: "#f0f2f5",
   minHeight: "100vh",
   width: "100%",
-  maxWidth: "100%",
+  maxWidth: 1400,
   [MEDIA_QUERIES.md]: {
     padding: SPACING.md,
   },

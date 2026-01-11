@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 // Main container for the games page
 export const Container = styled.div(({ theme }) => ({
   minHeight: "100vh",
+  maxWidth: 1400,
+  margin: "0 auto",
   backgroundColor: theme.colors.bg.primary,
   padding: theme.spacing.xl,
   paddingTop: "120px", // Account for header
@@ -115,6 +117,7 @@ export const GamesGrid = styled.div(({ theme }) => ({
   gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
   gap: theme.spacing.lg,
   marginTop: theme.spacing.xl,
+  maxWidth: 1400,
 
   "@media (max-width: 1024px)": {
     gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",

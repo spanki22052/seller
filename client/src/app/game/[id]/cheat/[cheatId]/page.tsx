@@ -9,5 +9,5 @@ interface CheatPageParams {
 
 export default async function Cheat({ params }: CheatPageParams) {
   const { id, cheatId } = await params;
-  return <CheatPage gameId={id} cheatId={cheatId} />;
+  return <CheatPage cheatId={cheatId} />;
 }

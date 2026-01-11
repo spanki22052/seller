@@ -11,7 +11,9 @@ export interface SupportLink {
 }
 
 export interface Settings {
+  iconUrl: string | Blob | undefined;
   id: string;
+  sellerId?: string;
   howToBuyVideoUrl?: string;
   howToBuyVideoThumbnail?: string;
   gameIdsForIcons?: string[];
@@ -19,6 +21,8 @@ export interface Settings {
   categoryIdForCarousel?: string;
   footerLinks?: FooterLink[];
   supportLinks?: SupportLink[];
+  mainPageTitle?: string;
+  mainPageDescription?: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -67,7 +67,10 @@
       "iconCropFailed": "Failed to crop icon",
       "uploadFailed": "Failed to upload file",
       "onlyImagesAllowed": "Only image files are allowed",
-      "fileSizeLimit": "File size must not exceed 4MB"
+      "fileSizeLimit": "File size must not exceed 4MB",
+      "seoText": "SEO Keywords",
+      "seoTextTooltip": "Keywords for search engines, separated by commas",
+      "seoTextPlaceholder": "battlefield 2042 cheats, battlefield 2042 hacks, battlefield 2042 aimbot"
     },
     "filters": {
       "searchGame": "Search game",
@@ -254,7 +257,20 @@
       "circularImageUploaded": "Circular image uploaded successfully",
       "imageCroppedSuccess": "Image cropped successfully",
       "imageCropFailed": "Failed to crop image",
-      "applyCrop": "Apply"
+      "applyCrop": "Apply",
+      "loading": "Loading...",
+      "enterImageUrl": "Enter image URL",
+      "enterScreenshotsUrls": "Enter screenshot URLs (one per line)",
+      "enterCircularImageUrl": "Enter circular image URL",
+      "enterVideoUrl": "Enter video URL",
+      "reviewDigitalSeller": "Digital Seller Review Information",
+      "sellerId": "Seller ID",
+      "productId": "Product ID",
+      "addSeller": "Add Seller",
+      "seoSettings": "SEO Settings",
+      "seoText": "SEO Keywords",
+      "seoTextTooltip": "Keywords for search engines, separated by commas",
+      "seoTextPlaceholder": "aimbot, wallhack, esp, battlefield 2042 cheat"
     },
     "notifications": {
       "createdSuccess": "Cheat created successfully",

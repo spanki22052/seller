@@ -14,6 +14,7 @@ import { CheatsService } from "./cheats.service";
 import { CreateCheatDto } from "./dto/create-cheat.dto";
 import { UpdateCheatDto } from "./dto/update-cheat.dto";
 import { BulkUpdateCheatStatusDto } from "./dto/bulk-update-cheat-status.dto";
+import { ReorderCheatsDto } from "./dto/reorder-cheats.dto";
 import { CheatResponseDto } from "./dto/cheat-response.dto";
 
 @ApiTags("cheats")
@@ -58,6 +59,21 @@ export class CheatsController {
     @Body() bulkUpdateDto: BulkUpdateCheatStatusDto,
   ): Promise<CheatResponseDto[]> {
     return this.cheatsService.bulkUpdateStatus(bulkUpdateDto);
+  }
+
+  @Put("reorder")
+  @ApiOperation({ summary: "Reorder cheats by orderId" })
+  @ApiResponse({
+    status: 200,
+    description: "Cheats reordered successfully",
+    type: [CheatResponseDto],
+  })
+  @ApiResponse({ status: 404, description: "One or more cheats not found" })
+  @ApiResponse({ status: 400, description: "Invalid request data" })
+  async reorderCheats(
+    @Body() reorderDto: ReorderCheatsDto,
+  ): Promise<CheatResponseDto[]> {
+    return this.cheatsService.reorderCheats(reorderDto.cheatIds);
   }
 
   @Get(":id")

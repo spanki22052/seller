@@ -80,6 +80,7 @@ export function GameIcons() {
             <Styled.GameImage
               src={game.icon || game.image || `https://picsum.photos/400/400`}
               alt={game.name}
+              onContextMenu={(e) => e.preventDefault()}
               onError={(e) => {
                 const target = e.currentTarget;
                 // Fallback to a different random image if the first one fails

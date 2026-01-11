@@ -25,6 +25,9 @@ export interface Settings {
   supportLinks?: SupportLink[];
   supportLink?: string;
   sellerId?: string;
+  iconUrl?: string;
+  mainPageTitle?: string;
+  mainPageDescription?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -38,6 +41,9 @@ export interface UpdateSettingsDto {
   supportLinks?: SupportLink[];
   supportLink?: string;
   sellerId?: string;
+  iconUrl?: string;
+  mainPageTitle?: string;
+  mainPageDescription?: string;
 }
 
 export async function getSettings(): Promise<Settings> {

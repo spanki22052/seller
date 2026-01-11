@@ -2,16 +2,22 @@ import { PricingPlanDto, FunctionCategoryDto } from "../api/cheatApi";
 
 export type CheatStatus = "AVAILABLE" | "UPDATING" | "FROZEN" | "DRAFT";
 
+export interface ReviewDigitalSeller {
+  sellerId: string;
+  productId: string;
+}
+
 export interface Cheat {
   id: string;
   name: string;
   brandName?: string;
-  cheatDigitId?: string;
+  reviewDigitalSeller?: ReviewDigitalSeller[];
   gameId: string;
   gameName: string;
   price: number | { amount: number | null; currency: string };
   pricingPlans?: PricingPlanDto[];
   functions?: FunctionCategoryDto[];
+  orderId?: number;
   status: CheatStatus;
   salesCount?: number; // Optional - not returned by API currently
   rating?: number; // Optional - not returned by API currently
@@ -22,6 +28,7 @@ export interface Cheat {
   videoUrl?: string; // Video link (mp4)
   description?: string; // Plain text description
   descriptionMarkdown?: string; // Markdown description
+  seoText?: string; // SEO keywords for search engines
   supportedSystems?: string[]; // Supported operating systems
   createdAt: string;
   updatedAt: string;

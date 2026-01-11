@@ -31,6 +31,8 @@ export class SettingsService {
             { label: "Связь с администратором", href: "#" },
           ],
           gameIdsForCarousel: [],
+          mainPageTitle: null,
+          mainPageDescription: null,
         },
       });
     }
@@ -61,6 +63,15 @@ export class SettingsService {
     if (updateSettingsDto.gameIdsForCarousel !== undefined) {
       updateData.gameIdsForCarousel = updateSettingsDto.gameIdsForCarousel;
     }
+    if (updateSettingsDto.iconUrl !== undefined) {
+      updateData.iconUrl = updateSettingsDto.iconUrl;
+    }
+    if (updateSettingsDto.mainPageTitle !== undefined) {
+      updateData.mainPageTitle = updateSettingsDto.mainPageTitle;
+    }
+    if (updateSettingsDto.mainPageDescription !== undefined) {
+      updateData.mainPageDescription = updateSettingsDto.mainPageDescription;
+    }
     // Явная обработка footerLinks - проверяем на null и undefined
     // Пустой массив [] тоже валидное значение, поэтому проверяем только на undefined и null
     if (updateSettingsDto.footerLinks !== undefined && updateSettingsDto.footerLinks !== null) {
@@ -90,6 +101,9 @@ export class SettingsService {
             ? (updateSettingsDto.supportLinks as unknown as Prisma.InputJsonValue)
             : Prisma.JsonNull,
           supportLink: updateSettingsDto.supportLink,
+          iconUrl: updateSettingsDto.iconUrl,
+          mainPageTitle: updateSettingsDto.mainPageTitle,
+          mainPageDescription: updateSettingsDto.mainPageDescription,
         },
       });
     } else {
@@ -117,6 +131,11 @@ export class SettingsService {
       footerLinks: settings.footerLinks || [],
       supportLinks: settings.supportLinks || [],
       supportLink: settings.supportLink,
+      iconUrl: settings.iconUrl
+        ? this.minioService.transformToPublicUrl(settings.iconUrl)
+        : undefined,
+      mainPageTitle: settings.mainPageTitle,
+      mainPageDescription: settings.mainPageDescription,
       createdAt: settings.createdAt,
       updatedAt: settings.updatedAt,
     };

@@ -83,6 +83,7 @@ export function CheatScreenshots({ cheatId }: CheatScreenshotsProps) {
               <img
                 src={screenshot}
                 alt={`Screenshot ${index + 1}`}
+                onContextMenu={(e) => e.preventDefault()}
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
               <Styled.Watermark>CHITARENA</Styled.Watermark>

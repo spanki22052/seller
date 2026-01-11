@@ -71,6 +71,7 @@ export function MainCard({ links = MAIN_CARD_LINKS }: MainCardProps) {
             width={154}
             height={26}
             priority
+            onContextMenu={(e) => e.preventDefault()}
           />
         </Styled.LogoTopRight>
         <Styled.TextSection
@@ -80,18 +81,20 @@ export function MainCard({ links = MAIN_CARD_LINKS }: MainCardProps) {
           animate="visible"
         >
           <Styled.Title>
-            <Image
-              src="/images/cheats.png"
-              alt="Приватные DLC"
-              width={400}
-              height={120}
-              priority
-            />
+            {settings?.mainPageTitle || (
+              <Image
+                src="/images/cheats.png"
+                alt="Приватные DLC"
+                width={400}
+                height={120}
+                priority
+                onContextMenu={(e) => e.preventDefault()}
+              />
+            )}
           </Styled.Title>
           <Styled.Description>
-            Сейчас на сайте нет контента который вы ищите. Мы работаем на
-            решением проблем. Поздравляем всех с новым годом. Надеемся в скором
-            времени решить все юридические вопросы. Оставайтесь с нами!
+            {settings?.mainPageDescription ||
+              "Сейчас на сайте нет контента который вы ищите. Мы работаем на решением проблем. Поздравляем всех с новым годом. Надеемся в скором времени решить все юридические вопросы. Оставайтесь с нами!"}
           </Styled.Description>
           <Styled.ButtonGroup>
             <Styled.PrimaryButton

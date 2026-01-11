@@ -12,6 +12,7 @@ import { CategoriesPage } from "@/pages/CategoriesPage";
 import { CarouselCategoriesPage } from "@/pages/CarouselCategoriesPage";
 import { CheatFormPage } from "@/pages/CheatFormPage";
 import { SettingsPage } from "@/pages/SettingsPage";
+import { SeoPage } from "@/pages/SeoPage";
 import { HomePage } from "@/pages/HomePage";
 import { FaqPage } from "@/pages/FaqPage";
 import * as Styled from "./styled";
@@ -115,6 +116,14 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <SettingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/seo"
+              element={
+                <ProtectedRoute>
+                  <SeoPage />
                 </ProtectedRoute>
               }
             />

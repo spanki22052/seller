@@ -146,4 +146,31 @@ export class UpdateSettingsDto {
   @ValidateNested({ each: true })
   @Type(() => SupportLinkDto)
   supportLinks?: SupportLinkDto[] | null;
+
+  @ApiProperty({
+    description: "Icon URL",
+    example: "/images/icon.png",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  iconUrl?: string;
+
+  @ApiProperty({
+    description: "Main page title text",
+    example: "Приватные DLC",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  mainPageTitle?: string;
+
+  @ApiProperty({
+    description: "Main page description text",
+    example: "Сейчас на сайте нет контента который вы ищите. Мы работаем на решением проблем.",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  mainPageDescription?: string;
 }

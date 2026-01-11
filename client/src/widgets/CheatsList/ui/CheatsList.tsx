@@ -102,7 +102,7 @@ export function CheatsList({ cheats, gameId }: CheatsListProps) {
           <Styled.ImageWrapper>
             {cheat.image ? (
               <Styled.CheatImageWrapper>
-                <Styled.CheatImage src={cheat.image} alt={cheat.brandName} />
+                <Styled.CheatImage src={cheat.image} alt={cheat.brandName} onContextMenu={(e) => e.preventDefault()} />
               </Styled.CheatImageWrapper>
             ) : (
               <Styled.Placeholder>{cheat.brandName}</Styled.Placeholder>

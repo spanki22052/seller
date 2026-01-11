@@ -1,6 +1,7 @@
 import { Layout, Menu } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
 import {
   PlayCircleOutlined,
   ShoppingOutlined,
@@ -14,10 +15,12 @@ import {
   HomeOutlined,
   QuestionCircleOutlined,
   PictureOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { useSidebar } from "../contexts/SidebarContext";
 import { useAuth } from "@/shared/contexts/AuthContext";
+import { getSettings, settingsKeys } from "@/entities/settings";
 import * as Styled from "./styled";
 
 const { Sider } = Layout;
@@ -28,6 +31,11 @@ export function Sidebar() {
   const { t } = useTranslation();
   const { collapsed, setCollapsed } = useSidebar();
   const { logout, login } = useAuth();
+
+  const { data: settings } = useQuery({
+    queryKey: settingsKeys.detail(),
+    queryFn: getSettings,
+  });
 
   const menuItems = [
     {
@@ -75,6 +83,11 @@ export function Sidebar() {
       icon: <SettingOutlined />,
       label: t("sidebar.settings"),
     },
+    {
+      key: "/seo",
+      icon: <SearchOutlined />,
+      label: "SEO",
+    },
   ];
 
   const handleMenuClick = ({ key }: { key: string }) => {
@@ -115,12 +128,30 @@ export function Sidebar() {
           >
             {!collapsed ? (
               <Styled.Logo>
-                <Styled.LogoIcon>⚡</Styled.LogoIcon>
+                {settings?.iconUrl ? (
+                  <Styled.LogoImage
+                    src={settings.iconUrl}
+                    alt="Logo"
+                    width={32}
+                    height={32}
+                  />
+                ) : (
+                  <Styled.LogoIcon>⚡</Styled.LogoIcon>
+                )}
                 <Styled.LogoText>{t("sidebar.adminPanel")}</Styled.LogoText>
               </Styled.Logo>
             ) : (
               <Styled.LogoCollapsed>
-                <Styled.LogoIcon>⚡</Styled.LogoIcon>
+                {settings?.iconUrl ? (
+                  <Styled.LogoImage
+                    src={settings.iconUrl}
+                    alt="Logo"
+                    width={28}
+                    height={28}
+                  />
+                ) : (
+                  <Styled.LogoIcon>⚡</Styled.LogoIcon>
+                )}
               </Styled.LogoCollapsed>
             )}
           </motion.div>

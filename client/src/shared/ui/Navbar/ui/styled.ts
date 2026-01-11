@@ -3,14 +3,14 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 export const Container = styled.nav({
-  width: "calc(100% - 32px)",
+  width: "calc(100% - 64px)",
   maxWidth: 1400,
-  margin: "16px auto 0",
+  margin: "16px auto",
   background: "rgba(10, 10, 10, 0.8)",
   backdropFilter: "blur(20px)",
   WebkitBackdropFilter: "blur(20px)",
   borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-  borderRadius: 16,
+  borderRadius: 12,
   zIndex: 100,
   minHeight: 64,
   height: "auto",

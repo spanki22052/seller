@@ -53,6 +53,7 @@ model Game {
   image                String?
   backgroundImage      String?  @map("background_image")
   icon                 String?
+  seoText              String?  @map("seo_text")
   categoryId           String?  @map("category_id")
   carouselCategoryId   String?  @map("carousel_category_id")
   deletedAt            DateTime? @map("deleted_at")
@@ -116,8 +117,9 @@ model Cheat {
   id                String   @id @default(cuid())
   gameId            String   @map("game_id")
   brandId           String   @map("brand_id")
-  cheatDigitId      String?  @map("cheat_digit_id")
+  reviewDigitalSeller Json?  @map("review_digital_seller")
   name              String
+  seoText           String?  @map("seo_text")
   description       String?
   descriptionMarkdown String? @map("description_markdown")
   circularText      String?  @map("circular_text")
@@ -138,6 +140,7 @@ model Cheat {
   breadcrumbs       Json
   functions         Json?
   pricingPlans      Json?    @map("pricing_plans")
+  orderId           Int      @default(0) @map("order_id")
   isNew             Boolean  @default(false) @map("is_new")
   isComingSoon      Boolean  @default(false) @map("is_coming_soon")
   status            CheatStatus @default(AVAILABLE) @map("status")
@@ -151,6 +154,7 @@ model Cheat {
   @@index([gameId])
   @@index([brandId])
   @@index([name])
+  @@index([orderId])
   @@index([deletedAt])
   @@index([isNew])
   @@index([isComingSoon])
@@ -168,6 +172,9 @@ model Settings {
   footerLinks       Json?    @map("footer_links")
   supportLink       String?  @map("support_link")
   supportLinks      Json?    @map("support_links")
+  iconUrl           String?  @map("icon_url")
+  mainPageTitle     String?  @map("main_page_title")
+  mainPageDescription String? @map("main_page_description")
   deletedAt         DateTime? @map("deleted_at")
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @updatedAt @map("updated_at")
@@ -207,5 +214,26 @@ model Faq {
   @@index([sortOrder])
   @@index([deletedAt])
   @@map("faqs")
+}
+
+enum SeoPageType {
+  HOME      @map("home")       // Главная
+  GAMES     @map("games")      // Страница с играми
+  FAQ       @map("faq")        // Страница FAQ
+
+  @@map("seo_page_type")
+}
+
+model SeoPage {
+  id        String      @id @default(cuid())
+  pageType  SeoPageType @unique @map("page_type")
+  keywords  String[]    @default([]) // Массив ключевых слов
+  deletedAt DateTime?   @map("deleted_at")
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+
+  @@index([pageType])
+  @@index([deletedAt])
+  @@map("seo_pages")
 }
 

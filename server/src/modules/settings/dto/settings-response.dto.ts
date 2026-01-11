@@ -122,6 +122,27 @@ export class SettingsResponseDto {
   supportLinks?: SupportLinkResponseDto[];
 
   @ApiProperty({
+    description: "Icon URL",
+    example: "/images/icon.png",
+    required: false,
+  })
+  iconUrl?: string;
+
+  @ApiProperty({
+    description: "Main page title text",
+    example: "Приватные DLC",
+    required: false,
+  })
+  mainPageTitle?: string;
+
+  @ApiProperty({
+    description: "Main page description text",
+    example: "Сейчас на сайте нет контента который вы ищите. Мы работаем на решением проблем.",
+    required: false,
+  })
+  mainPageDescription?: string;
+
+  @ApiProperty({
     description: "Creation timestamp",
     example: "2024-01-01T00:00:00.000Z",
   })

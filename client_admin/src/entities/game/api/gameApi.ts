@@ -8,6 +8,7 @@ export interface CreateGameDto {
   image?: string;
   backgroundImage?: string;
   icon?: string;
+  seoText?: string;
 }
 
 export interface UpdateGameDto extends Partial<CreateGameDto> {}

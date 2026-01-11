@@ -23,6 +23,7 @@ export class GamesService {
         image: createGameDto.image,
         backgroundImage: createGameDto.backgroundImage,
         icon: createGameDto.icon,
+        seoText: createGameDto.seoText,
       },
       include: {
         category: true,
@@ -74,7 +75,7 @@ export class GamesService {
           include: {
             brand: true,
           },
-          orderBy: { createdAt: "desc" },
+          orderBy: { orderId: "asc" },
         },
       },
     });
@@ -90,6 +91,33 @@ export class GamesService {
       ...gameDto,
       cheats,
     };
+  }
+
+  async findCheatsByGameId(id: string): Promise<CheatResponseDto[]> {
+    const game = await this.prisma.game.findFirst({
+      where: { id, deletedAt: null },
+      select: { id: true, name: true },
+    });
+
+    if (!game) {
+      throw new NotFoundException(`Game with ID ${id} not found`);
+    }
+
+    const cheats = await this.prisma.cheat.findMany({
+      where: {
+        gameId: id,
+        deletedAt: null,
+        status: {
+          not: "DRAFT",
+        },
+      },
+      include: {
+        brand: true,
+      },
+      orderBy: { orderId: "asc" },
+    });
+
+    return cheats.map((cheat) => this.mapCheatToResponseDto(cheat, game.name));
   }
 
   async findAllWithCheats(): Promise<GameWithCheatsResponseDto[]> {
@@ -109,7 +137,7 @@ export class GamesService {
           include: {
             brand: true,
           },
-          orderBy: { createdAt: "desc" },
+          orderBy: { orderId: "asc" },
         },
       },
       orderBy: { createdAt: "desc" },
@@ -192,7 +220,7 @@ export class GamesService {
           include: {
             brand: true,
           },
-          orderBy: { createdAt: "desc" },
+          orderBy: { orderId: "asc" },
         },
       },
       orderBy: { createdAt: "desc" },
@@ -300,6 +328,7 @@ export class GamesService {
           backgroundImage: updateGameDto.backgroundImage,
         }),
         ...(updateGameDto.icon !== undefined && { icon: updateGameDto.icon }),
+        ...(updateGameDto.seoText !== undefined && { seoText: updateGameDto.seoText }),
       },
       include: {
         category: true,
@@ -320,6 +349,7 @@ export class GamesService {
       image: this.minioService.transformToPublicUrl(game.image),
       backgroundImage: this.minioService.transformToPublicUrl(game.backgroundImage),
       icon: this.minioService.transformToPublicUrl(game.icon),
+      seoText: game.seoText,
       createdAt: game.createdAt,
       updatedAt: game.updatedAt,
     };

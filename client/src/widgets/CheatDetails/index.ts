@@ -1,2 +1,1 @@
-export { CheatDetails } from "./ui";
-
+export { CheatDetails } from "./ui/CheatDetails";

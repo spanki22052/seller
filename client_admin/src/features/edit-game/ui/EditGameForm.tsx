@@ -26,6 +26,7 @@ export function EditGameForm({ game, onSuccess }: EditGameFormProps) {
   const [iconFile, setIconFile] = useState<UploadFile | null>(null);
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [iconPreviewSrc, setIconPreviewSrc] = useState<string>("");
+  const [seoText, setSeoText] = useState<string>("");
 
   const { data: categories = [] } = useQuery({
     queryKey: categoryKeys.lists(),
@@ -37,7 +38,9 @@ export function EditGameForm({ game, onSuccess }: EditGameFormProps) {
       name: game.name,
       color: game.color,
       categoryId: game.categoryId,
+      seoText: game.seoText,
     });
+    setSeoText(game.seoText || "");
   }, [game, form]);
 
   const handleFileUpload = async (file: File): Promise<string> => {
@@ -50,13 +53,14 @@ export function EditGameForm({ game, onSuccess }: EditGameFormProps) {
     }
   };
 
-  const handleSubmit = async (values: { name: string; color: string; categoryId?: string }) => {
+  const handleSubmit = async (values: { name: string; color: string; categoryId?: string; seoText?: string }) => {
     setUploading(true);
     try {
       const dto: UpdateGameDto = {
         name: values.name,
         color: values.color,
         categoryId: values.categoryId,
+        seoText: seoText || undefined,
       };
 
       // Upload files if they exist
@@ -270,6 +274,19 @@ export function EditGameForm({ game, onSuccess }: EditGameFormProps) {
           >
             <Button icon={<UploadOutlined />}>{t("games.form.selectIcon")}</Button>
           </Upload>
+        </Form.Item>
+
+        <Form.Item
+          name="seoText"
+          label={t("games.form.seoText") || "SEO ключевые слова"}
+          tooltip={t("games.form.seoTextTooltip") || "Ключевые слова для поисковых систем, разделенные запятыми"}
+        >
+          <Input.TextArea
+            placeholder={t("games.form.seoTextPlaceholder") || "battlefield 2042 cheats, battlefield 2042 hacks, battlefield 2042 aimbot"}
+            value={seoText}
+            onChange={(e) => setSeoText(e.target.value)}
+            rows={3}
+          />
         </Form.Item>
 
         <Form.Item>

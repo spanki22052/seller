@@ -1,207 +1,334 @@
 "use client";
 
-import React, { useCallback } from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkBreaks from "remark-breaks";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
-import { VideoPlayer } from "@/shared/ui/VideoPlayer";
 import { getCheat, cheatKeys } from "@/entities/cheat";
+import {
+  EXPANDABLE_ANIMATION_CONFIG,
+  ICON_ROTATION_CONFIG,
+  STAGGER_ANIMATION_CONFIG,
+  SECTION_IDS,
+} from "../model/constants";
+import type { CheatDetailsProps, ExpandedSection } from "../model/types";
 import * as Styled from "./styled";
 
-interface CheatDetailsProps {
-  cheatId?: string;
-  onBreadcrumbClick?: Record<string, () => void>;
-}
+const {
+  LeftColumn,
+  RightColumn,
+  Card,
+  Header,
+  Title,
+  Subtitle,
+  Content,
+  Footer,
+  FooterText,
+  MarkdownH1,
+  MarkdownH2,
+  MarkdownH3,
+  MarkdownP,
+  MarkdownUl,
+  MarkdownOl,
+  MarkdownLi,
+  MarkdownCode,
+  MarkdownPre,
+  MarkdownBlockquote,
+  MarkdownLink,
+  MarkdownStrong,
+  MarkdownEm,
+} = Styled;
 
-export function CheatDetails({
-  cheatId,
-  onBreadcrumbClick,
-}: CheatDetailsProps) {
+export function CheatDetails({ cheatId }: CheatDetailsProps) {
+  const [expandedSection, setExpandedSection] = useState<ExpandedSection>(null);
   const prefersReducedMotion = useReducedMotion();
 
   const { data: cheat, isLoading } = useQuery({
-    queryKey: cheatKeys.detail(cheatId || ""),
-    queryFn: () => getCheat(cheatId!),
-    enabled: !!cheatId,
+    queryKey: cheatKeys.detail(cheatId),
+    queryFn: () => getCheat(cheatId),
   });
-
-  /**
-   * Handles breadcrumb click and scrolls to the corresponding section.
-   * Falls back to href navigation if no scroll handler is provided.
-   */
-  const handleBreadcrumbClick = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>, sectionId?: string) => {
-      if (sectionId && onBreadcrumbClick?.[sectionId]) {
-        e.preventDefault();
-        onBreadcrumbClick[sectionId]();
-      }
-    },
-    [onBreadcrumbClick]
-  );
 
   if (isLoading || !cheat) {
     return null;
   }
 
+  const toggleSection = (sectionId: ExpandedSection) => {
+    setExpandedSection(expandedSection === sectionId ? null : sectionId);
+  };
+
+  // Animation variants with reduced motion support
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: prefersReducedMotion ? 0 : 0.1,
+        ...STAGGER_ANIMATION_CONFIG,
         delayChildren: prefersReducedMotion ? 0 : 0.2,
       },
     },
   };
 
   const itemVariants = {
-    hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 },
+    hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 10 },
     visible: {
       opacity: 1,
       y: prefersReducedMotion ? 0 : 0,
       transition: {
-        duration: prefersReducedMotion ? 0 : 0.4,
+        duration: prefersReducedMotion ? 0 : 0.3,
         ease: [0.22, 1, 0.36, 1],
       },
     },
   };
 
-  const videoVariants = {
-    hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      scale: prefersReducedMotion ? 1 : 1,
-      transition: {
-        duration: prefersReducedMotion ? 0 : 0.5,
-        delay: prefersReducedMotion ? 0 : 0.3,
-        ease: [0.22, 1, 0.36, 1],
-      },
+  const contentVariants = {
+    collapsed: {
+      ...EXPANDABLE_ANIMATION_CONFIG.collapsed,
+      transition: prefersReducedMotion
+        ? { duration: 0 }
+        : EXPANDABLE_ANIMATION_CONFIG.transition,
+    },
+    expanded: {
+      ...EXPANDABLE_ANIMATION_CONFIG.expanded,
+      transition: prefersReducedMotion
+        ? { duration: 0 }
+        : EXPANDABLE_ANIMATION_CONFIG.transition,
     },
   };
 
   return (
-    <Styled.Container>
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <Styled.BreadcrumbsContainer as={motion.nav} variants={itemVariants}>
-          {cheat.breadcrumbs.map((crumb, index) => (
-            <React.Fragment key={index}>
-              <Styled.BreadcrumbLink
-                href={crumb.href || "#"}
-                $isActive={index === cheat.breadcrumbs.length - 1}
-                onClick={(e) => handleBreadcrumbClick(e, crumb.sectionId)}
-              >
-                {crumb.label}
-              </Styled.BreadcrumbLink>
-              {index < cheat.breadcrumbs.length - 1 && (
-                <Styled.BreadcrumbArrow>→</Styled.BreadcrumbArrow>
-              )}
-            </React.Fragment>
-          ))}
-        </Styled.BreadcrumbsContainer>
+    <LayoutGroup>
+      <Styled.Container>
+        <Card
+          as={motion.div}
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <Header>
+            <Title>Детали DLC</Title>
+            <Subtitle>
+              Подробная информация о функциях и возможностях DLC
+            </Subtitle>
+          </Header>
 
-        <Styled.BorderWrapper>
-          {/* Multiple purple border layers with increasing distance and decreasing opacity */}
-          <Styled.BorderLayer $offset={8} $opacity={0.8} />
-          <Styled.BorderLayer $offset={16} $opacity={0.6} />
-          <Styled.BorderLayer $offset={24} $opacity={0.4} />
-          <Styled.BorderLayer $offset={32} $opacity={0.3} />
-          <Styled.BorderLayer $offset={40} $opacity={0.2} />
-          <Styled.BorderLayer $offset={48} $opacity={0.15} />
-
-          <Styled.NeonLinesContainer>
-            <Styled.NeonLine />
-            <Styled.NeonLine $delay={0.5} />
-            <Styled.NeonLine $delay={1} />
-          </Styled.NeonLinesContainer>
-
-          <Styled.ContentWrapper>
-            <Styled.VideoSection as={motion.div} variants={videoVariants}>
-              {cheat.videoUrl ? (
-                <VideoPlayer
-                  src={cheat.videoUrl}
-                  poster={cheat.videoThumbnail}
-                  title="Видео инструкция"
-                  controls={true}
-                  autoplay={false}
-                />
-              ) : (
-                <Styled.VideoPlaceholder>
-                  <svg
-                    width="80"
-                    height="80"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <path d="M14 2v6h6" />
-                    <circle cx="12" cy="13" r="1" />
-                    <path d="M10 16h4" />
-                  </svg>
-                </Styled.VideoPlaceholder>
-              )}
-            </Styled.VideoSection>
-
-            <Styled.DetailsSection as={motion.div} variants={itemVariants}>
-              <Styled.RightNeonBorder />
-              <Styled.CurvedNeonLine />
-
-              <Styled.ProductName>{cheat.brandName}</Styled.ProductName>
-
-              {cheat.descriptionMarkdown && (
-                <Styled.MarkdownContent>
-                  <ReactMarkdown
-                    remarkPlugins={[remarkBreaks]}
-                    rehypePlugins={[rehypeRaw]}
-                  >
-                    {cheat.descriptionMarkdown}
-                  </ReactMarkdown>
-                </Styled.MarkdownContent>
-              )}
-
-              {cheat.buttonText && (
-                <Styled.ReviewsButton
-                  as={motion.button}
-                  whileHover={
-                    prefersReducedMotion
-                      ? {}
-                      : {
-                          scale: 1.02,
-                          transition: {
-                            duration: 0.3,
-                            ease: [0.22, 1, 0.36, 1],
-                          },
-                        }
-                  }
-                  whileTap={
-                    prefersReducedMotion
-                      ? {}
-                      : {
-                          scale: 0.98,
-                          transition: {
-                            duration: 0.15,
-                            ease: [0.22, 1, 0.36, 1],
-                          },
-                        }
-                  }
+          <Content>
+            <LeftColumn>
+              {/* Description Section */}
+              <Styled.Section as={motion.div} variants={itemVariants}>
+                <Styled.SectionHeader
+                  $isExpanded={expandedSection === SECTION_IDS.DESCRIPTION}
+                  onClick={() => toggleSection(SECTION_IDS.DESCRIPTION)}
                 >
-                  {cheat.buttonText}
-                </Styled.ReviewsButton>
+                  <Styled.SectionTitle>
+                    Требования для устройства
+                  </Styled.SectionTitle>
+                  <Styled.ExpandIcon
+                    as={motion.div}
+                    animate={
+                      expandedSection === SECTION_IDS.DESCRIPTION
+                        ? ICON_ROTATION_CONFIG.expanded
+                        : ICON_ROTATION_CONFIG.collapsed
+                    }
+                    transition={
+                      prefersReducedMotion
+                        ? { duration: 0 }
+                        : ICON_ROTATION_CONFIG.transition
+                    }
+                  />
+                </Styled.SectionHeader>
+
+                <AnimatePresence>
+                  {expandedSection === SECTION_IDS.DESCRIPTION &&
+                    cheat.descriptionMarkdown && (
+                      <Styled.SectionContent
+                        as={motion.div}
+                        variants={contentVariants}
+                        initial="collapsed"
+                        animate="expanded"
+                        exit="collapsed"
+                      >
+                        <Styled.DescriptionContent>
+                          <ReactMarkdown
+                            remarkPlugins={[remarkBreaks]}
+                            rehypePlugins={[rehypeRaw]}
+                            components={{
+                              h1: ({ children }) => (
+                                <Styled.MarkdownH1>
+                                  {children}
+                                </Styled.MarkdownH1>
+                              ),
+                              h2: ({ children }) => (
+                                <Styled.MarkdownH2>
+                                  {children}
+                                </Styled.MarkdownH2>
+                              ),
+                              h3: ({ children }) => (
+                                <Styled.MarkdownH3>
+                                  {children}
+                                </Styled.MarkdownH3>
+                              ),
+                              p: ({ children }) => (
+                                <Styled.MarkdownP>{children}</Styled.MarkdownP>
+                              ),
+                              ul: ({ children }) => (
+                                <Styled.MarkdownUl>
+                                  {children}
+                                </Styled.MarkdownUl>
+                              ),
+                              ol: ({ children }) => (
+                                <Styled.MarkdownOl>
+                                  {children}
+                                </Styled.MarkdownOl>
+                              ),
+                              li: ({ children }) => (
+                                <Styled.MarkdownLi>
+                                  {children}
+                                </Styled.MarkdownLi>
+                              ),
+                              code: ({ children }) => (
+                                <Styled.MarkdownCode>
+                                  {children}
+                                </Styled.MarkdownCode>
+                              ),
+                              pre: ({ children }) => (
+                                <Styled.MarkdownPre>
+                                  {children}
+                                </Styled.MarkdownPre>
+                              ),
+                              blockquote: ({ children }) => (
+                                <Styled.MarkdownBlockquote>
+                                  {children}
+                                </Styled.MarkdownBlockquote>
+                              ),
+                              a: ({ href, children }) => (
+                                <Styled.MarkdownLink href={href}>
+                                  {children}
+                                </Styled.MarkdownLink>
+                              ),
+                              strong: ({ children }) => (
+                                <Styled.MarkdownStrong>
+                                  {children}
+                                </Styled.MarkdownStrong>
+                              ),
+                              em: ({ children }) => (
+                                <Styled.MarkdownEm>
+                                  {children}
+                                </Styled.MarkdownEm>
+                              ),
+                            }}
+                          >
+                            {cheat.descriptionMarkdown}
+                          </ReactMarkdown>
+                        </Styled.DescriptionContent>
+                      </Styled.SectionContent>
+                    )}
+                </AnimatePresence>
+              </Styled.Section>
+            </LeftColumn>
+
+            <RightColumn>
+              {/* Functions Section */}
+              {cheat.functions && cheat.functions.length > 0 && (
+                <Styled.Section as={motion.div} variants={itemVariants}>
+                  <Styled.SectionHeader
+                    $isExpanded={expandedSection === SECTION_IDS.FUNCTIONS}
+                    onClick={() => toggleSection(SECTION_IDS.FUNCTIONS)}
+                  >
+                    <Styled.SectionTitle>Функции</Styled.SectionTitle>
+                    <Styled.ExpandIcon
+                      as={motion.div}
+                      animate={
+                        expandedSection === SECTION_IDS.FUNCTIONS
+                          ? ICON_ROTATION_CONFIG.expanded
+                          : ICON_ROTATION_CONFIG.collapsed
+                      }
+                      transition={
+                        prefersReducedMotion
+                          ? { duration: 0 }
+                          : ICON_ROTATION_CONFIG.transition
+                      }
+                    />
+                  </Styled.SectionHeader>
+
+                  <AnimatePresence>
+                    {expandedSection === SECTION_IDS.FUNCTIONS && (
+                      <Styled.SectionContent
+                        as={motion.div}
+                        variants={contentVariants}
+                        initial="collapsed"
+                        animate="expanded"
+                        exit="collapsed"
+                      >
+                        <Styled.FunctionsList>
+                          {cheat.functions.map((category, categoryIndex) => (
+                            <Styled.FunctionCategory
+                              key={category.id}
+                              as={motion.div}
+                              initial={
+                                prefersReducedMotion
+                                  ? {}
+                                  : { opacity: 0, x: -20 }
+                              }
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{
+                                delay: prefersReducedMotion
+                                  ? 0
+                                  : categoryIndex * 0.1,
+                                duration: prefersReducedMotion ? 0 : 0.3,
+                                ease: [0.22, 1, 0.36, 1],
+                              }}
+                            >
+                              <Styled.CategoryTitle>
+                                {category.name}
+                              </Styled.CategoryTitle>
+                              <Styled.FeaturesList>
+                                {category.features.map(
+                                  (feature, featureIndex) => (
+                                    <Styled.FeatureItem
+                                      key={featureIndex}
+                                      as={motion.li}
+                                      initial={
+                                        prefersReducedMotion
+                                          ? {}
+                                          : { opacity: 0, x: -10 }
+                                      }
+                                      animate={{ opacity: 1, x: 0 }}
+                                      transition={{
+                                        delay: prefersReducedMotion
+                                          ? 0
+                                          : categoryIndex * 0.1 +
+                                            featureIndex * 0.05,
+                                        duration: prefersReducedMotion
+                                          ? 0
+                                          : 0.2,
+                                      }}
+                                    >
+                                      {" " + feature}
+                                    </Styled.FeatureItem>
+                                  )
+                                )}
+                              </Styled.FeaturesList>
+                            </Styled.FunctionCategory>
+                          ))}
+                        </Styled.FunctionsList>
+                      </Styled.SectionContent>
+                    )}
+                  </AnimatePresence>
+                </Styled.Section>
               )}
-            </Styled.DetailsSection>
-          </Styled.ContentWrapper>
-        </Styled.BorderWrapper>
-      </motion.div>
-    </Styled.Container>
+            </RightColumn>
+          </Content>
+
+          <Footer>
+            <FooterText>
+              Информация предоставлена разработчиками DLC для вашего удобства
+            </FooterText>
+          </Footer>
+        </Card>
+      </Styled.Container>
+    </LayoutGroup>
   );
 }

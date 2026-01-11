@@ -3,12 +3,12 @@ import { MEDIA_QUERIES, SPACING, CONTAINER_WIDTHS } from "@/shared/lib/responsiv
 
 export const Container = styled.div({
   width: "100%",
-  maxWidth: CONTAINER_WIDTHS.xl,
+  maxWidth: 1400,
   margin: "0 auto",
   padding: SPACING.lg,
   [MEDIA_QUERIES.md]: {
     padding: SPACING.md,
-    maxWidth: "100%",
+    maxWidth: 1400,
   },
   [MEDIA_QUERIES.xs]: {
     padding: SPACING.sm,

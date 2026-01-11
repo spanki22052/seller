@@ -6,8 +6,6 @@ import { motion, useMotionValue } from "framer-motion";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import skeletonRightTopImage from "@/shared/assets/images/skeleton-right-top.png";
 import infoImage from "@/shared/assets/images/info-img.png";
-import { generateNeonBlinks, NEON_BLINK_COUNT } from "../lib/constants";
-import { NeonBlink } from "./NeonBlink";
 import * as Styled from "./styled";
 
 export function InfoBanner() {
@@ -16,7 +14,6 @@ export function InfoBanner() {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const neonBlinks = generateNeonBlinks(NEON_BLINK_COUNT);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (prefersReducedMotion) return;
@@ -68,15 +65,6 @@ export function InfoBanner() {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      <Styled.NeonBlinkContainer>
-        {neonBlinks.map((blink) => (
-          <NeonBlink
-            key={blink.id}
-            blink={blink}
-            prefersReducedMotion={prefersReducedMotion}
-          />
-        ))}
-      </Styled.NeonBlinkContainer>
       <Styled.LeftSection
         as={motion.div}
         variants={leftImageVariants}
@@ -84,12 +72,12 @@ export function InfoBanner() {
         animate="visible"
       >
         <Styled.SkeletonImageWrapper>
-          <Image src={skeletonRightTopImage} alt="Skeleton" priority />
+          <Image src={skeletonRightTopImage} alt="Skeleton" priority onContextMenu={(e) => e.preventDefault()} />
         </Styled.SkeletonImageWrapper>
       </Styled.LeftSection>
 
       <Styled.InfoImageWrapper>
-        <Image src={infoImage} alt="Info" width={500} height={600} priority />
+        <Image src={infoImage} alt="Info" width={500} height={600} priority onContextMenu={(e) => e.preventDefault()} />
       </Styled.InfoImageWrapper>
     </Styled.Container>
   );

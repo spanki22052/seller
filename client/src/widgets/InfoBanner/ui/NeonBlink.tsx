@@ -29,6 +29,7 @@ export function NeonBlink({ blink, prefersReducedMotion }: NeonBlinkProps) {
           alt="Neon blink"
           width={blink.size}
           height={blink.size}
+          onContextMenu={(e) => e.preventDefault()}
           style={{
             width: "100%",
             height: "100%",
@@ -68,6 +69,7 @@ export function NeonBlink({ blink, prefersReducedMotion }: NeonBlinkProps) {
           alt="Neon blink"
           width={blink.size}
           height={blink.size}
+          onContextMenu={(e) => e.preventDefault()}
           style={{
             width: "100%",
             height: "100%",

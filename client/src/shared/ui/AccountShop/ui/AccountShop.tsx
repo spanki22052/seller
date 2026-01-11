@@ -50,6 +50,7 @@ export function AccountShop() {
                   alt={platform.name}
                   width={40}
                   height={40}
+                  onContextMenu={(e) => e.preventDefault()}
                   style={{
                     width: "100%",
                     height: "100%",

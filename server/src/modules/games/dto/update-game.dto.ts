@@ -55,4 +55,13 @@ export class UpdateGameDto {
   @IsString()
   @IsOptional()
   icon?: string;
+
+  @ApiProperty({
+    description: "SEO keywords text for search engines",
+    example: "battlefield 2042 cheats, battlefield 2042 hacks, battlefield 2042 aimbot",
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  seoText?: string;
 }

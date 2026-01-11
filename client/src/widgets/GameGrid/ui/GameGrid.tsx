@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Carousel } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { gameKeys, Game, getAllGamesWithCheats } from "@/entities/game";
-import { useFilteredGames } from "../hooks/useFilteredGames";
+import { getSettings, settingsKeys } from "@/entities/settings";
 import * as Styled from "./styled";
 
 // Custom arrow components that properly handle react-slick props
@@ -101,11 +101,26 @@ export function GameGrid({ categoryId }: GameGridProps) {
     queryFn: getAllGamesWithCheats,
   });
 
-  const {
-    filteredGames,
-    hasGames,
-    isLoading: isGamesLoading,
-  } = useFilteredGames({ categoryId });
+  const { data: settings } = useQuery({
+    queryKey: settingsKeys.detail(),
+    queryFn: getSettings,
+  });
+
+  // Filter games locally
+  const filteredGames = React.useMemo(() => {
+    let filtered = gamesWithCheats;
+
+    // Filter by category if selected
+    if (categoryId) {
+      filtered = filtered.filter((game) => game.categoryId === categoryId);
+    }
+    // When categoryId is null, show all games
+
+    return filtered;
+  }, [gamesWithCheats, categoryId]);
+
+  const hasGames = filteredGames.length > 0;
+  const isGamesLoading = false; // Data is already loaded by the query above
 
   // Function to chunk array into groups of specified size
   const chunkArray = (array: Game[], chunkSize: number): Game[][] => {

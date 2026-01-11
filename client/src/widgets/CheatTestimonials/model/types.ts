@@ -31,3 +31,8 @@ export interface DigisellerReviewsResponse {
   totalBad: number;
   review: DigisellerReview[];
 }
+
+export interface ReviewDigitalSeller {
+  sellerId: string;
+  productId: string;
+}

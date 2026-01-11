@@ -8,6 +8,7 @@ import { transformDigisellerReviews } from "../model/utils";
 import { testimonialsMock } from "../mocks/mocks";
 import { TESTIMONIALS_CONFIG, STAR_RATING } from "../model/constants";
 import { ReviewText } from "./ReviewText";
+import { ReviewDigitalSeller } from "../model/types";
 import * as Styled from "./styled";
 
 // Import Swiper styles
@@ -17,8 +18,7 @@ import "swiper/css/navigation";
 
 interface CheatTestimonialsProps {
   className?: string;
-  sellerId?: string;
-  cheatDigitId?: string;
+  reviewDigitalSeller?: ReviewDigitalSeller[];
 }
 
 function StarRating({ rating }: { rating: number }) {
@@ -63,14 +63,12 @@ function TestimonialCard({
 
 export function CheatTestimonials({
   className,
-  sellerId,
-  cheatDigitId,
+  reviewDigitalSeller,
 }: CheatTestimonialsProps) {
   // Получаем отзывы из Digiseller API
   const { data: digisellerReviews = [], isLoading } = useDigisellerReviews(
-    sellerId,
-    cheatDigitId,
-    !!sellerId && !!cheatDigitId
+    reviewDigitalSeller,
+    !!reviewDigitalSeller && reviewDigitalSeller.length > 0
   );
 
   // Преобразуем отзывы в формат Testimonial
@@ -82,7 +80,7 @@ export function CheatTestimonials({
 
   // Проверяем, есть ли реальные отзывы
   const hasRealReviews = realTestimonials.length > 0;
-  const hasCheatDigitId = !!cheatDigitId;
+  const hasReviewDigitalSeller = !!reviewDigitalSeller && reviewDigitalSeller.length > 0;
 
   return (
     <Styled.Container className={className}>
@@ -91,7 +89,7 @@ export function CheatTestimonials({
           <h2>Отзывы наших пользователей</h2>
         </Styled.Header>
 
-        {!hasCheatDigitId ? (
+        {!hasReviewDigitalSeller ? (
           <Styled.NoReviewsMessage>
             <div>
               <h3>Отзывы пока недоступны</h3>

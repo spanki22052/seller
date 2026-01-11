@@ -4,6 +4,8 @@ export const Container = styled.div`
   padding: 24px;
   background: #f5f5f5;
   min-height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
 `;
 
 export const Header = styled.div`
@@ -15,6 +17,9 @@ export const Header = styled.div`
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 export const Title = styled.h1`
@@ -32,6 +37,9 @@ export const Filters = styled.div`
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 
   .ant-input-affix-wrapper {
     border-radius: 8px;
@@ -47,6 +55,9 @@ export const TableContainer = styled.div`
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 
   .ant-table {
     font-size: 14px;

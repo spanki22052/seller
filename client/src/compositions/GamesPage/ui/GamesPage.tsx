@@ -294,6 +294,7 @@ export function GamesPage() {
                                 src={game.image}
                                 alt={`${game.name} game cover`}
                                 loading="lazy"
+                                onContextMenu={(e) => e.preventDefault()}
                                 onError={(e) => {
                                   const target = e.currentTarget;
                                   target.style.display = "none";

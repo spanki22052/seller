@@ -7,11 +7,31 @@ import {
   ClearOutlined,
   CopyOutlined,
   DeleteOutlined,
+  MenuOutlined,
 } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import {
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { getCheats, cheatKeys, Cheat } from "@/entities/cheat";
 import { getGames, gameKeys, Game } from "@/entities/game";
 import { getBrands, brandKeys } from "@/entities/brand";
@@ -20,6 +40,7 @@ import { useDuplicateCheat } from "@/features/duplicate-cheat";
 import { useDeleteCheat } from "@/features/delete-cheat";
 import { ChangeCheatStatusModal } from "@/features/change-cheat-status";
 import { BulkChangeCheatStatusModal } from "@/features/bulk-change-cheat-status";
+import { useReorderCheats } from "@/features/reorder-cheats";
 import * as Styled from "./styled";
 
 const { Search } = Input;
@@ -28,6 +49,58 @@ const pageVariants = {
   initial: { opacity: 0, y: 10 },
   animate: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: -10 },
+};
+
+// Sortable row component for drag and drop
+interface SortableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
+  "data-row-key": string;
+  children: React.ReactNode;
+}
+
+const SortableRow: React.FC<SortableRowProps> = ({ "data-row-key": id, children, ...props }) => {
+  const {
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    ...props.style,
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <tr
+      {...props}
+      ref={setNodeRef}
+      style={style}
+    >
+      {children}
+    </tr>
+  );
+};
+
+// Drag handle component
+interface DragHandleProps {
+  id: string;
+}
+
+const DragHandle: React.FC<DragHandleProps> = ({ id }) => {
+  const { attributes, listeners, setNodeRef } = useSortable({ id });
+
+  return (
+    <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={{ cursor: "grab", display: "flex", alignItems: "center", justifyContent: "center" }}
+    >
+      <MenuOutlined style={{ color: "#999" }} />
+    </div>
+  );
 };
 
 export function CheatsPage() {
@@ -45,6 +118,15 @@ export function CheatsPage() {
 
   const duplicateCheatMutation = useDuplicateCheat();
   const deleteCheatMutation = useDeleteCheat();
+  const reorderCheatsMutation = useReorderCheats();
+
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   // Filter states
   const [searchText, setSearchText] = useState("");
@@ -150,7 +232,30 @@ export function CheatsPage() {
     setIsBulkChangeModalOpen(false);
   };
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = filteredCheats.findIndex((item) => item.id === active.id);
+      const newIndex = filteredCheats.findIndex((item) => item.id === over?.id);
+
+      const reorderedCheats = arrayMove(filteredCheats, oldIndex, newIndex);
+      const cheatIds = reorderedCheats.map((cheat) => cheat.id);
+
+      // Update order on server
+      reorderCheatsMutation.mutate(cheatIds);
+    }
+  };
+
   const columns = [
+    {
+      title: "",
+      key: "drag",
+      width: 40,
+      render: (_: unknown, record: Cheat) => (
+        <DragHandle id={record.id} />
+      ),
+    },
     ...(isBulkMode
       ? [
           {
@@ -422,24 +527,40 @@ export function CheatsPage() {
 
         <Styled.TableCard>
           <Styled.TableWrapper>
-            <Table
-              dataSource={filteredCheats}
-              columns={columns}
-              rowKey="id"
-              loading={isLoading}
-              pagination={{
-                pageSize: 10,
-                showSizeChanger: true,
-                showTotal: (total, range) =>
-                  `${range[0]}-${range[1]} ${t("common.of")} ${total} ${t(
-                    "common.items"
-                  )}`,
-                responsive: true,
-                pageSizeOptions: ["10", "20", "50", "100"],
-                showQuickJumper: true,
-              }}
-              scroll={{ x: "max-content" }}
-            />
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={filteredCheats.map((cheat) => cheat.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <Table
+                  dataSource={filteredCheats}
+                  columns={columns}
+                  rowKey="id"
+                  loading={isLoading || reorderCheatsMutation.isPending}
+                  pagination={{
+                    pageSize: 10,
+                    showSizeChanger: true,
+                    showTotal: (total, range) =>
+                      `${range[0]}-${range[1]} ${t("common.of")} ${total} ${t(
+                        "common.items"
+                      )}`,
+                    responsive: true,
+                    pageSizeOptions: ["10", "20", "50", "100"],
+                    showQuickJumper: true,
+                  }}
+                  scroll={{ x: "max-content" }}
+                  components={{
+                    body: {
+                      row: SortableRow,
+                    },
+                  }}
+                />
+              </SortableContext>
+            </DndContext>
           </Styled.TableWrapper>
         </Styled.TableCard>
 

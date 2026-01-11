@@ -47,6 +47,12 @@ export const LogoIcon = styled.span({
   filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))",
 });
 
+export const LogoImage = styled.img({
+  borderRadius: 8,
+  objectFit: "contain",
+  filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))",
+});
+
 export const LogoText = styled.span({
   fontSize: 18,
   fontWeight: 700,

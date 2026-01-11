@@ -20,6 +20,8 @@ export const MainLayout = styled(Layout)<{
     padding: SPACING.lg,
     background: "#f0f2f5",
     minHeight: "100vh",
+    maxWidth: 1400,
+    margin: "0 auto",
     [MEDIA_QUERIES.md]: {
       padding: SPACING.md,
     },

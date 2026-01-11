@@ -23,18 +23,11 @@ export function useFilteredGames({ categoryId }: UseFilteredGamesProps) {
   const filteredGames = useMemo(() => {
     let filtered = games;
 
-    // First, filter by carousel games if configured
-    if (settings?.gameIdsForCarousel) {
-      // Filter games that are configured for carousel
-      filtered = filtered.filter((game) =>
-        settings.gameIdsForCarousel!.includes(game.id)
-      );
-    }
-
-    // Then filter by category if selected
+    // Filter by category if selected
     if (categoryId) {
       filtered = filtered.filter((game) => game.categoryId === categoryId);
     }
+    // When categoryId is null, show all games (no additional filtering)
 
     return filtered;
   }, [games, settings, categoryId]);

@@ -15,6 +15,7 @@ import { CreateGameDto } from "./dto/create-game.dto";
 import { UpdateGameDto } from "./dto/update-game.dto";
 import { GameResponseDto } from "./dto/game-response.dto";
 import { GameWithCheatsResponseDto } from "./dto/game-with-cheats-response.dto";
+import { CheatResponseDto } from "../cheats/dto/cheat-response.dto";
 
 @ApiTags("games")
 @Controller("games")
@@ -91,6 +92,19 @@ export class GamesController {
   @ApiResponse({ status: 404, description: "Game not found" })
   async findOneWithCheats(@Param("id") id: string): Promise<GameWithCheatsResponseDto> {
     return this.gamesService.findOneWithCheats(id);
+  }
+
+  @Get(":id/cheats")
+  @ApiOperation({ summary: "Get all cheats for a game by ID" })
+  @ApiParam({ name: "id", description: "Game ID" })
+  @ApiResponse({
+    status: 200,
+    description: "List of cheats for the game",
+    type: [CheatResponseDto],
+  })
+  @ApiResponse({ status: 404, description: "Game not found" })
+  async findCheatsByGameId(@Param("id") id: string): Promise<CheatResponseDto[]> {
+    return this.gamesService.findCheatsByGameId(id);
   }
 
   @Put(":id")

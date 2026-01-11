@@ -8,26 +8,15 @@ export const Container = styled.div(({ theme }) => ({
   padding: `${theme.spacing.xxl} ${theme.spacing.xxl}`,
   width: "100%",
   minHeight: 600,
-  backgroundColor: "transparent",
+  backgroundColor: "#0f0f0f",
+  backgroundImage: "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)",
+  borderRadius: 16,
+  border: "1px solid rgba(255, 255, 255, 0.08)",
+  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
   "@media (max-width: 1024px)": {
     gridTemplateColumns: "1fr",
     minHeight: "auto",
     padding: `${theme.spacing.xxl} ${theme.spacing.lg}`,
-  },
-  "&::before": {
-    content: '""',
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: `
-      radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-      linear-gradient(180deg, rgba(30, 20, 50, 0.3) 0%, rgba(10, 10, 10, 0.8) 100%)
-    `,
-    pointerEvents: "none",
-    zIndex: 0,
   },
 }));
 
@@ -83,11 +72,6 @@ export const ImageSection = styled.div(({ theme }) => ({
   justifyContent: "center",
   overflow: "visible",
   zIndex: 1,
-  padding: theme.spacing.xxl,
-  background: `
-    radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.2) 0%, transparent 50%),
-    radial-gradient(circle at 50% 100%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)
-  `,
   "@media (max-width: 1024px)": {
     minHeight: 400,
     padding: theme.spacing.lg,

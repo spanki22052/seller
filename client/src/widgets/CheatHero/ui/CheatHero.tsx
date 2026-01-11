@@ -1,32 +1,70 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
-import { SearchBar } from "@/widgets/SearchBar";
+import { ImageModal } from "@/shared/ui/ImageModal";
+import { VideoPlayer } from "@/shared/ui/VideoPlayer";
 import { getCheat, cheatKeys } from "@/entities/cheat";
 import { CheatPurchaseSelector } from "@/widgets/CheatPurchaseSelector";
-import { buttonAnimations } from "../lib/animConstants";
 import * as Styled from "./styled";
 
-export interface CheatHeroProps {
-  gameId: string;
-  cheatId: string;
-  onBuyNowClick?: () => void;
+interface VideoModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
 }
 
-export function CheatHero({ gameId, cheatId, onBuyNowClick }: CheatHeroProps) {
-  const prefersReducedMotion = useReducedMotion();
+function VideoModal({ isOpen, onClose, children }: VideoModalProps) {
+  if (!isOpen) return null;
 
-  const { data: cheat, isLoading } = useQuery({
+  return (
+    <Styled.VideoModalOverlay onClick={onClose}>
+      <Styled.VideoModalContent onClick={(e) => e.stopPropagation()}>
+        <Styled.VideoModalClose onClick={onClose}>×</Styled.VideoModalClose>
+        {children}
+      </Styled.VideoModalContent>
+    </Styled.VideoModalOverlay>
+  );
+}
+
+export interface CheatHeroProps {
+  cheatId: string;
+}
+
+export function CheatHero({ cheatId }: CheatHeroProps) {
+  const prefersReducedMotion = useReducedMotion();
+  const [selectedImage, setSelectedImage] = useState<{
+    src: string;
+    alt: string;
+  } | null>(null);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+
+  const { data: cheat, isLoading: isCheatLoading } = useQuery({
     queryKey: cheatKeys.detail(cheatId),
     queryFn: () => getCheat(cheatId),
   });
 
-  if (isLoading || !cheat) {
+  if (isCheatLoading || !cheat) {
     return null;
   }
+
+  const handleScreenshotClick = (image: string, alt: string) => {
+    setSelectedImage({ src: image, alt });
+  };
+
+  const handleCloseModal = () => {
+    setSelectedImage(null);
+  };
+
+  const handleVideoClick = () => {
+    setIsVideoModalOpen(true);
+  };
+
+  const handleCloseVideoModal = () => {
+    setIsVideoModalOpen(false);
+  };
 
   const textVariants = {
     hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 },
@@ -56,13 +94,6 @@ export function CheatHero({ gameId, cheatId, onBuyNowClick }: CheatHeroProps) {
     },
   };
 
-  const buttonVariants = prefersReducedMotion
-    ? buttonAnimations.reducedMotion
-    : {
-        hidden: buttonAnimations.initial,
-        visible: buttonAnimations.animate,
-      };
-
   return (
     <Styled.Container>
       <Styled.LeftSection
@@ -71,65 +102,63 @@ export function CheatHero({ gameId, cheatId, onBuyNowClick }: CheatHeroProps) {
         initial="hidden"
         animate="visible"
       >
-        {cheat.circularImage && (
-          <Styled.CheatAvatar>
-            <Styled.CheatAvatarGlow />
-            <img
-              src={cheat.circularImage}
-              alt={`${cheat.brandName} avatar`}
-              style={{
-                borderRadius: "50%",
-                objectFit: "cover",
-                width: "100%",
-                height: "100%",
-              }}
-            />
-          </Styled.CheatAvatar>
-        )}
         <Styled.Title>{cheat.brandName}</Styled.Title>
         <Styled.Description>{cheat.description}</Styled.Description>
-        <Styled.ButtonGroup
-          as={motion.div}
-          variants={buttonVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <Styled.PrimaryButton
-            as={motion.button}
-            onClick={onBuyNowClick}
-            whileHover={
-              prefersReducedMotion
-                ? buttonAnimations.reducedMotion.hover
-                : buttonAnimations.hover
-            }
-            whileTap={
-              prefersReducedMotion
-                ? buttonAnimations.reducedMotion.tap
-                : buttonAnimations.tap
-            }
+
+        {cheat.screenshots && cheat.screenshots.length > 0 && (
+          <Styled.ScreenshotsGrid
+            as={motion.div}
+            variants={textVariants}
+            initial="hidden"
+            animate="visible"
           >
-            Купить сейчас
-          </Styled.PrimaryButton>
-          <Styled.SecondaryButton
-            as={motion.button}
-            whileHover={
-              prefersReducedMotion
-                ? buttonAnimations.reducedMotion.hover
-                : buttonAnimations.hover
-            }
-            whileTap={
-              prefersReducedMotion
-                ? buttonAnimations.reducedMotion.tap
-                : buttonAnimations.tap
-            }
-          >
-            Статусы DLC
-          </Styled.SecondaryButton>
-        </Styled.ButtonGroup>
-        <Styled.TelegramText>
-          Подписывайтесь на <Styled.TelegramLink>Telegram</Styled.TelegramLink>{" "}
-          это важно потому что все статусы и новости о DLC именно там
-        </Styled.TelegramText>
+            {cheat.videoUrl && (
+              <Styled.VideoWrapper
+                key="video"
+                as={motion.div}
+                whileHover={
+                  prefersReducedMotion ? {} : { scale: 1.05, zIndex: 10 }
+                }
+                whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
+                onClick={handleVideoClick}
+              >
+                <Styled.VideoContainer>
+                  <Styled.VideoIcon>
+                    <Styled.PlayIcon>▶</Styled.PlayIcon>
+                  </Styled.VideoIcon>
+                  <Styled.VideoWatermark>ВИДЕО</Styled.VideoWatermark>
+                </Styled.VideoContainer>
+              </Styled.VideoWrapper>
+            )}
+            {cheat.screenshots?.slice(0, 3).map((screenshot, index) => (
+              <Styled.ScreenshotWrapper
+                key={index}
+                as={motion.div}
+                whileHover={
+                  prefersReducedMotion ? {} : { scale: 1.05, zIndex: 10 }
+                }
+                whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
+                onClick={() =>
+                  handleScreenshotClick(screenshot, `Screenshot ${index + 1}`)
+                }
+              >
+                <Styled.ImageContainer>
+                  <img
+                    src={screenshot}
+                    alt={`Screenshot ${index + 1}`}
+                    onContextMenu={(e) => e.preventDefault()}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                  <Styled.Watermark>CHITARENA</Styled.Watermark>
+                </Styled.ImageContainer>
+              </Styled.ScreenshotWrapper>
+            ))}
+          </Styled.ScreenshotsGrid>
+        )}
       </Styled.LeftSection>
 
       <Styled.RightSection
@@ -140,6 +169,22 @@ export function CheatHero({ gameId, cheatId, onBuyNowClick }: CheatHeroProps) {
       >
         <CheatPurchaseSelector cheatId={cheatId} />
       </Styled.RightSection>
+
+      <ImageModal
+        isOpen={!!selectedImage}
+        imageSrc={selectedImage?.src || ""}
+        imageAlt={selectedImage?.alt || ""}
+        onClose={handleCloseModal}
+      />
+
+      <VideoModal isOpen={isVideoModalOpen} onClose={handleCloseVideoModal}>
+        <VideoPlayer
+          src={cheat.videoUrl || ""}
+          title="Видео инструкция"
+          controls={true}
+          autoplay={false}
+        />
+      </VideoModal>
     </Styled.Container>
   );
 }
