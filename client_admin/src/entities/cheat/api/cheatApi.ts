@@ -41,6 +41,7 @@ export interface CreateCheatDto {
   gameId: string;
   name?: string;
   brandId: string;
+  cheatDigitId?: string;
   reviewDigitalSeller?: ReviewDigitalSellerDto[];
   description?: string;
   descriptionMarkdown?: string;

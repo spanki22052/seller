@@ -11,6 +11,7 @@ export interface Cheat {
   id: string;
   name: string;
   brandName?: string;
+  cheatDigitId?: string;
   reviewDigitalSeller?: ReviewDigitalSeller[];
   gameId: string;
   gameName: string;

@@ -38,6 +38,13 @@ export class CheatResponseDto {
   brandName!: string;
 
   @ApiProperty({
+    description: "Cheat ID in Digitseller",
+    example: "123456",
+    required: false,
+  })
+  cheatDigitId?: string;
+
+  @ApiProperty({
     description: "Digital Seller review information",
     type: [ReviewDigitalSellerDto],
     example: [{ sellerId: "123456", productId: "789012" }],

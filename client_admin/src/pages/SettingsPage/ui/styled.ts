@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { MEDIA_QUERIES, SPACING, CONTAINER_WIDTHS } from "@/shared/lib/responsive";
+import { MEDIA_QUERIES, SPACING } from "@/shared/lib/responsive";
 
 export const Container = styled.div({
   width: "100%",

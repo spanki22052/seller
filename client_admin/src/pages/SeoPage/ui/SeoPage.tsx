@@ -1,10 +1,8 @@
-import React from "react";
 import { Card, Tabs, TabsProps, message } from "antd";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  getSeoPageByType,
   updateSeoPageByType,
   seoPagesKeys,
   SeoPageType,

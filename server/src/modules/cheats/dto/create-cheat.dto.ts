@@ -49,6 +49,15 @@ export class CreateCheatDto {
   brandId!: string;
 
   @ApiProperty({
+    description: "Cheat ID in Digitseller",
+    example: "123456",
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  cheatDigitId?: string;
+
+  @ApiProperty({
     description: "Digital Seller review information",
     type: [ReviewDigitalSellerDto],
     example: [{ sellerId: "123456", productId: "789012" }],

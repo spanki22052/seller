@@ -117,6 +117,7 @@ model Cheat {
   id                String   @id @default(cuid())
   gameId            String   @map("game_id")
   brandId           String   @map("brand_id")
+  cheatDigitId      String?  @map("cheat_digit_id")
   reviewDigitalSeller Json?  @map("review_digital_seller")
   name              String
   seoText           String?  @map("seo_text")

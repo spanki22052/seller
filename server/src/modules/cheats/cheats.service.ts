@@ -39,6 +39,7 @@ export class CheatsService {
       data: {
         gameId: createCheatDto.gameId,
         brandId: createCheatDto.brandId,
+        cheatDigitId: createCheatDto.cheatDigitId || null,
         reviewDigitalSeller: createCheatDto.reviewDigitalSeller as any,
         name: cheatName,
         description:
@@ -485,6 +486,7 @@ export class CheatsService {
       gameName: cheat.game?.name ?? "",
       name: cheat.name,
       brandName: cheat.brand?.name ?? "",
+      cheatDigitId: cheat.cheatDigitId ?? undefined,
       reviewDigitalSeller: cheat.reviewDigitalSeller ? (cheat.reviewDigitalSeller as any) : undefined,
       description: cheat.description,
       descriptionMarkdown: cheat.descriptionMarkdown ?? undefined,

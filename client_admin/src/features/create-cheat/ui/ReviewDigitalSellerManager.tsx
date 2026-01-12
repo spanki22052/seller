@@ -3,7 +3,6 @@ import { Card, Button, Input, Space, Typography } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import * as Styled from "./styled";
 
 const { Title } = Typography;
 
