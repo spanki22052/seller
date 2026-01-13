@@ -360,13 +360,13 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
                   >
                     {settings?.iconUrl ? (
-                      <img
-                        src={settings.iconUrl}
-                        alt="Settings Icon"
-                        width={120}
-                        height={80}
-                        onContextMenu={(e) => e.preventDefault()}
-                      />
+                      <div style={{ width: 120, height: 80 }}>
+                        <img
+                          src={settings.iconUrl}
+                          alt="Settings Icon"
+                          onContextMenu={(e) => e.preventDefault()}
+                        />
+                      </div>
                     ) : (
                       <>
                         <Image
