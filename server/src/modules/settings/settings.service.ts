@@ -14,7 +14,7 @@ export class SettingsService {
 
   async getSettings(): Promise<SettingsResponseDto> {
     let settings = await this.prisma.settings.findFirst({
-      orderBy: { createdAt: "desc" },
+      orderBy: { updatedAt: "desc" },
     });
 
     // Если настроек нет, создаем дефолтные
@@ -43,7 +43,7 @@ export class SettingsService {
 
   async updateSettings(updateSettingsDto: UpdateSettingsDto): Promise<SettingsResponseDto> {
     let settings = await this.prisma.settings.findFirst({
-      orderBy: { createdAt: "desc" },
+      orderBy: { updatedAt: "desc" },
     });
 
     // Подготовка данных для обновления
