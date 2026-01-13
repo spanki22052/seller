@@ -40,7 +40,9 @@ export class CheatsService {
         gameId: createCheatDto.gameId,
         brandId: createCheatDto.brandId,
         cheatDigitId: createCheatDto.cheatDigitId || null,
-        reviewDigitalSeller: createCheatDto.reviewDigitalSeller as any,
+        reviewDigitalSeller: createCheatDto.reviewDigitalSeller
+          ? JSON.parse(JSON.stringify(createCheatDto.reviewDigitalSeller))
+          : null,
         name: cheatName,
         description:
           createCheatDto.description && createCheatDto.description.trim() !== ""
@@ -97,11 +99,17 @@ export class CheatsService {
           createCheatDto.videoThumbnail && createCheatDto.videoThumbnail.trim() !== ""
             ? createCheatDto.videoThumbnail
             : null,
-        screenshots: createCheatDto.screenshots,
-        price: createCheatDto.price as any,
-        breadcrumbs: createCheatDto.breadcrumbs as any,
-        functions: createCheatDto.functions as any,
-        pricingPlans: createCheatDto.pricingPlans as any,
+        screenshots: createCheatDto.screenshots
+          ? JSON.parse(JSON.stringify(createCheatDto.screenshots))
+          : null,
+        price: JSON.parse(JSON.stringify(createCheatDto.price)),
+        breadcrumbs: JSON.parse(JSON.stringify(createCheatDto.breadcrumbs)),
+        functions: createCheatDto.functions
+          ? JSON.parse(JSON.stringify(createCheatDto.functions))
+          : null,
+        pricingPlans: createCheatDto.pricingPlans
+          ? JSON.parse(JSON.stringify(createCheatDto.pricingPlans))
+          : null,
         isNew: createCheatDto.isNew ?? false,
         isComingSoon: createCheatDto.isComingSoon ?? false,
         status: createCheatDto.status ?? "AVAILABLE",
@@ -126,10 +134,7 @@ export class CheatsService {
   async findAll(): Promise<CheatResponseDto[]> {
     const cheats = await this.prisma.cheat.findMany({
       where: {},
-      orderBy: [
-        { orderId: "asc" },
-        { createdAt: "desc" }
-      ],
+      orderBy: [{ orderId: "asc" }, { createdAt: "desc" }],
       include: {
         game: {
           select: {
@@ -207,7 +212,9 @@ export class CheatsService {
     if (updateCheatDto.gameId) updateData.gameId = updateCheatDto.gameId;
     if (updateCheatDto.brandId) updateData.brandId = updateCheatDto.brandId;
     if (updateCheatDto.reviewDigitalSeller !== undefined) {
-      updateData.reviewDigitalSeller = updateCheatDto.reviewDigitalSeller as any;
+      updateData.reviewDigitalSeller = updateCheatDto.reviewDigitalSeller
+        ? JSON.parse(JSON.stringify(updateCheatDto.reviewDigitalSeller))
+        : null;
     }
     if (updateCheatDto.name) updateData.name = updateCheatDto.name;
     if (updateCheatDto.description !== undefined) {
@@ -257,13 +264,17 @@ export class CheatsService {
     if (updateCheatDto.screenshots !== undefined) {
       updateData.screenshots = updateCheatDto.screenshots;
     }
-    if (updateCheatDto.price) updateData.price = updateCheatDto.price as any;
-    if (updateCheatDto.breadcrumbs) updateData.breadcrumbs = updateCheatDto.breadcrumbs as any;
+    if (updateCheatDto.price !== undefined) updateData.price = JSON.parse(JSON.stringify(updateCheatDto.price));
+    if (updateCheatDto.breadcrumbs !== undefined) updateData.breadcrumbs = JSON.parse(JSON.stringify(updateCheatDto.breadcrumbs));
     if (updateCheatDto.functions !== undefined) {
-      updateData.functions = updateCheatDto.functions as any;
+      updateData.functions = updateCheatDto.functions
+        ? JSON.parse(JSON.stringify(updateCheatDto.functions))
+        : null;
     }
     if (updateCheatDto.pricingPlans !== undefined) {
-      updateData.pricingPlans = updateCheatDto.pricingPlans as any;
+      updateData.pricingPlans = updateCheatDto.pricingPlans
+        ? JSON.parse(JSON.stringify(updateCheatDto.pricingPlans))
+        : null;
     }
     if (updateCheatDto.isNew !== undefined) updateData.isNew = updateCheatDto.isNew;
     if (updateCheatDto.isComingSoon !== undefined)
@@ -447,7 +458,7 @@ export class CheatsService {
             orderId: index,
             updatedAt: new Date(),
           },
-        })
+        }),
       );
 
       await Promise.all(updatePromises);
@@ -487,7 +498,7 @@ export class CheatsService {
       name: cheat.name,
       brandName: cheat.brand?.name ?? "",
       cheatDigitId: cheat.cheatDigitId ?? undefined,
-      reviewDigitalSeller: cheat.reviewDigitalSeller ? (cheat.reviewDigitalSeller as any) : undefined,
+      reviewDigitalSeller: cheat.reviewDigitalSeller || undefined,
       description: cheat.description,
       descriptionMarkdown: cheat.descriptionMarkdown ?? undefined,
       seoText: cheat.seoText ?? undefined,

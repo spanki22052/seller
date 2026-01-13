@@ -33,6 +33,7 @@ export class SettingsService {
           gameIdsForCarousel: [],
           mainPageTitle: null,
           mainPageDescription: null,
+          siteName: null,
         },
       });
     }
@@ -72,6 +73,9 @@ export class SettingsService {
     if (updateSettingsDto.mainPageDescription !== undefined) {
       updateData.mainPageDescription = updateSettingsDto.mainPageDescription;
     }
+    if (updateSettingsDto.siteName !== undefined) {
+      updateData.siteName = updateSettingsDto.siteName;
+    }
     // Явная обработка footerLinks - проверяем на null и undefined
     // Пустой массив [] тоже валидное значение, поэтому проверяем только на undefined и null
     if (updateSettingsDto.footerLinks !== undefined && updateSettingsDto.footerLinks !== null) {
@@ -83,6 +87,10 @@ export class SettingsService {
     // Явная обработка supportLinks - проверяем на null и undefined
     if (updateSettingsDto.supportLinks !== undefined && updateSettingsDto.supportLinks !== null) {
       updateData.supportLinks = updateSettingsDto.supportLinks as unknown as Prisma.InputJsonValue;
+    }
+    // Явная обработка footerLabels - проверяем на null и undefined
+    if (updateSettingsDto.footerLabels !== undefined && updateSettingsDto.footerLabels !== null) {
+      updateData.footerLabels = updateSettingsDto.footerLabels as unknown as Prisma.InputJsonValue;
     }
 
     // Если настроек нет, создаем их
@@ -100,10 +108,14 @@ export class SettingsService {
           supportLinks: updateSettingsDto.supportLinks
             ? (updateSettingsDto.supportLinks as unknown as Prisma.InputJsonValue)
             : Prisma.JsonNull,
+          footerLabels: updateSettingsDto.footerLabels
+            ? (updateSettingsDto.footerLabels as unknown as Prisma.InputJsonValue)
+            : Prisma.JsonNull,
           supportLink: updateSettingsDto.supportLink,
           iconUrl: updateSettingsDto.iconUrl,
           mainPageTitle: updateSettingsDto.mainPageTitle,
           mainPageDescription: updateSettingsDto.mainPageDescription,
+          siteName: updateSettingsDto.siteName,
         },
       });
     } else {
@@ -129,6 +141,7 @@ export class SettingsService {
       gameIdsForIcons: settings.gameIdsForIcons || [],
       gameIdsForCarousel: settings.gameIdsForCarousel || [],
       footerLinks: settings.footerLinks || [],
+      footerLabels: settings.footerLabels || [],
       supportLinks: settings.supportLinks || [],
       supportLink: settings.supportLink,
       iconUrl: settings.iconUrl
@@ -136,6 +149,7 @@ export class SettingsService {
         : undefined,
       mainPageTitle: settings.mainPageTitle,
       mainPageDescription: settings.mainPageDescription,
+      siteName: settings.siteName,
       createdAt: settings.createdAt,
       updatedAt: settings.updatedAt,
     };

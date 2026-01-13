@@ -2,20 +2,23 @@
 set -e
 
 # Production Deployment Script for Seller Application
-# Server: 62.181.53.211
+# Supports any server IP address
 
-echo "🚀 Starting production deployment to 62.181.53.211"
+# Configuration - CUSTOMIZE THESE VALUES BEFORE RUNNING
+SERVER_IP="YOUR_SERVER_IP"  # Replace with your actual server IP or domain
+SSH_USER="root"            # Change this to your SSH user if different
+PROJECT_DIR="/opt/seller"
+DOMAIN_NAME=""             # Optional: set your domain name for SSL
+EMAIL="admin@example.com"  # Email for SSL certificates
+
+echo "🚀 Starting production deployment to $SERVER_IP"
 
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
-
-# Configuration
-SERVER_IP="62.181.53.211"
-SSH_USER="root"  # Change this to your SSH user
-PROJECT_DIR="/opt/seller"
 
 # Function to print colored output
 print_status() {
@@ -30,13 +33,26 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+print_info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+# Check configuration
+if [ "$SERVER_IP" = "YOUR_SERVER_IP" ]; then
+    print_error "Please configure SERVER_IP in this script before running!"
+    print_status "Edit deploy-production.sh and set SERVER_IP to your actual server IP or domain"
+    exit 1
+fi
+
 # Check if .env.production exists
 if [ ! -f ".env.production" ]; then
     print_error ".env.production file not found!"
     print_status "Please copy .env.production.example to .env.production and configure your environment variables"
+    print_status "Make sure to replace all 'YOUR_SERVER_IP' placeholders with your actual server IP: $SERVER_IP"
     exit 1
 fi
 
+print_status "Configuration validated ✓"
 print_status "Environment file found ✓"
 
 # Create production environment on server
@@ -113,10 +129,18 @@ EOF_DEPLOY
 print_status "Deployment completed successfully! ✓"
 print_status ""
 print_status "🌐 Your application is now running at:"
-print_status "   Backend API: http://62.181.53.211:3002"
-print_status "   Main Client: http://62.181.53.211:3000"
-print_status "   Admin Client: http://62.181.53.211:3001"
-print_status "   MinIO Console: http://62.181.53.211:9001"
+print_status "   Backend API: http://$SERVER_IP:3002"
+print_status "   Main Client: http://$SERVER_IP:3000"
+print_status "   Admin Client: http://$SERVER_IP:3001"
+print_status "   MinIO Console: http://$SERVER_IP:9001"
 print_status ""
-print_status "🔧 To check logs: ssh ${SSH_USER}@${SERVER_IP} 'cd ${PROJECT_DIR} && docker-compose -f docker-compose.production.yml logs -f'"
-print_status "🔄 To restart: ssh ${SSH_USER}@${SERVER_IP} 'cd ${PROJECT_DIR} && docker-compose -f docker-compose.production.yml restart'"
+print_info "Next steps:"
+echo "  1. Run Nginx setup: ssh ${SSH_USER}@${SERVER_IP} 'cd ${PROJECT_DIR} && ./setup-nginx.sh'"
+echo "  2. Update DNS (if using domain): Point $DOMAIN_NAME to $SERVER_IP"
+echo "  3. Test all URLs"
+print_status ""
+print_info "Useful commands:"
+echo "  🔧 Check logs: ssh ${SSH_USER}@${SERVER_IP} 'cd ${PROJECT_DIR} && docker-compose -f docker-compose.production.yml logs -f'"
+echo "  🔄 Restart: ssh ${SSH_USER}@${SERVER_IP} 'cd ${PROJECT_DIR} && docker-compose -f docker-compose.production.yml restart'"
+echo "  🛑 Stop: ssh ${SSH_USER}@${SERVER_IP} 'cd ${PROJECT_DIR} && docker-compose -f docker-compose.production.yml down'"
+echo "  📊 Status: ssh ${SSH_USER}@${SERVER_IP} 'cd ${PROJECT_DIR} && docker-compose -f docker-compose.production.yml ps'"

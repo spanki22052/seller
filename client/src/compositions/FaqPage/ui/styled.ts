@@ -295,3 +295,33 @@ export const FAQAnswer = styled.p(({ theme }) => ({
   paddingTop: theme.spacing.sm,
   borderTop: `1px solid ${theme.colors.border.secondary}`,
 }));
+
+// Loading skeleton for FAQ items
+export const FAQSkeletonItem = styled.div(({ theme }) => css`
+  background: ${theme.colors.bg.card};
+  border-radius: ${theme.borderRadius.lg};
+  padding: ${theme.spacing.xl};
+  border: 1px solid ${theme.colors.border.primary};
+  animation: ${shimmer} 2s infinite linear;
+
+  @media (max-width: 768px) {
+    padding: ${theme.spacing.lg};
+  }
+`);
+
+export const FAQSkeletonQuestion = styled.div(({ theme }) => ({
+  height: 24,
+  background: `linear-gradient(90deg, ${theme.colors.bg.secondary} 25%, ${theme.colors.border.secondary} 50%, ${theme.colors.bg.secondary} 75%)`,
+  backgroundSize: "200% 100%",
+  borderRadius: theme.borderRadius.sm,
+  marginBottom: theme.spacing.md,
+}));
+
+export const FAQSkeletonAnswer = styled.div(({ theme }) => ({
+  height: 60,
+  background: `linear-gradient(90deg, ${theme.colors.bg.secondary} 25%, ${theme.colors.border.secondary} 50%, ${theme.colors.bg.secondary} 75%)`,
+  backgroundSize: "200% 100%",
+  borderRadius: theme.borderRadius.sm,
+  paddingTop: theme.spacing.sm,
+  borderTop: `1px solid ${theme.colors.border.secondary}`,
+}));

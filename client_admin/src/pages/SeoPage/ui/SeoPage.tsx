@@ -21,14 +21,23 @@ export function SeoPage() {
   const queryClient = useQueryClient();
 
   const updateMutation = useMutation({
-    mutationFn: ({ pageType, keywords }: { pageType: SeoPageType; keywords: string[] }) =>
-      updateSeoPageByType(pageType, { keywords }),
+    mutationFn: ({
+      pageType,
+      keywords,
+    }: {
+      pageType: SeoPageType;
+      keywords: string[];
+    }) => updateSeoPageByType(pageType, { keywords }),
     onSuccess: (_, { pageType }) => {
-      queryClient.invalidateQueries({ queryKey: seoPagesKeys.detail(pageType) });
+      queryClient.invalidateQueries({
+        queryKey: seoPagesKeys.detail(pageType),
+      });
       message.success(t("seo.keywordsUpdated", "Ключевые слова обновлены"));
     },
     onError: () => {
-      message.error(t("seo.keywordsUpdateFailed", "Ошибка обновления ключевых слов"));
+      message.error(
+        t("seo.keywordsUpdateFailed", "Ошибка обновления ключевых слов")
+      );
     },
   });
 

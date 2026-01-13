@@ -114,8 +114,13 @@ export async function duplicateCheat(id: string): Promise<Cheat> {
   return response.data;
 }
 
-export async function bulkUpdateCheatStatus(dto: BulkUpdateCheatStatusDto): Promise<Cheat[]> {
-  const response = await getApiClient().put<Cheat[]>("/cheats/bulk-status", dto);
+export async function bulkUpdateCheatStatus(
+  dto: BulkUpdateCheatStatusDto
+): Promise<Cheat[]> {
+  const response = await getApiClient().put<Cheat[]>(
+    "/cheats/bulk-status",
+    dto
+  );
   return response.data;
 }
 
@@ -123,4 +128,3 @@ export async function reorderCheats(dto: ReorderCheatsDto): Promise<Cheat[]> {
   const response = await getApiClient().put<Cheat[]>("/cheats/reorder", dto);
   return response.data;
 }
-

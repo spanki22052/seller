@@ -43,6 +43,21 @@ class SupportLinkResponseDto {
   href!: string;
 }
 
+class FooterLabelResponseDto {
+  @ApiProperty({
+    description: "Label text",
+    example: "© Official email address of our site",
+  })
+  label!: string;
+
+  @ApiProperty({
+    description: "Optional link URL",
+    example: "mailto:example@email.com",
+    required: false,
+  })
+  href?: string;
+}
+
 export class SettingsResponseDto {
   @ApiProperty({
     description: "Settings unique identifier",
@@ -104,6 +119,17 @@ export class SettingsResponseDto {
   footerLinks?: FooterLinkResponseDto[];
 
   @ApiProperty({
+    description: "Footer labels array",
+    type: [FooterLabelResponseDto],
+    example: [
+      { label: "© Official email address of our site" },
+      { label: "Chitarena@yandex.ru", href: "mailto:Chitarena@yandex.ru" },
+    ],
+    required: false,
+  })
+  footerLabels?: FooterLabelResponseDto[];
+
+  @ApiProperty({
     description: "Support link URL",
     example: "https://discord.gg/support",
     required: false,
@@ -141,6 +167,13 @@ export class SettingsResponseDto {
     required: false,
   })
   mainPageDescription?: string;
+
+  @ApiProperty({
+    description: "Site name",
+    example: "CheatArena",
+    required: false,
+  })
+  siteName?: string;
 
   @ApiProperty({
     description: "Creation timestamp",

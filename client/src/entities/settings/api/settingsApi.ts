@@ -10,6 +10,16 @@ export interface SupportLink {
   href: string;
 }
 
+export interface FooterLabel {
+  label: string;
+  href?: string;
+}
+
+export type CarouselCategoryGames = {
+  id: string;
+  games: string[];
+};
+
 export interface Settings {
   iconUrl: string | Blob | undefined;
   id: string;
@@ -17,9 +27,10 @@ export interface Settings {
   howToBuyVideoUrl?: string;
   howToBuyVideoThumbnail?: string;
   gameIdsForIcons?: string[];
-  gameIdsForCarousel?: string[];
+  gameIdsForCarousel?: CarouselCategoryGames[];
   categoryIdForCarousel?: string;
   footerLinks?: FooterLink[];
+  footerLabels?: FooterLabel[];
   supportLinks?: SupportLink[];
   mainPageTitle?: string;
   mainPageDescription?: string;

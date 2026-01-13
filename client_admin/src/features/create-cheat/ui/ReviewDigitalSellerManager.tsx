@@ -16,7 +16,10 @@ interface ReviewDigitalSellerManagerProps {
   onChange?: (items: ReviewDigitalSellerItem[]) => void;
 }
 
-export function ReviewDigitalSellerManager({ value = [], onChange }: ReviewDigitalSellerManagerProps) {
+export function ReviewDigitalSellerManager({
+  value = [],
+  onChange,
+}: ReviewDigitalSellerManagerProps) {
   const { t } = useTranslation();
   const [items, setItems] = useState<ReviewDigitalSellerItem[]>(value);
 
@@ -41,7 +44,11 @@ export function ReviewDigitalSellerManager({ value = [], onChange }: ReviewDigit
     onChange?.(updated);
   };
 
-  const handleUpdateItem = (index: number, field: keyof ReviewDigitalSellerItem, newValue: string) => {
+  const handleUpdateItem = (
+    index: number,
+    field: keyof ReviewDigitalSellerItem,
+    newValue: string
+  ) => {
     const updated = items.map((item, i) =>
       i === index ? { ...item, [field]: newValue } : item
     );
@@ -52,7 +59,8 @@ export function ReviewDigitalSellerManager({ value = [], onChange }: ReviewDigit
   return (
     <Card>
       <Title level={5}>
-        {t("cheats.form.reviewDigitalSeller") || "Digital Seller Review Information"}
+        {t("cheats.form.reviewDigitalSeller") ||
+          "Digital Seller Review Information"}
       </Title>
 
       <AnimatePresence>
@@ -71,13 +79,17 @@ export function ReviewDigitalSellerManager({ value = [], onChange }: ReviewDigit
                   <Input
                     placeholder={t("cheats.form.sellerId") || "Seller ID"}
                     value={item.sellerId}
-                    onChange={(e) => handleUpdateItem(index, "sellerId", e.target.value)}
+                    onChange={(e) =>
+                      handleUpdateItem(index, "sellerId", e.target.value)
+                    }
                     style={{ width: 200 }}
                   />
                   <Input
                     placeholder={t("cheats.form.productId") || "Product ID"}
                     value={item.productId}
-                    onChange={(e) => handleUpdateItem(index, "productId", e.target.value)}
+                    onChange={(e) =>
+                      handleUpdateItem(index, "productId", e.target.value)
+                    }
                     style={{ width: 200 }}
                   />
                   <Button

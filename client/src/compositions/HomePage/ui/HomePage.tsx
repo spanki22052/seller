@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { Sidebar } from "@/widgets/Sidebar";
 import { useSidebar } from "@/shared/contexts/SidebarContext";
 import { MainCard } from "@/widgets/MainCard";
-import { GameTabs } from "@/widgets/GameTabs";
+import { GameCarouselTabs } from "@/widgets/GameCarouselTabs";
 import { GameGrid } from "@/widgets/GameGrid";
 import { GameIcons } from "@/widgets/GameIcons";
 import { Footer } from "@/widgets/Footer";
@@ -22,9 +22,8 @@ const InfoBanner = dynamic(
 
 export function HomePage() {
   const { isSidebarOpen, closeSidebar } = useSidebar();
-  const [selectedCategoryId, setSelectedCategoryId] = React.useState<
-    string | null
-  >(null);
+  const [selectedCarouselCategoryId, setSelectedCarouselCategoryId] =
+    React.useState<string | null>(null);
 
   return (
     <>
@@ -35,10 +34,12 @@ export function HomePage() {
           <GameIcons />
 
           <Styled.GamesSection>
-            <GameTabs onCategoryChange={setSelectedCategoryId} />
+            <GameCarouselTabs
+              onCategoryChange={setSelectedCarouselCategoryId}
+            />
           </Styled.GamesSection>
 
-          <GameGrid categoryId={selectedCategoryId} />
+          <GameGrid carouselCategoryId={selectedCarouselCategoryId} />
           <InfoBanner />
 
           <Footer />

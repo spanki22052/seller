@@ -52,6 +52,24 @@ class SupportLinkDto {
   href!: string;
 }
 
+class FooterLabelDto {
+  @ApiProperty({
+    description: "Label text",
+    example: "© Official email address of our site",
+  })
+  @IsString()
+  label!: string;
+
+  @ApiProperty({
+    description: "Optional link URL",
+    example: "mailto:example@email.com",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  href?: string;
+}
+
 export class UpdateSettingsDto {
   @ApiProperty({
     description: "Seller ID",
@@ -124,6 +142,21 @@ export class UpdateSettingsDto {
   footerLinks?: FooterLinkDto[] | null;
 
   @ApiProperty({
+    description: "Footer labels array",
+    type: [FooterLabelDto],
+    example: [
+      { label: "© Official email address of our site" },
+      { label: "Chitarena@yandex.ru", href: "mailto:Chitarena@yandex.ru" },
+    ],
+    required: false,
+  })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => FooterLabelDto)
+  footerLabels?: FooterLabelDto[] | null;
+
+  @ApiProperty({
     description: "Support link URL",
     example: "https://discord.gg/support",
     required: false,
@@ -173,4 +206,13 @@ export class UpdateSettingsDto {
   @IsOptional()
   @IsString()
   mainPageDescription?: string;
+
+  @ApiProperty({
+    description: "Site name",
+    example: "CheatArena",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  siteName?: string;
 }

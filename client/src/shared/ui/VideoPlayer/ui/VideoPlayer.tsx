@@ -23,6 +23,37 @@ export function VideoPlayer({
   controls = true,
   className,
 }: VideoPlayerProps) {
+  // Check if it's a YouTube URL
+  const isYouTubeUrl = src.includes('youtube.com') || src.includes('youtu.be');
+
+  // If it's a YouTube video, use iframe embed
+  if (isYouTubeUrl) {
+    // Extract video ID from various YouTube URL formats
+    let videoId = '';
+    if (src.includes('youtube.com/watch?v=')) {
+      videoId = src.split('v=')[1].split('&')[0];
+    } else if (src.includes('youtu.be/')) {
+      videoId = src.split('youtu.be/')[1].split('?')[0];
+    } else if (src.includes('youtube.com/embed/')) {
+      videoId = src.split('embed/')[1].split('?')[0];
+    }
+
+    if (videoId) {
+      const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+
+      return (
+        <Styled.PlayerWrapper className={className}>
+          <Styled.YouTubeIframe
+            src={embedUrl}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            title={title}
+          />
+        </Styled.PlayerWrapper>
+      );
+    }
+  }
+
   // Check if it's a Kinescope embed URL
   const isKinescopeEmbed = src.includes('kinescope.io/embed/') || src.includes('kinescope.io/') && src.split('/').length === 4;
 

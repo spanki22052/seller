@@ -74,7 +74,7 @@ export const SkeletonImageWrapper = styled.div({
     width: 600,
     height: 600,
   },
-  "@media (max-width: 1199px)": {
+  "@media (max-width: 1024px)": {
     display: "none",
   },
 });

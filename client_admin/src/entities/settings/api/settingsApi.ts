@@ -10,6 +10,11 @@ export type SupportLink = {
   href: string;
 };
 
+export type FooterLabel = {
+  label: string;
+  href?: string;
+};
+
 export type CarouselCategoryGames = {
   id: string;
   games: string[];
@@ -22,12 +27,14 @@ export interface Settings {
   gameIdsForIcons?: string[];
   gameIdsForCarousel?: CarouselCategoryGames[];
   footerLinks?: FooterLink[];
+  footerLabels?: FooterLabel[];
   supportLinks?: SupportLink[];
   supportLink?: string;
   sellerId?: string;
   iconUrl?: string;
   mainPageTitle?: string;
   mainPageDescription?: string;
+  siteName?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -38,12 +45,14 @@ export interface UpdateSettingsDto {
   gameIdsForIcons?: string[];
   gameIdsForCarousel?: CarouselCategoryGames[];
   footerLinks?: FooterLink[];
+  footerLabels?: FooterLabel[];
   supportLinks?: SupportLink[];
   supportLink?: string;
   sellerId?: string;
   iconUrl?: string;
   mainPageTitle?: string;
   mainPageDescription?: string;
+  siteName?: string;
 }
 
 export async function getSettings(): Promise<Settings> {

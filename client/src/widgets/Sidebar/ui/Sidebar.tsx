@@ -363,6 +363,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                       <img
                         src={settings.iconUrl}
                         alt="Settings Icon"
+                        width={120}
+                        height={80}
                         onContextMenu={(e) => e.preventDefault()}
                       />
                     ) : (
@@ -370,8 +372,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                         <Image
                           src={chitarenaLogo}
                           alt="CHITARENA"
-                          width={100}
-                          height={30}
+                          width={120}
+                          height={80}
                           priority
                           onContextMenu={(e) => e.preventDefault()}
                         />

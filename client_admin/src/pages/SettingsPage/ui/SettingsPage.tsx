@@ -3,23 +3,24 @@ import { Card, Form, Spin, Tabs, TabsProps } from "antd";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getSettings, updateSettings, settingsKeys } from "@/entities/settings";
 import {
-  getSettings,
-  updateSettings,
-  settingsKeys,
   FooterLink,
+  FooterLabel,
   SupportLink,
-} from "@/entities/settings";
+} from "@/entities/settings/api/settingsApi";
 import {
   TutorialTab,
   GameIconsTab,
   GameCarouselTab,
   FooterLinksTab,
+  FooterLabelsTab,
   SupportLinkTab,
   SupportLinksTab,
   AdminSettingsTab,
   IconTab,
   MainPageTab,
+  SiteNameTab,
 } from "./tabs";
 import * as Styled from "./styled";
 
@@ -41,6 +42,12 @@ export function SettingsPage() {
   const footerLinksFormRef = React.useRef<{
     getValue: () => FooterLink[];
   } | null>(null);
+  const [footerLabelsValue, setFooterLabelsValue] = React.useState<
+    FooterLabel[]
+  >([]);
+  const footerLabelsFormRef = React.useRef<{
+    getValue: () => FooterLabel[];
+  } | null>(null);
   const [supportLinksValue, setSupportLinksValue] = React.useState<
     SupportLink[]
   >([]);
@@ -50,6 +57,7 @@ export function SettingsPage() {
   const [supportLinkForm] = Form.useForm();
   const [adminSettingsForm] = Form.useForm();
   const [mainPageForm] = Form.useForm();
+  const [siteNameForm] = Form.useForm();
   const queryClient = useQueryClient();
 
   const { data: settings, isLoading } = useQuery({
@@ -82,6 +90,13 @@ export function SettingsPage() {
     }
   }, [settings]);
 
+  // Update footerLabelsValue when settings are loaded
+  React.useEffect(() => {
+    if (settings?.footerLabels) {
+      setFooterLabelsValue(settings.footerLabels);
+    }
+  }, [settings]);
+
   // Update supportLinksValue when settings are loaded
   React.useEffect(() => {
     if (settings?.supportLinks) {
@@ -100,9 +115,10 @@ export function SettingsPage() {
 
   // Update adminSettingsForm when settings are loaded
   React.useEffect(() => {
-    if (settings?.sellerId) {
+    if (settings?.sellerId || settings?.siteName) {
       adminSettingsForm.setFieldsValue({
         sellerId: settings.sellerId,
+        siteName: settings.siteName,
       });
     }
   }, [settings, adminSettingsForm]);
@@ -126,6 +142,15 @@ export function SettingsPage() {
     }
   }, [settings, mainPageForm]);
 
+  // Update siteNameForm when settings are loaded
+  React.useEffect(() => {
+    if (settings?.siteName) {
+      siteNameForm.setFieldsValue({
+        siteName: settings.siteName,
+      });
+    }
+  }, [settings, siteNameForm]);
+
   const updateMutation = useMutation({
     mutationFn: updateSettings,
     onSuccess: () => {
@@ -136,6 +161,19 @@ export function SettingsPage() {
       // Error message will be shown in individual tab components
     },
   });
+
+  // Determine if we should use vertical tabs on very small screens
+  const [isMobileVertical, setIsMobileVertical] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobileVertical(window.innerWidth < 480);
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     updateMutation.mutate(values);
@@ -157,7 +195,7 @@ export function SettingsPage() {
   const tabsItems: TabsProps["items"] = [
     {
       key: "tutorial",
-      label: t("settings.tutorialTab"),
+      label: isMobileVertical ? "Обучение" : t("settings.tutorialTab"),
       children: (
         <TutorialTab
           form={form}
@@ -169,7 +207,9 @@ export function SettingsPage() {
     },
     {
       key: "mainPage",
-      label: t("settings.mainPageTab", "Главная страница"),
+      label: isMobileVertical
+        ? "Главная"
+        : t("settings.mainPageTab", "Главная страница"),
       children: (
         <MainPageTab
           form={mainPageForm}
@@ -180,8 +220,22 @@ export function SettingsPage() {
       ),
     },
     {
+      key: "siteName",
+      label: isMobileVertical
+        ? "Название"
+        : t("settings.siteNameTab", "Название сайта"),
+      children: (
+        <SiteNameTab
+          form={siteNameForm}
+          settings={settings}
+          onSubmit={handleSubmit}
+          isUpdating={updateMutation.isPending}
+        />
+      ),
+    },
+    {
       key: "icon",
-      label: t("settings.iconTab", "Иконка"),
+      label: isMobileVertical ? "Иконка" : t("settings.iconTab", "Иконка"),
       children: (
         <IconTab
           form={iconForm}
@@ -193,7 +247,7 @@ export function SettingsPage() {
     },
     {
       key: "gameIcons",
-      label: t("settings.gameIconsTab"),
+      label: isMobileVertical ? "Иконки игр" : t("settings.gameIconsTab"),
       children: (
         <GameIconsTab
           form={gameIconsForm}
@@ -205,7 +259,7 @@ export function SettingsPage() {
     },
     {
       key: "gameCarousel",
-      label: t("settings.gameCarouselTab"),
+      label: isMobileVertical ? "Карусель" : t("settings.gameCarouselTab"),
       children: (
         <GameCarouselTab
           form={gameCarouselForm}
@@ -217,7 +271,9 @@ export function SettingsPage() {
     },
     {
       key: "footerLinks",
-      label: t("settings.footerLinksTab", "Ссылки футера"),
+      label: isMobileVertical
+        ? "Ссылки"
+        : t("settings.footerLinksTab", "Ссылки футера"),
       children: (
         <FooterLinksTab
           footerLinksValue={footerLinksValue}
@@ -229,11 +285,26 @@ export function SettingsPage() {
       ),
     },
     {
+      key: "footerLabels",
+      label: isMobileVertical
+        ? "Текст"
+        : t("settings.footerLabelsTab", "Текст футера"),
+      children: (
+        <FooterLabelsTab
+          footerLabelsValue={footerLabelsValue}
+          onFooterLabelsChange={setFooterLabelsValue}
+          onSubmit={handleSubmit}
+          isUpdating={updateMutation.isPending}
+          footerLabelsFormRef={footerLabelsFormRef}
+        />
+      ),
+    },
+    {
       key: "supportSettings",
-      label: "Настройки ссылки поддержки",
+      label: isMobileVertical ? "Поддержка" : "Настройки ссылки поддержки",
       children: (
         <div>
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: isMobileVertical ? 16 : 24 }}>
             <SupportLinkTab
               form={supportLinkForm}
               settings={settings}
@@ -255,7 +326,9 @@ export function SettingsPage() {
     },
     {
       key: "adminSettings",
-      label: t("settings.adminSettingsTab", "Настройки админа"),
+      label: isMobileVertical
+        ? "Админ"
+        : t("settings.adminSettingsTab", "Настройки админа"),
       children: (
         <AdminSettingsTab
           form={adminSettingsForm}
@@ -277,8 +350,19 @@ export function SettingsPage() {
     >
       <Styled.Container>
         <Styled.SettingsCard>
-          <Card title={t("settings.title") || "Настройки"}>
-            <Tabs defaultActiveKey="tutorial" items={tabsItems} />
+          <Card
+            title={`${settings?.siteName ? `${settings.siteName} - ` : ""}${
+              t("settings.title") || "Настройки"
+            }`}
+          >
+            <Tabs
+              defaultActiveKey="tutorial"
+              items={tabsItems}
+              tabPosition={isMobileVertical ? "top" : "top"}
+              size={isMobileVertical ? "small" : "middle"}
+              type="card"
+              className="responsive-tabs"
+            />
           </Card>
         </Styled.SettingsCard>
       </Styled.Container>

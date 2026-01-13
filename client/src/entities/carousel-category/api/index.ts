@@ -1,0 +1,1 @@
+export { getCarouselCategories } from "./carouselCategoryApi";

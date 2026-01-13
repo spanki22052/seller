@@ -1,0 +1,1 @@
+export { GameCarouselTabs } from "./ui";

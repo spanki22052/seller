@@ -16,6 +16,11 @@ export function Footer() {
   });
 
   const links = settings?.footerLinks || [];
+  const labels = settings?.footerLabels || [];
+
+  // Extract copyright text and email from labels
+  const copyrightLabel = labels.find((label) => !label.href);
+  const emailLabel = labels.find((label) => label.href?.startsWith("mailto:"));
 
   const containerVariants = {
     hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 },
@@ -130,12 +135,14 @@ export function Footer() {
         ))}
       </Styled.LinksContainer>
       <Styled.EmailInfoContainer>
-        <Styled.CopyrightText>
-          © Official email address of our site
-        </Styled.CopyrightText>
-        <Styled.EmailLink href="mailto:Chitarena@yandex.ru">
-          Chitarena@yandex.ru
-        </Styled.EmailLink>
+        {copyrightLabel && (
+          <Styled.CopyrightText>{copyrightLabel.label}</Styled.CopyrightText>
+        )}
+        {emailLabel && (
+          <Styled.EmailLink href={emailLabel.href}>
+            {emailLabel.label}
+          </Styled.EmailLink>
+        )}
       </Styled.EmailInfoContainer>
     </Styled.Container>
   );

@@ -4,62 +4,20 @@ import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { SkeletonIcon } from "@/shared/assets/icons";
-import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
 import cheatarenaLogo from "@/shared/assets/images/cheatarena.png";
-import { useSettings } from "@/entities/settings";
 import { MainCardProps } from "../model/types";
 import { MAIN_CARD_LINKS } from "../model/constants";
+import { useMainCard } from "../hooks/useMainCard";
 import * as Styled from "./styled";
 
 export function MainCard({ links = MAIN_CARD_LINKS }: MainCardProps) {
-  const prefersReducedMotion = useReducedMotion();
-  const { data: settings } = useSettings();
-
-  // Get support links from settings, fallback to default links
-  const supportLinks = settings?.supportLinks || [];
-  const techSupportLink =
-    supportLinks.find(
-      (link: { label: string; href: string }) =>
-        link.label === "Техническая поддержка"
-    )?.href || links.supportUrl;
-  const adminLink =
-    supportLinks.find(
-      (link: { label: string; href: string }) =>
-        link.label === "Связь с администратором"
-    )?.href || links.adminUrl;
-
-  const handleSupportClick = () => {
-    window.open(techSupportLink, "_blank", "noopener,noreferrer");
-  };
-
-  const handleAdminClick = () => {
-    window.open(adminLink, "_blank", "noopener,noreferrer");
-  };
-
-  const textVariants = {
-    hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: prefersReducedMotion ? 0 : 0,
-      transition: {
-        duration: prefersReducedMotion ? 0 : 0.5,
-        ease: [0.22, 1, 0.36, 1],
-      },
-    },
-  };
-
-  const imageVariants = {
-    hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: 20 },
-    visible: {
-      opacity: 1,
-      x: prefersReducedMotion ? 0 : 0,
-      transition: {
-        duration: prefersReducedMotion ? 0 : 0.6,
-        delay: prefersReducedMotion ? 0 : 0.2,
-        ease: [0.22, 1, 0.36, 1],
-      },
-    },
-  };
+  const {
+    settings,
+    handleSupportClick,
+    handleAdminClick,
+    textVariants,
+    imageVariants,
+  } = useMainCard(links);
 
   return (
     <Styled.Container>

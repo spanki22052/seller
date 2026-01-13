@@ -21,3 +21,12 @@ export const KinescopeIframe = styled.iframe(({ theme }) => ({
   borderRadius: theme.borderRadius.md,
   display: "block",
 }));
+
+export const YouTubeIframe = styled.iframe(({ theme }) => ({
+  width: "100%",
+  height: "100%",
+  minHeight: 400,
+  border: "none",
+  borderRadius: theme.borderRadius.md,
+  display: "block",
+}));

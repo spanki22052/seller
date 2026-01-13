@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 interface AdminSettingsTabProps {
   form: any;
   settings: any;
-  onSubmit: (values: { sellerId?: string }) => void;
+  onSubmit: (values: { sellerId?: string; siteName?: string }) => void;
   isUpdating: boolean;
 }
 
@@ -19,6 +19,7 @@ export function AdminSettingsTab({ form, settings, onSubmit, isUpdating }: Admin
         layout="vertical"
         initialValues={{
           sellerId: settings?.sellerId || "",
+          siteName: settings?.siteName || "",
         }}
         onFinish={onSubmit}
       >
@@ -34,6 +35,21 @@ export function AdminSettingsTab({ form, settings, onSubmit, isUpdating }: Admin
         >
           <Input
             placeholder={t("settings.sellerIdPlaceholder", "Введите ID продавца")}
+          />
+        </Form.Item>
+
+        <Form.Item
+          label={t("settings.siteName", "Название сайта")}
+          name="siteName"
+          rules={[
+            {
+              required: false,
+              message: t("settings.siteNameRequired", "Введите название сайта"),
+            },
+          ]}
+        >
+          <Input
+            placeholder={t("settings.siteNamePlaceholder", "Введите название сайта")}
           />
         </Form.Item>
 

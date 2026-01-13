@@ -1,27 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
-import { useReducedMotion } from "@/shared/lib/hooks/useReducedMotion";
+import {
+  KEYBOARD_KEYS,
+  LOADING_CONFIG,
+  ERROR_MESSAGES,
+} from "@/shared/lib/constants";
 import { Sidebar } from "@/widgets/Sidebar";
 import { useSidebar } from "@/shared/contexts/SidebarContext";
 import { Footer } from "@/widgets/Footer";
-import { getActiveFaqs, faqKeys } from "@/entities/faq";
+import { useFaqPage } from "../hooks/useFaqPage";
 import * as Styled from "./styled";
-
-// Dynamic imports for heavy components (currently not used)
-// const AccountBanner = dynamic(
-//   () =>
-//     import("@/widgets/AccountBanner").then((mod) => ({
-//       default: mod.AccountBanner,
-//     })),
-//   {
-//     ssr: false,
-//     loading: () => <div style={{ minHeight: 400 }} />,
-//   }
-// );
 
 const InfoBanner = dynamic(
   () =>
@@ -32,54 +23,31 @@ const InfoBanner = dynamic(
   }
 );
 
+// Component constants
+const FAQLoadingSkeleton = () => (
+  <>
+    {Array.from({ length: LOADING_CONFIG.skeletonItemsCount }, (_, i) => (
+      <Styled.FAQSkeletonItem key={i}>
+        <Styled.FAQSkeletonQuestion />
+        <Styled.FAQSkeletonAnswer />
+      </Styled.FAQSkeletonItem>
+    ))}
+  </>
+);
+
 export function FaqPage() {
   const { isSidebarOpen, closeSidebar } = useSidebar();
-  const prefersReducedMotion = useReducedMotion();
 
-  const { data: faqs = [], isLoading } = useQuery({
-    queryKey: faqKeys.lists(),
-    queryFn: getActiveFaqs,
-  });
-
-  // State for tracking expanded FAQ items, first item is expanded by default
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(() => {
-    return faqs.length > 0 ? new Set([faqs[0].id.toString()]) : new Set();
-  });
-
-  const toggleExpand = (faqId: string) => {
-    const newExpanded = new Set(expandedItems);
-    if (newExpanded.has(faqId)) {
-      newExpanded.delete(faqId);
-    } else {
-      newExpanded.add(faqId);
-    }
-    setExpandedItems(newExpanded);
-  };
-
-  const containerVariants = {
-    hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: prefersReducedMotion ? 0 : 0,
-      transition: {
-        duration: prefersReducedMotion ? 0 : 0.6,
-        ease: [0.22, 1, 0.36, 1],
-        staggerChildren: prefersReducedMotion ? 0 : 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: prefersReducedMotion ? 0 : 0,
-      transition: {
-        duration: prefersReducedMotion ? 0 : 0.5,
-        ease: [0.22, 1, 0.36, 1],
-      },
-    },
-  };
+  const {
+    faqs,
+    isLoading,
+    error,
+    expandedItems,
+    toggleExpand,
+    containerVariants,
+    itemVariants,
+    answerVariants,
+  } = useFaqPage();
 
   return (
     <>
@@ -92,8 +60,10 @@ export function FaqPage() {
       >
         <Styled.MainContent>
           <Styled.FAQSection>
-            {isLoading ? (
-              <div>Загрузка...</div>
+            {error ? (
+              <div>{ERROR_MESSAGES.FAQ_LOAD_FAILED}</div>
+            ) : isLoading ? (
+              <FAQLoadingSkeleton />
             ) : (
               faqs.map((faq) => {
                 const faqId = faq.id.toString();
@@ -102,36 +72,41 @@ export function FaqPage() {
                 return (
                   <Styled.FAQItem key={faq.id}>
                     <Styled.FAQQuestion
+                      id={`faq-question-${faqId}`}
                       onClick={() => toggleExpand(faqId)}
                       $isExpanded={isExpanded}
+                      aria-expanded={isExpanded}
+                      aria-controls={`faq-answer-${faqId}`}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (
+                          e.key === KEYBOARD_KEYS.ENTER ||
+                          e.key === KEYBOARD_KEYS.SPACE
+                        ) {
+                          e.preventDefault();
+                          toggleExpand(faqId);
+                        }
+                      }}
                     >
                       {faq.question}
-                      <Styled.ExpandIcon $isExpanded={isExpanded}>
+                      <Styled.ExpandIcon
+                        $isExpanded={isExpanded}
+                        aria-hidden="true"
+                      >
                         ▼
                       </Styled.ExpandIcon>
                     </Styled.FAQQuestion>
                     <AnimatePresence>
                       {isExpanded && (
                         <motion.div
-                          initial={
-                            prefersReducedMotion
-                              ? { opacity: 0 }
-                              : { opacity: 0, height: 0 }
-                          }
-                          animate={
-                            prefersReducedMotion
-                              ? { opacity: 1 }
-                              : { opacity: 1, height: "auto" }
-                          }
-                          exit={
-                            prefersReducedMotion
-                              ? { opacity: 0 }
-                              : { opacity: 0, height: 0 }
-                          }
-                          transition={{
-                            duration: prefersReducedMotion ? 0 : 0.3,
-                            ease: [0.22, 1, 0.36, 1],
-                          }}
+                          id={`faq-answer-${faqId}`}
+                          role="region"
+                          aria-labelledby={`faq-question-${faqId}`}
+                          variants={answerVariants}
+                          initial="initial"
+                          animate="animate"
+                          exit="exit"
                           style={{ overflow: "hidden" }}
                         >
                           <Styled.FAQAnswer>{faq.answer}</Styled.FAQAnswer>

@@ -43,4 +43,3 @@ export interface CheatStats {
   totalSales: number;
   totalRevenue: number;
 }
-

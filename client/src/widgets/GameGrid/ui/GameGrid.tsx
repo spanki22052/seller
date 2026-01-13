@@ -88,10 +88,10 @@ const CustomNextArrow = (props: ArrowProps) => {
 };
 
 interface GameGridProps {
-  categoryId?: string | null;
+  carouselCategoryId?: string | null;
 }
 
-export function GameGrid({ categoryId }: GameGridProps) {
+export function GameGrid({ carouselCategoryId }: GameGridProps) {
   const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [cardsPerSlide, setCardsPerSlide] = useState(4); // Default for SSR
@@ -110,14 +110,19 @@ export function GameGrid({ categoryId }: GameGridProps) {
   const filteredGames = React.useMemo(() => {
     let filtered = gamesWithCheats;
 
-    // Filter by category if selected
-    if (categoryId) {
-      filtered = filtered.filter((game) => game.categoryId === categoryId);
+    // Filter by carousel category if selected
+    if (carouselCategoryId && settings?.gameIdsForCarousel) {
+      const carouselCategoryData = settings.gameIdsForCarousel.find(
+        (cat) => cat.id === carouselCategoryId
+      );
+      if (carouselCategoryData?.games) {
+        filtered = filtered.filter((game) => carouselCategoryData.games.includes(game.id));
+      }
     }
-    // When categoryId is null, show all games
+    // When carouselCategoryId is null, show all games
 
     return filtered;
-  }, [gamesWithCheats, categoryId]);
+  }, [gamesWithCheats, carouselCategoryId, settings]);
 
   const hasGames = filteredGames.length > 0;
   const isGamesLoading = false; // Data is already loaded by the query above
@@ -189,12 +194,12 @@ export function GameGrid({ categoryId }: GameGridProps) {
   // Debug logging to verify filtering works correctly
   React.useEffect(() => {
     console.log("GameGrid filtering debug:", {
-      categoryId,
+      carouselCategoryId,
       filteredGamesCount: filteredGames.length,
       filteredGameIds: filteredGames.map((g) => g.id),
       hasGames,
     });
-  }, [categoryId, filteredGames, hasGames]);
+  }, [carouselCategoryId, filteredGames, hasGames]);
 
   const gameSlides = React.useMemo(
     () => chunkArray(filteredGames, cardsPerSlide),
