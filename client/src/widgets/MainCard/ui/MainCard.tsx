@@ -22,16 +22,6 @@ export function MainCard({ links = MAIN_CARD_LINKS }: MainCardProps) {
   return (
     <Styled.Container>
       <Styled.ContentWrapper>
-        <Styled.LogoTopRight>
-          <Image
-            src={cheatarenaLogo}
-            alt="CHEATARENA"
-            width={154}
-            height={26}
-            priority
-            onContextMenu={(e) => e.preventDefault()}
-          />
-        </Styled.LogoTopRight>
         <Styled.TextSection
           as={motion.div}
           variants={textVariants}
